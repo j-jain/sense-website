@@ -13,7 +13,8 @@ import { lenis } from './setup.js';
      Lower number = slower playback. */
   var SPEED_5A = 0.085;  /* native ~1s → real ~12s */
   var SPEED_5B = 0.075;  /* native ~1.05s → real ~14s */
-  var SPEED_5C = 0.105;  /* native ~1.05s → real ~10s */
+  var SPEED_5C = 0.045;  /* native ~1.05s → real ~23s — clearly the longest beat */
+  var HOLD_5C_MS = 3500; /* extra dwell on 5c's final frame before moving on */
   var BLACKOUT_MS = 500;
 
   function ensureBlackout(){
@@ -65,10 +66,12 @@ import { lenis } from './setup.js';
       .then(function(){ return blackout(true); })
       .then(function(){ scrollToWrapper('s5c-wrapper'); return blackout(false); })
       .then(function(){ return playWith(tls.s5c, SPEED_5C); })
+      .then(function(){ return new Promise(function(r){ setTimeout(r, HOLD_5C_MS); }); })
       .then(function(){ return blackout(true); })
       .then(function(){ scrollToWrapper('sc8-root'); return blackout(false); })
       .then(function(){
         /* User is now sitting at S8 — release scroll so they can read it */
+        window.__scrollLocked = false;
         try{ lenis.start(); }catch(e){}
       });
   };

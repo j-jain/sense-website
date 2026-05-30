@@ -194,13 +194,20 @@
   #sc8-root .pills{bottom:10px;flex-wrap:wrap;justify-content:center;width:94vw;gap:6px}
   #sc8-root .pill{padding:8px 14px;font-size:12px}
 
-  /* One device shows at a time → centre it horizontally via calc (keeps its
-     native width; GSAP's transform for y/scale still applies on top) */
-  #sc8-root .device-overlay{max-width:94vw}
-  #sc8-root .phone-device{left:calc(50% - 105px);right:auto;top:14%}
-  #sc8-root .tablet-device{left:calc(50% - 125px);right:auto;top:12%}
-  #sc8-root .monitor-device{left:calc(50% - 130px);right:auto;top:auto;bottom:84px}
-  #sc8-root .laptop-device{left:calc(50% - 130px);right:auto;top:auto;bottom:72px}
+  /* One device at a time, rendered CENTRED and fully visible. Each overlay
+     becomes a full-area flex box (clearing header top + pills bottom); the
+     device frame centres inside it. GSAP's y/scale transform on the overlay
+     is harmless — flex does the centring, so chat/predict/pattern/visibility
+     all appear the same way instead of being clipped in a corner. */
+  #sc8-root .device-overlay{
+    left:0;right:0;top:0;bottom:0;width:auto;max-width:none;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    padding:88px 12px 72px;
+  }
+  #sc8-root .phone-frame{width:212px}
+  #sc8-root .tablet-frame{width:250px;max-width:86vw}
+  #sc8-root .monitor-frame{width:264px;max-width:86vw}
+  #sc8-root .laptop-frame{width:264px;max-width:86vw}
 
   /* Corner connectors/labels don't make sense with a centred device */
   #sc8-root .conn-lines{display:none}

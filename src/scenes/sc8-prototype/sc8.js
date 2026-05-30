@@ -43,7 +43,9 @@
     });
   }
 
-  var sc8IsMobile = function(){ return window.matchMedia('(max-width:768px)').matches; };
+  /* Touch detection by capability, not width — a phone reports (hover:none),
+     so this is robust even if the viewport is wider than the CSS breakpoint. */
+  var sc8IsTouch = function(){ return window.matchMedia('(hover:none)').matches; };
   function sc8ShowPill(pill){
     clearAll();
     var t = pill.dataset.target;
@@ -54,22 +56,27 @@
     if (t === 'chat') resetChat();
   }
   pills.forEach(function(pill) {
-    /* Desktop reveals on hover. Mobile has no hover, so the hover handlers
-       no-op there and a tap handler toggles the device instead. */
+    /* Pointer devices reveal on hover. Touch devices have no hover, so the
+       hover handlers no-op there and a tap toggles the device instead. */
     pill.addEventListener('mouseenter', function() {
-      if(sc8IsMobile()) return;
+      if(sc8IsTouch()) return;
       sc8ShowPill(pill);
     });
     pill.addEventListener('mouseleave', function() {
-      if(sc8IsMobile()) return;
+      if(sc8IsTouch()) return;
       clearAll();
     });
     pill.addEventListener('click', function() {
-      if(!sc8IsMobile()) return;
+      if(!sc8IsTouch()) return;
       if(pill.classList.contains('active')){ clearAll(); return; }
       sc8ShowPill(pill);
     });
   });
+  /* Touch copy: the instruction says "Hover" by default — make it "Tap". */
+  if(sc8IsTouch()){
+    var sc8Instr = document.getElementById('instructionText');
+    if(sc8Instr) sc8Instr.textContent = 'Tap a capability to see it on its own device';
+  }
 
   // ==================================================
   // Element References
