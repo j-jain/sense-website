@@ -56,3 +56,33 @@
   font-family:'JetBrains Mono',monospace;font-size:13px;color:#D73030;
   opacity:0;white-space:nowrap;letter-spacing:0.3px}
 #s5b .s5b-rs::before{content:'> ';opacity:0.4}
+
+/* ══════════════════════════════════════════════
+   S5B MOBILE (≤768px) — India map fills the upper viewport;
+   the workshop detail card becomes a bottom sheet. Autoplay + pin
+   unchanged; the SVG scales with its viewBox so the route/truck
+   animation adapts (JS untouched).
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Map anchored to the top, scaled to fit width */
+  #s5b .map-wrap{top:3%;left:50%;transform:translateX(-50%)}
+  #s5b .map-wrap svg,
+  #s5b .map-wrap .map{width:96vw;height:auto}
+
+  /* Bigger labels so they survive the downscale a little better */
+  #s5b .nl,#s5b .rl{font-size:18px}
+  #s5b .cl{font-size:15px}
+
+  /* Route status line sits just under the map, above the sheet */
+  #s5b .s5b-rs{bottom:auto;top:56%;font-size:11px;white-space:normal;text-align:center;max-width:90vw}
+
+  /* Detail card → bottom sheet */
+  #s5b .s5b-card{
+    left:0;right:0;top:auto;bottom:0;
+    transform:none;width:auto;
+    border-left:none;border-top:4px solid #D73030;
+    border-radius:16px 16px 0 0;
+    padding:18px 20px;
+  }
+  #s5b .s5b-card h3{font-size:16px}
+}

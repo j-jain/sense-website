@@ -222,3 +222,56 @@
 .s5a-dc-val.red{color:var(--red)}
 .s5a-dc-val.amber{color:var(--amber)}
 .s5a-dc-val.green{color:var(--green)}
+
+/* ══════════════════════════════════════════════
+   S5A MOBILE (≤768px) — single column, progress as a top strip,
+   grid fills the body, diagnosis + readiness as fitted overlay cards.
+   Autoplay timeline + pin unchanged (JS untouched).
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  .s5a-layout{
+    grid-template-columns:1fr;
+    grid-template-rows:auto auto 1fr auto;
+  }
+
+  /* Vehicle-ID top bar: wrap, drop separators, tighten */
+  .s5a-top-bar{padding:10px 12px}
+  .s5a-vid{flex-wrap:wrap;gap:6px 12px;justify-content:center}
+  .s5a-vid-sep{display:none}
+  .s5a-vid-key{font-size:8px}
+  .s5a-vid-val{font-size:10px}
+
+  /* Sidebar → horizontal progress strip above the grid */
+  .s5a-sidebar{
+    border-left:none;border-bottom:1px solid var(--border);
+    flex-direction:row;gap:8px;overflow-x:auto;overflow-y:hidden;
+    padding:10px 12px;
+  }
+  .s5a-sidebar-label{display:none}
+  .s5a-pt-step{
+    flex-direction:column;align-items:center;gap:3px;padding:0;
+    flex:1 0 auto;min-width:62px;text-align:center;
+  }
+  .s5a-pt-step:not(:last-of-type)::after{display:none}
+  .s5a-pt-desc{display:none}
+  .s5a-pt-label{font-size:10px;line-height:1.2}
+  .s5a-pt-status{font-size:8px;margin-top:1px}
+
+  /* Grid: fewer, larger columns; fill the body row */
+  .s5a-grid-area{padding:12px}
+  .s5a-grid-container{grid-template-columns:repeat(6,1fr);max-width:none}
+
+  /* Diagnosis card: fit the screen, sit a little high */
+  .s5a-diag-card{width:min(88vw,360px);padding:16px 18px;top:42%}
+
+  /* Readiness: detach from sidebar, show as a centered overlay card low in the scene */
+  .s5a-readiness{
+    position:absolute;z-index:51;
+    left:50%;bottom:64px;transform:translateX(-50%);
+    width:min(88vw,360px);
+    margin-top:0;padding:12px 16px;border-top:none;
+    background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
+  }
+
+  .s5a-bottom-info,.s5a-handoff-line{font-size:11px}
+}

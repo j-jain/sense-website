@@ -43,17 +43,32 @@
     });
   }
 
+  var sc8IsMobile = function(){ return window.matchMedia('(max-width:768px)').matches; };
+  function sc8ShowPill(pill){
+    clearAll();
+    var t = pill.dataset.target;
+    pill.classList.add('active');
+    if(devices[t]) { devices[t].classList.add('visible'); gsap.set(devices[t], {opacity:1, y:0, scale:1}); }
+    if(labels[t]) labels[t].classList.add('visible');
+    if(conns[t]) conns[t].classList.add('visible');
+    if (t === 'chat') resetChat();
+  }
   pills.forEach(function(pill) {
+    /* Desktop reveals on hover. Mobile has no hover, so the hover handlers
+       no-op there and a tap handler toggles the device instead. */
     pill.addEventListener('mouseenter', function() {
-      clearAll();
-      var t = pill.dataset.target;
-      pill.classList.add('active');
-      if(devices[t]) { devices[t].classList.add('visible'); gsap.set(devices[t], {opacity:1, y:0, scale:1}); }
-      if(labels[t]) labels[t].classList.add('visible');
-      if(conns[t]) conns[t].classList.add('visible');
-      if (t === 'chat') resetChat();
+      if(sc8IsMobile()) return;
+      sc8ShowPill(pill);
     });
-    pill.addEventListener('mouseleave', function() { clearAll(); });
+    pill.addEventListener('mouseleave', function() {
+      if(sc8IsMobile()) return;
+      clearAll();
+    });
+    pill.addEventListener('click', function() {
+      if(!sc8IsMobile()) return;
+      if(pill.classList.contains('active')){ clearAll(); return; }
+      sc8ShowPill(pill);
+    });
   });
 
   // ==================================================

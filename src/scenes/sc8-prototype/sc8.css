@@ -158,10 +158,77 @@
 #sc8-root .stat-item .num { font-size: 28px; font-weight: 600; color: var(--off-white); display: block; margin-bottom: 4px; }
 #sc8-root .mega-headline { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 600; color: var(--off-white); text-align: center; opacity: 0; z-index: 10; white-space: nowrap; }
 #sc8-root .closing-section { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 30; pointer-events: none; opacity: 0; }
-#sc8-root .closing-word { font-family: 'Outfit', sans-serif; font-size: clamp(64px, 10vw, 140px); font-weight: 700; line-height: .88; letter-spacing: .01em; color: var(--off-white); opacity: 0; transform: translateY(20px); }
+#sc8-root .closing-word { font-family: 'Outfit', sans-serif; font-size: clamp(64px, 10vw, 140px); font-weight: 600; line-height: 1.12; letter-spacing: .01em; color: var(--off-white); opacity: 0; transform: translateY(20px); }
 #sc8-root .closing-word:nth-child(2) { color: var(--red); }
 #sc8-root .closing-brand { font-family: 'Outfit', sans-serif; font-size: clamp(22px, 3vw, 36px); font-weight: 700; letter-spacing: .28em; color: var(--off-white); opacity: 0; margin-top: 40px; margin-bottom: 6px; }
 #sc8-root .closing-tagline { font-family: 'Outfit', sans-serif; font-style: italic; font-weight: 300; font-size: 15px; color: rgba(242,240,235,0.5); letter-spacing: .04em; margin-bottom: 36px; opacity: 0; }
-#sc8-root .btn-solid { display: inline-flex; align-items: center; gap: 10px; background: var(--red); color: var(--off-white); border: none; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 16px 40px; cursor: pointer; transition: background .2s, transform .12s; opacity: 0; transform: translateY(10px); pointer-events: auto; }
+/* pointer-events:none so this invisible CTA can't sit over the pills and
+   swallow their hover (it has no click handler). Closing phase re-enables via .cs-active. */
+#sc8-root .btn-solid { display: inline-flex; align-items: center; gap: 10px; background: var(--red); color: var(--off-white); border: none; font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; padding: 16px 40px; cursor: pointer; transition: background .2s, transform .12s; opacity: 0; transform: translateY(10px); pointer-events: none; }
+#sc8-root .closing-section.cs-active, #sc8-root .closing-section.cs-active .btn-solid { pointer-events: auto; }
 #sc8-root .btn-solid:hover { background: #b82020; }
 #sc8-root .btn-solid:active { transform: scale(.98); }
+
+/* ══════════════════════════════════════════════
+   S8/S9/S10 MOBILE (≤768px) — pin kept (gradient + closing need scrub).
+   Per-phase rebuild: map shrinks · pills tap-strip · single device centred
+   · 6 intel cards → 2-col grid · stats stack · headline wraps · closing clamps.
+   Device centering uses left:calc (NOT transform — GSAP owns transform).
+   Pills become tap-activated (see sc8.js mobile branch). JS pin unchanged.
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Scene stacks from the top so header + map + pills all fit */
+  #sc8-root .scene{justify-content:flex-start;padding:16px 0}
+  #sc8-root .header{margin-bottom:6px;padding:0 12px}
+  #sc8-root .header h1{font-size:20px;line-height:1.25}
+  #sc8-root .header p{font-size:12px}
+  #sc8-root .header .tag{font-size:10px;letter-spacing:3px}
+
+  /* Main stage fills width; map scaled down */
+  #sc8-root .main-area{width:100vw;height:auto;flex:1;min-height:0}
+  #sc8-root .india-map{top:40%}
+  #sc8-root .india-map svg{height:300px}
+  #sc8-root .bg-glow{width:340px;height:340px}
+
+  /* Pills → wrapped, tap-activated strip */
+  #sc8-root .pills{bottom:10px;flex-wrap:wrap;justify-content:center;width:94vw;gap:6px}
+  #sc8-root .pill{padding:8px 14px;font-size:12px}
+
+  /* One device shows at a time → centre it horizontally via calc (keeps its
+     native width; GSAP's transform for y/scale still applies on top) */
+  #sc8-root .device-overlay{max-width:94vw}
+  #sc8-root .phone-device{left:calc(50% - 105px);right:auto;top:14%}
+  #sc8-root .tablet-device{left:calc(50% - 125px);right:auto;top:12%}
+  #sc8-root .monitor-device{left:calc(50% - 130px);right:auto;top:auto;bottom:84px}
+  #sc8-root .laptop-device{left:calc(50% - 130px);right:auto;top:auto;bottom:72px}
+
+  /* Corner connectors/labels don't make sense with a centred device */
+  #sc8-root .conn-lines{display:none}
+  #sc8-root .label-tag{display:none}
+
+  /* Intro text */
+  #sc8-root .intro-text{top:5%;width:92vw}
+  #sc8-root .intro-text .intro-main{font-size:17px;max-width:none}
+  #sc8-root .intro-text .intro-sub{font-size:11px}
+
+  /* Intel cards → centred 2-col grid over the map */
+  #sc8-root .intel-cards-wrap{
+    left:0;right:0;top:0;bottom:0;
+    display:grid;grid-template-columns:1fr 1fr;
+    align-content:center;justify-items:center;
+    gap:8px;padding:10px;
+  }
+  #sc8-root .intel-card{position:static;width:100%;max-width:160px}
+
+  /* Stats → vertical stack */
+  #sc8-root .stats-row{bottom:auto;top:26%;flex-direction:column;gap:14px}
+  #sc8-root .stat-item .num{font-size:24px}
+
+  /* Mega headline wraps instead of one no-wrap line */
+  #sc8-root .mega-headline{white-space:normal;width:90vw;font-size:20px;bottom:12%}
+
+  /* Closing words shrink to fit a phone */
+  #sc8-root .closing-word{font-size:clamp(40px,14vw,72px)}
+  #sc8-root .closing-brand{font-size:clamp(18px,5vw,28px);margin-top:28px}
+  #sc8-root .closing-tagline{font-size:13px;text-align:center;padding:0 16px}
+}

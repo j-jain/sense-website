@@ -6,4 +6,37 @@
    will be added here. */
 @media(max-width:768px){
   #nav{padding:16px 20px}
+
+  /* Smaller, cheaper film grain on phones */
+  #sc8-root .film-grain{background-size:200px 200px}
+}
+
+/* ── Phase 3 polish (cross-scene) ──────────────── */
+
+/* Touch phones: comfortable ≥44px tap targets on interactive chrome.
+   Scoped to coarse-pointer + mobile width so desktop (incl. touch laptops) is untouched. */
+@media (pointer:coarse) and (max-width:768px){
+  #nav a,
+  .btn-outline,
+  .btn-solid,
+  #sc8-root .pill,
+  .ma-tab,
+  .toggle-btn{
+    min-height:44px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+}
+
+/* Honour reduced-motion: neutralise ambient CSS loops/transitions.
+   GSAP scroll timelines are JS-driven and keep working — this only calms
+   the decorative @keyframes (pulses, blinks, float, lane-flow, grain). */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation-duration:0.001ms !important;
+    animation-iteration-count:1 !important;
+    transition-duration:0.001ms !important;
+    scroll-behavior:auto !important;
+  }
 }
