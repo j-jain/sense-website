@@ -2,6 +2,15 @@
 title sense website - local preview
 cd /d "%~dp0"
 
+REM --- If the site is already running on port 5173, just open it (no duplicate) ---
+netstat -ano | findstr ":5173" | findstr "LISTENING" >nul 2>&1
+if %errorlevel%==0 (
+  echo The website is already running. Opening it in your browser...
+  start "" http://localhost:5173/
+  timeout /t 2 >nul
+  exit /b
+)
+
 REM --- First-time setup: install dependencies if missing (runs once) ---
 if not exist "node_modules\" (
   echo First-time setup: installing dependencies. This runs once and may take a minute...
