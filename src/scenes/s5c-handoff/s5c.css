@@ -282,31 +282,40 @@
 }
 
 /* ══════════════════════════════════════════════
-   S5C MOBILE (≤768px) — redesigned for readability. Two rich panels can't
-   share one pinned viewport, so the driver phone is the readable hero and the
-   fleet-manager view is condensed to ONE clear card (the incident) under a
-   legible label. Service/timeline cards + minimap + proof are hidden on mobile.
-   JS untouched (timelines still fire on the hidden elements harmlessly).
+   S5C MOBILE (≤768px) — the scene is pinned + scroll-locked during autoplay,
+   so the user can't scroll. Instead the layout is a tall vertical stack
+   (readable phone hero + full fleet cards) and the timeline AUTO-PANS it
+   (translateY) during playback — see the mobile branch in s5c.js. The headline
+   is a fixed bottom overlay. Desktop untouched.
 ══════════════════════════════════════════════ */
 @media(max-width:768px){
-  /* Centre the whole stack; clip gracefully if a hair too tall */
-  #s5c{align-items:center}
-  .s5c-layout{flex-direction:column;align-items:center;gap:10px;padding:12px 4%;max-width:100%}
+  /* Top-align the (taller-than-viewport) stack so it pans from phone → fleet */
+  #s5c{align-items:flex-start;overflow:hidden}
+  .s5c-layout{
+    flex-direction:column;align-items:center;gap:14px;
+    width:100%;max-width:100%;padding:18px 5% 96px;
+    will-change:transform;
+  }
 
-  /* Clear, legible viewpoint labels with breathing room */
+  /* Clear, legible viewpoint labels */
   .s5c-viewpoint{font-size:10px;letter-spacing:1.6px;margin-bottom:7px}
 
-  /* Phone hero — large enough to read its content */
+  /* Phone hero — readable size */
   .s5c-phone-col{flex:0 0 auto;width:100%;align-items:center}
   .s5c-phone{width:248px;height:506px}
 
-  /* Fleet manager → one compact, readable card (incident only) */
-  .s5c-dash-col{flex:0 0 auto;width:100%;max-width:300px;align-items:center}
+  /* Fleet manager cards (incident + service); timeline strip too wide → hidden */
+  .s5c-dash-col{flex:0 0 auto;width:100%;max-width:320px;align-items:center}
   .s5c-dashboard{max-width:100%;padding:11px;gap:8px}
-  #s5c-dash-service,#s5c-dash-timeline{display:none}
+  #s5c-dash-timeline{display:none}
   .s5c-minimap{display:none}
 
-  /* Headline readable just below; proof has no room on a phone */
-  .s5c-headline{position:static;transform:none;text-align:center;margin-top:2px;max-width:92%;font-size:13px;line-height:1.45}
+  /* Headline pinned at the bottom as a readable overlay; proof has no room */
+  .s5c-headline{
+    top:auto;bottom:10px;left:0;right:0;transform:none;
+    text-align:center;max-width:100%;font-size:13px;line-height:1.4;
+    padding:10px 16px 6px;
+    background:linear-gradient(to top,var(--bg) 62%,rgba(13,13,15,0));
+  }
   .s5c-proof{display:none}
 }

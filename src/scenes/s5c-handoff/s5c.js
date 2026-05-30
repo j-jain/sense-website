@@ -128,4 +128,24 @@
   var b8 = b7 + 0.12;
   s5ctl.to('#s5c-headline', {opacity:0.65, duration:0.06, ease:'power2.out'}, b8);
   s5ctl.to('#s5c-proof',    {opacity:1,    duration:0.06, ease:'power2.out'}, b8+0.03);
+
+  /* ── MOBILE auto-pan ──
+     On phones the stack (phone hero + fleet cards) is taller than the viewport,
+     and the scene is pinned + scroll-locked during autoplay, so the user can't
+     scroll. Pan the layout upward through the back half of the timeline to
+     reveal the fleet view. Distance is measured at tween start, so it adapts to
+     any device height. Desktop is unaffected (tween only added on mobile). */
+  if (window.matchMedia('(max-width:768px)').matches) {
+    var s5cLayout = document.querySelector('#s5c .s5c-layout');
+    if (s5cLayout) {
+      s5ctl.to(s5cLayout, {
+        y: function(){
+          var sec = document.getElementById('s5c');
+          var over = s5cLayout.scrollHeight - sec.clientHeight + 80; /* +80 clears the bottom headline overlay */
+          return over > 0 ? -over : 0;
+        },
+        duration: 0.20, ease: 'power1.inOut'
+      }, 0.42);
+    }
+  }
 })();
