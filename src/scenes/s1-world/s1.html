@@ -1,0 +1,93 @@
+<!-- ══════════════════════════════════════════
+     S1 — THE WORLD
+══════════════════════════════════════════ -->
+<section id="s1">
+
+  <!-- ── Boot sequence ─────────────────────── -->
+  <div class="s1-boot" id="s1-boot">
+    <div class="s1-boot-inner">
+      <div class="boot-line" id="bl-1"><span class="bl-dim">&gt;</span> sense v4.2.1</div>
+      <div class="boot-line" id="bl-2"><span class="bl-dim">&gt;</span> Initializing diagnostic engine<span class="bl-dim">...</span> <span class="bl-ok">OK</span></div>
+      <div class="boot-line" id="bl-3"><span class="bl-dim">&gt;</span> Fleet network <span class="bl-dim">[NH-44 corridor]</span><span class="bl-dim">...</span> <span class="bl-ok">CONNECTED</span></div>
+      <div class="boot-line" id="bl-4"><span class="bl-dim">&gt;</span> Vehicle telemetry<span class="bl-dim">...</span> <span class="bl-ok">ACTIVE</span></div>
+      <div class="boot-line" id="bl-5"><span class="bl-dim">&gt;</span> Camera feed<span class="bl-dim">...</span> <span class="bl-ok">LIVE</span></div>
+      <div class="boot-line" id="bl-6"><span class="bl-red">■</span> SYSTEM READY<span class="boot-cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- ── Cinematic frame ───────────────────── -->
+  <div class="s1-cinema" id="s1-cinema">
+    <video id="s1-video" muted playsinline preload="auto">
+      <source src="https://pub-f0985cb54d3d4159b50508a9298c8c77.r2.dev/Truck_yard_blue_hour_highway_202605201710.mp4" type="video/mp4">
+    </video>
+    <div class="s1-overlay"></div>
+    <div class="s1-vignette-l"></div>
+    <div class="s1-vignette-r"></div>
+    <div class="s1-vignette-t"></div>
+    <div class="s1-vignette-b"></div>
+
+    <!-- Scan line (kept for boot reveal) -->
+    <div class="hud-scanline" id="hud-scanline" style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(215,48,48,.08),transparent);z-index:11;pointer-events:none;opacity:0;"></div>
+
+  </div>
+
+  <!-- ── Scene bleed — color wash extending past cinema frame ── -->
+  <div class="s1-bleed" id="s1-bleed">
+    <div class="s1-bleed-l"></div>
+    <div class="s1-bleed-l-warm"></div>
+    <div class="s1-bleed-r"></div>
+    <div class="s1-bleed-r-warm"></div>
+    <div class="s1-bleed-line left"></div>
+    <div class="s1-bleed-line right"></div>
+  </div>
+
+  <!-- ── Side data — left ── -->
+  <div class="s1-side-data left" id="s1-data-l">
+    <div class="sd-group">
+      <div class="sd-label">COORDINATES</div>
+      <div class="sd-value" id="sd-coords">28.6139° N<br>77.2090° E</div>
+    </div>
+    <div class="sd-group">
+      <div class="sd-label">ROUTE</div>
+      <div class="sd-value"><span class="red">NH-44</span><br><span class="dim">DELHI → CHENNAI</span></div>
+    </div>
+    <div class="sd-group">
+      <div class="sd-label">DISTANCE</div>
+      <div class="sd-value">2,182 KM<br><span class="green">ETA 14H 22M</span></div>
+    </div>
+  </div>
+
+  <!-- ── Side data — right ── -->
+  <div class="s1-side-data right" id="s1-data-r">
+    <div class="sd-group">
+      <div class="sd-label">TIME</div>
+      <div class="sd-value" id="sd-time">05:45 IST<br><span class="dim">BLUE HOUR</span></div>
+    </div>
+    <div class="sd-group">
+      <div class="sd-label">VEHICLE</div>
+      <div class="sd-value">TN-38-BK-4271<br><span class="dim">TATA PRIMA 4928.S</span></div>
+    </div>
+    <div class="sd-group">
+      <div class="sd-label">DIAGNOSTICS</div>
+      <div class="sd-value"><span class="green">DTC: 0</span><br><span class="green">ALL CLEAR</span></div>
+    </div>
+  </div>
+
+  <!-- ── Headline — left, upper ─────────────── -->
+  <div class="s1-headline-wrap" id="s1-headline-wrap">
+    <h1 id="s1-headline" class="f-display">Every journey begins<br>with a promise.</h1>
+  </div>
+
+  <!-- ── CTA — centered bottom ────────────────── -->
+  <div class="s1-cta-wrap" id="s1-cta-wrap">
+    <a id="start-btn" class="btn-outline" role="button" tabindex="0">
+      Start Journey
+      <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M8.5 1L13 5L8.5 9M1 5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+    <div class="s1-key-hint" id="s1-key-hint">PRESS ENTER TO BEGIN</div>
+  </div>
+</section>
+
+<!-- Cinematic transition overlay -->
+<div class="s1-transition" id="s1-transition"></div>
+

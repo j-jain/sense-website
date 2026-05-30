@@ -1,0 +1,105 @@
+<!-- ══════════════════════════════════════════
+     S5A — REMOTE DIAGNOSTICS (Hybrid Grid + Sidebar)
+══════════════════════════════════════════ -->
+<div id="s5a-wrapper">
+<section id="s5a">
+
+  <!-- Main layout: grid + sidebar -->
+  <div class="s5a-layout" id="s5a-layout">
+
+    <!-- Top bar: Vehicle identity -->
+    <div class="s5a-top-bar">
+      <div class="s5a-vid">
+        <div class="s5a-vid-item"><span class="s5a-vid-key">Reg</span><span class="s5a-vid-val">MH-04-AB-1234</span></div>
+        <div class="s5a-vid-sep"></div>
+        <div class="s5a-vid-item"><span class="s5a-vid-key">Model</span><span class="s5a-vid-val">Tata Prima 4028.S</span></div>
+        <div class="s5a-vid-sep"></div>
+        <div class="s5a-vid-item"><span class="s5a-vid-key">Odo</span><span class="s5a-vid-val">2,47,832 km</span></div>
+        <div class="s5a-vid-sep"></div>
+        <div class="s5a-vid-item"><span class="s5a-vid-key">Fleet</span><span class="s5a-vid-val">MH-04 · Pune West</span></div>
+        <div class="s5a-vid-sep"></div>
+        <div class="s5a-vid-item"><span class="s5a-vid-key">VCI</span><span class="s5a-vid-val" style="color:var(--green)">● Connected</span></div>
+      </div>
+    </div>
+
+    <!-- Grid area (left ~78%) -->
+    <div class="s5a-grid-area">
+      <div class="s5a-grid-container" id="s5a-grid"></div>
+      <!-- Diagnosis card overlay -->
+      <div class="s5a-diag-card" id="s5a-diagCard">
+        <div class="s5a-dc-title">Root Cause Identified</div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">Fault</span><span class="s5a-dc-val red">DPF Partial Blockage</span></div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">DTC</span><span class="s5a-dc-val">P2463 / P244A</span></div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">Confidence</span><span class="s5a-dc-val amber">94%</span></div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">Action</span><span class="s5a-dc-val">Forced Regen + DPF Inspection</span></div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">Est. Repair</span><span class="s5a-dc-val">1h 15m</span></div>
+        <div class="s5a-dc-row"><span class="s5a-dc-key">Parts</span><span class="s5a-dc-val green">None (service procedure)</span></div>
+      </div>
+      <!-- Scan wave -->
+      <div class="s5a-scan-wave" id="s5a-scanWave"></div>
+      <!-- SVG connections -->
+      <svg class="s5a-conn-svg" id="s5a-connSvg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+
+    <!-- Right sidebar -->
+    <div class="s5a-sidebar">
+      <div class="s5a-sidebar-label">Diagnostic Progress</div>
+
+      <div class="s5a-pt-step" id="s5a-pt1">
+        <div class="s5a-pt-num">1</div>
+        <div class="s5a-pt-info">
+          <div class="s5a-pt-label">Vehicle History</div>
+          <div class="s5a-pt-desc">Loading service records and fault history</div>
+          <div class="s5a-pt-status">—</div>
+        </div>
+      </div>
+
+      <div class="s5a-pt-step" id="s5a-pt2">
+        <div class="s5a-pt-num">2</div>
+        <div class="s5a-pt-info">
+          <div class="s5a-pt-label">Pattern Analysis</div>
+          <div class="s5a-pt-desc">Scanning subsystems for fault signatures</div>
+          <div class="s5a-pt-status">—</div>
+        </div>
+      </div>
+
+      <div class="s5a-pt-step" id="s5a-pt3">
+        <div class="s5a-pt-num">3</div>
+        <div class="s5a-pt-info">
+          <div class="s5a-pt-label">Cause Elimination</div>
+          <div class="s5a-pt-desc">Narrowing candidates to root cause</div>
+          <div class="s5a-pt-status">—</div>
+        </div>
+      </div>
+
+      <div class="s5a-pt-step" id="s5a-pt4">
+        <div class="s5a-pt-num">4</div>
+        <div class="s5a-pt-info">
+          <div class="s5a-pt-label">Service Readiness</div>
+          <div class="s5a-pt-desc">Preparing repair requirements</div>
+          <div class="s5a-pt-status">—</div>
+        </div>
+      </div>
+
+      <!-- Readiness checklist -->
+      <div class="s5a-readiness" id="s5a-readiness">
+        <div class="s5a-readiness-title">Service Readiness</div>
+        <div class="s5a-rd-item" id="s5a-rd1"><div class="s5a-rd-dot"></div><div class="s5a-rd-label">Parts required</div><div class="s5a-rd-val">—</div></div>
+        <div class="s5a-rd-item" id="s5a-rd2"><div class="s5a-rd-dot"></div><div class="s5a-rd-label">Repair estimate</div><div class="s5a-rd-val">—</div></div>
+        <div class="s5a-rd-item" id="s5a-rd3"><div class="s5a-rd-dot"></div><div class="s5a-rd-label">Complexity</div><div class="s5a-rd-val">—</div></div>
+        <div class="s5a-rd-item" id="s5a-rd4"><div class="s5a-rd-dot"></div><div class="s5a-rd-label">Bay type</div><div class="s5a-rd-val">—</div></div>
+        <div class="s5a-rd-item" id="s5a-rd5"><div class="s5a-rd-dot"></div><div class="s5a-rd-label">Tech level</div><div class="s5a-rd-val">—</div></div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="s5a-bottom-bar">
+      <div class="s5a-bottom-info" id="s5a-bottomInfo"><span>48</span> subsystems loaded</div>
+      <div class="s5a-handoff-line" id="s5a-handoffLine">&gt; Locating capable service point...<span class="hf-cursor"></span></div>
+    </div>
+
+  </div><!-- /s5a-layout -->
+
+</section>
+</div>
+

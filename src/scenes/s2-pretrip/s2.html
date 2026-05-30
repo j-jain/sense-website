@@ -1,0 +1,248 @@
+<!-- ══════════════════════════════════════════
+     S2 — BEFORE THE FIRST KILOMETER
+══════════════════════════════════════════ -->
+<div id="s2-wrapper">
+<section id="s2">
+
+  <!-- Pre-Trip Diagnostics heading -->
+  <div class="s2-scene-heading" id="s2-scene-heading">Pre-Trip Diagnostics</div>
+
+  <!-- Slider container -->
+  <div class="s2-slider">
+
+    <!-- Image panel (full width → compresses right on click) -->
+    <div class="s2-img-panel" id="s2-img-panel">
+      <img src="s2-cab-phone.jpg" alt="Truck cab interior" id="s2-cab-img">
+      <!-- Dark overlay — heavier fade when phone enters -->
+      <div class="s2-dark-overlay" id="s2-dark-overlay"></div>
+      <!-- CSS glow hotspot on phone mount -->
+      <div class="s2-glow" id="s2-glow">
+        <div class="s2-glow-label">Tap to explore</div>
+      </div>
+    </div>
+
+    <!-- Phone panel (slides in from left, 25% width) -->
+    <div class="s2-phone-panel" id="s2-phone-panel">
+      <div class="s2-phone-frame" id="s2-phone-frame">
+        <div class="s2-phone-body">
+          <!-- Volume buttons -->
+          <div class="s2-phone-vol"></div>
+          <div class="s2-phone-vol2"></div>
+          <!-- Dynamic Island notch + camera -->
+          <div class="s2-phone-notch">
+            <div class="s2-phone-cam"></div>
+          </div>
+          <!-- Status bar -->
+          <div class="s2-phone-statusbar" id="s2-statusbar">
+            <div class="s2-sb-time">9:41</div>
+            <div class="s2-sb-right">
+              <div class="s2-sb-cell"><span></span><span></span><span></span><span></span></div>
+              <div class="s2-sb-wifi">
+                <svg viewBox="0 0 16 12" fill="none"><path d="M8 10.5a1 1 0 100 2 1 1 0 000-2z" fill="currentColor"/><path d="M4.5 8.2a5 5 0 017 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 5.5a8.5 8.5 0 0112 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>
+              <div class="s2-sb-batt"><div class="s2-sb-batt-fill"></div></div>
+            </div>
+          </div>
+          <div class="s2-phone-screen-wrap">
+            <div class="s2-screens" id="s2-screens">
+
+              <!-- SCREEN A — Welcome Splash (auto-advances) -->
+              <div class="s2-screen" id="s2-screenA">
+                <div class="s2a-splash">
+                  <div class="s2a-logo">
+                    <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <circle cx="32" cy="28" r="18" stroke="#fff" stroke-width="2.5" fill="none"/>
+                      <circle cx="32" cy="28" r="4" fill="#fff"/>
+                      <line x1="32" y1="32" x2="32" y2="46" stroke="#fff" stroke-width="2"/>
+                      <line x1="14" y1="28" x2="28" y2="28" stroke="#fff" stroke-width="2"/>
+                      <line x1="36" y1="28" x2="50" y2="28" stroke="#fff" stroke-width="2"/>
+                      <path d="M20 50 Q26 44 32 48 Q38 44 44 50" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="s2a-greeting">Welcome, Ustaad!</div>
+                  <div class="s2a-tagline">Your journey begins here</div>
+                  <div class="s2a-loader"><div class="s2a-loader-bar" id="s2a-loader-bar"></div></div>
+                </div>
+              </div>
+
+              <!-- SCREEN B — Trip Reminder (BLR → DEL) -->
+              <div class="s2-screen" id="s2-screenB">
+                <div class="s2b-map">
+                  <div class="s2b-map-placeholder">
+                    <div class="s2b-map-route">
+                      <svg viewBox="0 0 200 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M30 70 Q60 20 100 50 Q140 80 170 30" stroke="#D73030" stroke-width="2.5" stroke-dasharray="6 4" fill="none"/>
+                        <circle cx="30" cy="70" r="5" fill="#D73030"/>
+                        <circle cx="170" cy="30" r="5" fill="#3DA84A"/>
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="s2b-map-badge"><span class="dot"></span> NH44</div>
+                </div>
+                <div class="s2b-info">
+                  <div class="s2b-vehicle">
+                    <div class="s2b-vehicle-icon">
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="2" y="8" width="16" height="9" rx="2" stroke="#D73030" stroke-width="1.5" fill="none"/>
+                        <rect x="18" y="10" width="4" height="5" rx="1" stroke="#D73030" stroke-width="1.5" fill="none"/>
+                        <circle cx="7" cy="18" r="2" stroke="#D73030" stroke-width="1.5" fill="none"/>
+                        <circle cx="16" cy="18" r="2" stroke="#D73030" stroke-width="1.5" fill="none"/>
+                      </svg>
+                    </div>
+                    <div class="s2b-vehicle-text s2-anim-hidden">MH12 AB 1234<span>TATA ULTRA 1610 · 2019</span></div>
+                    <div class="s2b-time-badge">In 30 Min</div>
+                  </div>
+                  <div class="s2b-route-row">
+                    <div class="s2b-route-dots">
+                      <div class="s2b-route-dot"></div>
+                      <div class="s2b-route-line"></div>
+                      <div class="s2b-route-dot end"></div>
+                    </div>
+                    <div class="s2b-route-labels">
+                      <div class="s2b-route-label s2-anim-hidden">Bangalore<span>Departure</span></div>
+                      <div class="s2b-route-label s2-anim-hidden">Delhi<span>Destination</span></div>
+                    </div>
+                  </div>
+                  <div class="s2b-stats-row">
+                    <div class="s2b-stat-chip"><div class="val">2,150 km</div><div class="lbl">Distance</div></div>
+                    <div class="s2b-stat-chip"><div class="val">~34H</div><div class="lbl">Est. Time</div></div>
+                  </div>
+                </div>
+                <div class="s2b-startbtn s2-anim-scale" id="s2-start-trip-btn">Start Trip</div>
+              </div>
+
+              <!-- SCREEN C — DVIR Check (all green / all pass) -->
+              <div class="s2-screen" id="s2-screenC">
+                <div class="s2c-header">
+                  <div class="s2c-back">&#8249;</div>
+                  <div class="s2c-title">DVIR Check<span>Pre-trip inspection</span></div>
+                </div>
+                <div class="s2c-donut-area">
+                  <div class="s2c-donut">
+                    <svg viewBox="0 0 100 100">
+                      <circle class="s2c-donut-bg" cx="50" cy="50" r="40"/>
+                      <circle class="s2c-donut-fill" cx="50" cy="50" r="40"/>
+                    </svg>
+                    <div class="s2c-donut-center">
+                      <div class="s2c-donut-num">0/6</div>
+                      <div class="s2c-donut-label">Checked</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="s2c-checks">
+                  <div class="s2c-check-group">Tyre Pressure</div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Left Front (LF)</div>
+                    <div class="s2c-check-val">42 PSI</div>
+                  </div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Right Front (RF)</div>
+                    <div class="s2c-check-val">41 PSI</div>
+                  </div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Left Rear (LR)</div>
+                    <div class="s2c-check-val">44 PSI</div>
+                  </div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Right Rear (RR)</div>
+                    <div class="s2c-check-val">43 PSI</div>
+                  </div>
+                  <div class="s2c-check-group">Oil & Fluids</div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Engine Oil Level</div>
+                    <div class="s2c-check-val">OK</div>
+                  </div>
+                  <div class="s2c-check-item">
+                    <div class="s2c-check-icon pass">&#10003;</div>
+                    <div class="s2c-check-text">Coolant Level</div>
+                    <div class="s2c-check-val">OK</div>
+                  </div>
+                </div>
+                <div class="s2c-submit s2-anim-scale" id="s2-submit-dvir">Submit DVIR Report</div>
+              </div>
+
+              <!-- SCREEN D — Live Trip -->
+              <div class="s2-screen" id="s2-screenD">
+                <div class="s2d-map-bg"><img src="Picture1.jpg" alt="Live trip map"/></div>
+                <div class="s2d-ui-overlay" id="s2d-ui-overlay">
+                  <div class="s2d-header s2d-anim-item">
+                    <div class="s2d-hamburger"><span></span><span></span><span></span></div>
+                    <div class="s2d-avatar">A</div>
+                    <div class="s2d-user-info">
+                      <div class="s2d-user-hello">Hello Ustaad</div>
+                      <div class="s2d-user-name">Mr Ankur Sharma</div>
+                    </div>
+                    <div class="s2d-sos">SOS</div>
+                    <div class="s2d-bell"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+                  </div>
+                  <div class="s2d-speed-bar s2d-anim-item">
+                    <div class="s2d-speed"><div class="s2d-speed-num">0.0</div><div class="s2d-speed-unit">Km/h</div></div>
+                    <div class="s2d-dest">
+                      <div class="s2d-dest-name"><svg viewBox="0 0 24 24" fill="#3DA84A"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>Delhi</div>
+                      <div class="s2d-dest-time">~34 Hours · 2,150 km via NH44</div>
+                    </div>
+                  </div>
+                  <div class="s2d-map-area s2d-anim-item" style="opacity:1;transform:none">
+                    <img src="Picture1.jpg" alt="Live trip map"/>
+                    <div class="s2d-map-fab">
+                      <div class="s2d-fab-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke="#fff" stroke-width="1.8"/></svg></div>
+                      <div class="s2d-fab-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="#fff" stroke-width="1.8"/></svg></div>
+                    </div>
+                    <div class="s2d-map-truck"><svg viewBox="0 0 24 18" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="#444" stroke-width="1.5"/><rect x="15" y="6" width="5" height="5" rx="1" stroke="#444" stroke-width="1.5"/><circle cx="6" cy="14" r="2" stroke="#444" stroke-width="1.5"/><circle cx="14" cy="14" r="2" stroke="#444" stroke-width="1.5"/></svg></div>
+                    <div class="s2d-trip-badge" id="s2d-trip-badge"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>Trip Started</div>
+                    <div class="s2d-map-warn"><svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="#FF9800" stroke="#E65100" stroke-width=".5"/><line x1="12" y1="9" x2="12" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="#fff"/></svg></div>
+                  </div>
+                  <div class="s2d-bottom-section s2d-anim-item">
+                    <div class="s2d-vehicle-bar">
+                      <div class="s2d-warn-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" fill="#FFC107" stroke="#FF8F00" stroke-width=".5"/><line x1="12" y1="9" x2="12" y2="13" stroke="#fff" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="#fff"/></svg></div>
+                      <div class="s2d-truck-icon"><svg viewBox="0 0 24 18" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="#555" stroke-width="1.5"/><rect x="15" y="6" width="5" height="5" rx="1" stroke="#555" stroke-width="1.5"/><circle cx="6" cy="14" r="2" stroke="#555" stroke-width="1.5"/><circle cx="14" cy="14" r="2" stroke="#555" stroke-width="1.5"/></svg></div>
+                      <div class="s2d-plate">MH 12 AB 1234</div>
+                    </div>
+                    <div class="s2d-end-trip">
+                      <div class="s2d-slider-handle"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                      <div class="s2d-end-text">End Trip</div>
+                    </div>
+                  </div>
+                  <div class="s2d-bottom-nav s2d-anim-item">
+                    <div class="s2d-nav-item active"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.8"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8"/></svg>Live</div>
+                    <div class="s2d-nav-item"><svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="1.8"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="1.8"/></svg>Home</div>
+                    <div class="s2d-nav-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg>Profile</div>
+                  </div>
+                </div>
+              </div>
+
+            </div><!-- /.s2-screens -->
+          </div><!-- /.s2-phone-screen-wrap -->
+        </div><!-- /.s2-phone-body -->
+      </div><!-- /.s2-phone-frame -->
+    </div><!-- /.s2-phone-panel -->
+
+    <!-- Map morph element — breaks free from phone, flies to dashboard map area -->
+    <div id="s2-map-morph"><img src="Picture1.jpg" alt=""/></div>
+
+    <!-- Scene 2 headline — left side, over cab image -->
+    <div class="s2-headline">Prevention begins before<br>the engine starts.</div>
+
+    <!-- Feature list on darkened image side -->
+    <div class="s2-feature-list" id="s2-feature-list">
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg></span>Trip Management</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Driver Behaviour Monitoring</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0110 10"/><path d="M12 2a10 10 0 00-10 10"/><path d="M12 2v4"/><path d="M2 12h4"/><path d="M22 12h-4"/><line x1="12" y1="12" x2="16" y2="8"/><circle cx="12" cy="12" r="1.5"/></svg></span>Driver Performance</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/></svg></span>Driver Score</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2v-6"/><polyline points="12,3 12,15"/><path d="M8 8l4-5 4 5"/><path d="M4 12h16"/></svg></span>Rewards & Incentives</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 14h4"/></svg></span>Earnings & Wallet</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>Safety & Support</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></span>Community & Engagement</div>
+      <div class="s2-feat"><span class="s2-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="23,6 13.5,15.5 8.5,10.5 1,18"/><polyline points="17,6 23,6 23,12"/></svg></span>Life Improvement</div>
+    </div>
+
+  </div><!-- /.s2-slider -->
+
+</section>
+</div>
+

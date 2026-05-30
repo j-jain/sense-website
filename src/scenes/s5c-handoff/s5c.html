@@ -1,0 +1,236 @@
+<!-- ══════════════════════════════════════════
+     S5C — DRIVER SUPPORT
+══════════════════════════════════════════ -->
+<div id="s5c-wrapper">
+<section id="s5c">
+
+  <!-- Mini map -->
+  <div class="s5c-minimap" id="s5c-minimap">
+    <div class="s5c-minimap-frame">
+      <svg width="100%" height="100%" viewBox="0 0 180 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M65 15 Q80 12, 100 20 Q112 26, 118 42 Q122 55, 112 72 Q105 82, 92 92 Q84 100, 76 108 Q70 112, 64 106 Q52 96, 50 82 Q44 72, 48 60 Q50 48, 55 38 Q58 28, 65 15Z" stroke="rgba(242,240,235,0.05)" stroke-width="1" fill="none"/>
+        <line x1="40" y1="30" x2="140" y2="30" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <line x1="40" y1="60" x2="140" y2="60" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <line x1="40" y1="90" x2="140" y2="90" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <line x1="60" y1="10" x2="60" y2="120" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <line x1="90" y1="10" x2="90" y2="120" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <line x1="120" y1="10" x2="120" y2="120" stroke="rgba(242,240,235,0.02)" stroke-width="0.5"/>
+        <path d="M78 74 Q70 60, 64 50 Q58 40, 100 38" stroke="var(--red)" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6" stroke-linecap="round">
+          <animate attributeName="stroke-dashoffset" from="0" to="-10" dur="2s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+      <div class="s5c-truck-dot"></div>
+      <div class="s5c-svc-node"></div>
+      <div class="s5c-svc-label">Ahmedabad CDC</div>
+      <div class="s5c-minimap-label">NH44 Corridor</div>
+    </div>
+  </div>
+
+  <!-- Split layout -->
+  <div class="s5c-layout">
+
+    <!-- ── PHONE (Driver App) ── -->
+    <div class="s5c-phone-col">
+      <div class="s5c-viewpoint" id="s5c-label-driver">Driver's Viewpoint</div>
+      <div class="s5c-phone-wrap" id="s5c-phone-wrap">
+        <div class="s5c-phone-inner" id="s5c-phone-inner">
+          <div class="s5c-phone">
+            <div class="s5c-app">
+
+              <!-- Status bar -->
+              <div class="s5c-statusbar">
+                <span>11:22</span>
+                <div class="s5c-statusbar-r">
+                  <span>●●●●</span>
+                  <span>WiFi</span>
+                  <span>87%</span>
+                </div>
+              </div>
+
+              <!-- App header with sense branding -->
+              <div class="s5c-app-header">
+                <div class="s5c-brand">
+                  <div class="s5c-brand-icon">S</div>
+                  <span class="s5c-brand-name">sense</span>
+                </div>
+                <div class="s5c-notif-icon">
+                  ⚠
+                  <div class="s5c-notif-dot"></div>
+                </div>
+              </div>
+
+              <!-- Content -->
+              <div class="s5c-app-body">
+
+                <!-- Alert banner -->
+                <div class="s5c-alert" id="s5c-alert-banner">
+                  <div class="s5c-alert-icon">⚠</div>
+                  <div class="s5c-alert-text">
+                    <strong>Preventive service required</strong>
+                    DPF regeneration + inspection
+                  </div>
+                </div>
+
+                <!-- Service details label -->
+                <div class="s5c-sec-label" id="s5c-label-service">Service details</div>
+
+                <!-- 2×2 Stat Grid -->
+                <div class="s5c-stat-grid">
+                  <div class="s5c-stat" id="s5c-card-0">
+                    <div class="s5c-stat-label">Service status</div>
+                    <div class="s5c-stat-val" id="s5c-val-0">--</div>
+                    <div class="s5c-stat-sub red" id="s5c-sub-0">
+                      <span class="s5c-sdot red"></span> Scanning
+                    </div>
+                  </div>
+                  <div class="s5c-stat" id="s5c-card-1">
+                    <div class="s5c-stat-label">ETA to service</div>
+                    <div class="s5c-stat-val" id="s5c-val-1">--</div>
+                    <div class="s5c-stat-sub red" id="s5c-sub-1">
+                      <span class="s5c-sdot red"></span> Scanning
+                    </div>
+                  </div>
+                  <div class="s5c-stat" id="s5c-card-2">
+                    <div class="s5c-stat-label">Repair estimate</div>
+                    <div class="s5c-stat-val" id="s5c-val-2">--</div>
+                    <div class="s5c-stat-sub red" id="s5c-sub-2">
+                      <span class="s5c-sdot red"></span> Scanning
+                    </div>
+                  </div>
+                  <div class="s5c-stat" id="s5c-card-3">
+                    <div class="s5c-stat-label">Back on road</div>
+                    <div class="s5c-stat-val" id="s5c-val-3">--</div>
+                    <div class="s5c-stat-sub red" id="s5c-sub-3">
+                      <span class="s5c-sdot red"></span> Scanning
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Guidance -->
+                <div class="s5c-sec-label" id="s5c-label-guidance">What's being done</div>
+
+                <div class="s5c-guidance" id="s5c-guidance-card">
+                  <div class="s5c-guidance-text">
+                    <strong>Forced DPF regeneration + inspection</strong> will be performed. Standard service procedure. No parts required. Your route will resume automatically after service.
+                  </div>
+                </div>
+
+                <!-- Support -->
+                <div class="s5c-sec-label" id="s5c-label-support">Support</div>
+
+                <div class="s5c-comm-row">
+                  <div class="s5c-comm-btn" id="s5c-comm-call">
+                    <div class="s5c-comm-icon">☎</div>
+                    <div>
+                      <div class="s5c-comm-text">Call centre</div>
+                      <div class="s5c-comm-sub">Ahmedabad CDC</div>
+                    </div>
+                  </div>
+                  <div class="s5c-comm-btn" id="s5c-comm-chat">
+                    <div class="s5c-comm-icon">💬</div>
+                    <div>
+                      <div class="s5c-comm-text">Chat support</div>
+                      <div class="s5c-comm-sub">Available now</div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DASHBOARD PANEL (Fleet Manager) ── -->
+    <div class="s5c-dash-col">
+      <div class="s5c-viewpoint" id="s5c-label-fleet">Fleet Manager's Viewpoint</div>
+      <div class="s5c-dashboard" id="s5c-dashboard">
+
+        <div class="s5c-dash-header">
+          <div class="s5c-dash-title">Live Event</div>
+          <div class="s5c-dash-badge">Monitoring</div>
+        </div>
+
+        <!-- Incident card -->
+        <div class="s5c-dash-card" id="s5c-dash-incident">
+          <div class="s5c-dash-card-head">
+            <span class="s5c-dash-card-title">Incident</span>
+            <span class="s5c-dash-pill red">DTC Active</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Vehicle</span>
+            <span class="s5c-dash-val">GJ-01-AB-1234</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Fault</span>
+            <span class="s5c-dash-val red">DPF — Partial Blockage</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Severity</span>
+            <span class="s5c-dash-val amber">Preventive</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Confidence</span>
+            <span class="s5c-dash-val">94%</span>
+          </div>
+        </div>
+
+        <!-- Service card -->
+        <div class="s5c-dash-card" id="s5c-dash-service">
+          <div class="s5c-dash-card-head">
+            <span class="s5c-dash-card-title">Service Assignment</span>
+            <span class="s5c-dash-pill green">Confirmed</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Workshop</span>
+            <span class="s5c-dash-val">Ahmedabad CDC</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">SLA Band</span>
+            <span class="s5c-dash-val green">Gold</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">ETA</span>
+            <span class="s5c-dash-val">2h 14m · 127 km</span>
+          </div>
+          <div class="s5c-dash-row">
+            <span class="s5c-dash-label">Repair Time</span>
+            <span class="s5c-dash-val">1h 15m</span>
+          </div>
+        </div>
+
+        <!-- Timeline strip -->
+        <div class="s5c-dash-card" id="s5c-dash-timeline" style="padding:14px 18px">
+          <div class="s5c-dash-card-head" style="margin-bottom:14px">
+            <span class="s5c-dash-card-title">Response Timeline</span>
+            <span class="s5c-dash-pill green">On track</span>
+          </div>
+          <div class="s5c-tl-strip">
+            <div class="s5c-tl-node"><div class="s5c-tl-dot done"></div><span class="s5c-tl-text">Detected</span></div>
+            <div class="s5c-tl-line done"></div>
+            <div class="s5c-tl-node"><div class="s5c-tl-dot done"></div><span class="s5c-tl-text">Diagnosed</span></div>
+            <div class="s5c-tl-line done"></div>
+            <div class="s5c-tl-node"><div class="s5c-tl-dot done"></div><span class="s5c-tl-text">Matched</span></div>
+            <div class="s5c-tl-line active"></div>
+            <div class="s5c-tl-node"><div class="s5c-tl-dot active"></div><span class="s5c-tl-text">Rerouted</span></div>
+            <div class="s5c-tl-line"></div>
+            <div class="s5c-tl-node"><div class="s5c-tl-dot future"></div><span class="s5c-tl-text">Serviced</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Headline -->
+  <div class="s5c-headline" id="s5c-headline">
+    "The driver knows. The fleet manager knows. <br>Nobody's guessing."
+  </div>
+
+  <!-- Proof point -->
+  <div class="s5c-proof" id="s5c-proof">Platform response — <span>4m 12s</span> from detection to driver confirmation.</div>
+
+</section>
+</div>
+
