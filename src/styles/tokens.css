@@ -1,0 +1,21 @@
+/* ── TOKENS ─────────────────────────────────── */
+:root {
+  /* ── Brand Manual Colors ── */
+  --red:       #D73030;
+  --navy:      #1D2438;
+  --gray-brand:#A5A5A5;
+  --black:     #000000;
+  /* ── Brand Gradient: --gray-brand → --red → --navy → --black ── */
+
+  /* ── Derived / UI tokens ── */
+  --red-dim:   rgba(215,48,48,0.12);
+  --red-border:rgba(215,48,48,0.30);
+  --bg:        #0d0d0f;
+  --bg-card:   #131318;
+  --bg-panel:  var(--navy);
+  --off-white: #F2F0EB;
+  --gray:      var(--gray-brand);
+  --border:    rgba(255,255,255,0.07);
+  --amber:     #F5A623;
+  --green:     #3DA84A;
+}

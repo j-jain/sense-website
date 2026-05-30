@@ -1,0 +1,625 @@
+/* ══════════════════════════════════════════════
+   S2 PHONE — fixed state during S23 transition
+   position:fixed keeps it in viewport even as S2 scrolls away
+══════════════════════════════════════════════ */
+.s2-phone-frame.phone-fixed{
+  position:fixed!important;
+  top:50%!important;
+  /* left managed by JS — starts at phone's panel position, animates to 50% */
+  /* transform managed by JS — no !important so scale() works */
+  z-index:9999;
+  opacity:1!important;
+  width:280px;height:580px;
+  perspective:none;
+  will-change:transform,left;
+  transition:none!important;
+}
+
+/* ══════════════════════════════════════════════
+   S2→3 TRANSITION SECTION
+══════════════════════════════════════════════ */
+#s23-trans{
+  position:relative;min-height:100dvh;
+  overflow:hidden;
+  background:#0d0d0f;
+  z-index:2;
+}
+
+/* ── Light Dashboard Shell — matches reference screenshot ── */
+.dash-shell{
+  position:absolute;inset:0;z-index:3;
+  display:grid;
+  grid-template-columns:220px 1fr 280px;
+  grid-template-rows:1fr;
+  opacity:0;
+  pointer-events:none;
+  font-family:'Outfit',sans-serif;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 8px 60px rgba(0,0,0,.35);
+}
+
+/* ── Dashboard LEFT SIDEBAR (nav) ── */
+.dash-left{
+  grid-row:1;grid-column:1;
+  background:#fff;
+  border-right:1px solid #e8e8ec;
+  padding:16px 0;
+  overflow-y:auto;
+  transform:translateX(-100%);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;gap:0;
+}
+.dash-left.in{transform:translateX(0)}
+
+.dl-nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 18px;
+  font-size:13px;font-weight:500;color:#555;
+  cursor:pointer;transition:background .2s,color .2s;
+  position:relative;
+}
+.dl-nav-item:hover{background:#f5f5f8}
+.dl-nav-item.active{color:#D73030;font-weight:600;background:rgba(215,48,48,.04)}
+.dl-nav-item.active::before{
+  content:'';position:absolute;left:0;top:6px;bottom:6px;width:3px;
+  background:#D73030;border-radius:0 3px 3px 0;
+}
+.dl-nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:.7}
+.dl-nav-item.active .dl-nav-icon{opacity:1}
+.dl-nav-icon svg{width:16px;height:16px}
+.dl-nav-sub{padding-left:46px}
+.dl-nav-sub .dl-nav-item{padding:7px 18px 7px 0;font-size:12px}
+
+/* Expandable nav group */
+.dl-nav-group .dl-nav-sub{
+  max-height:0;
+  overflow:hidden;
+  transition:max-height .3s ease;
+}
+.dl-nav-group.expanded .dl-nav-sub{max-height:240px}
+.dl-nav-group .dl-nav-parent .dl-nav-arrow{
+  display:inline-block;transition:transform .25s ease;
+}
+.dl-nav-group.expanded .dl-nav-parent .dl-nav-arrow{
+  transform:rotate(180deg);
+}
+.dl-nav-section{
+  font-size:10px;font-weight:600;color:#999;letter-spacing:.08em;text-transform:uppercase;
+  padding:16px 18px 6px;
+}
+.dl-nav-badge{
+  margin-left:auto;
+  background:#D73030;color:#fff;
+  font-size:9px;font-weight:700;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+}
+.dl-nav-arrow{margin-left:auto;font-size:10px;color:#aaa}
+
+/* ── Dashboard CENTRE (header + fleet overview + map) ── */
+.dash-centre{
+  grid-row:1;grid-column:2;
+  background:#f4f5f7;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  position:relative;
+}
+
+/* ── View switcher — left-nav clicks swap these ── */
+.dash-view{
+  display:none;
+  flex:1;flex-direction:column;
+  overflow:hidden;
+  animation: dvFade .25s ease-out;
+}
+.dash-view.active{display:flex}
+@keyframes dvFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+.dv-body{
+  padding:16px 20px 20px;
+  display:flex;flex-direction:column;gap:14px;
+  overflow:auto;flex:1;
+}
+.dv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.dv-card{
+  background:#fff;border-radius:10px;padding:14px 16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  display:flex;flex-direction:column;gap:4px;
+}
+.dv-row{display:flex;justify-content:space-between;font-size:12px;color:#555;margin-top:6px}
+.dv-row strong{color:#1D2438;font-weight:600}
+.dv-section-h{font-size:12px;font-weight:700;color:#1D2438;text-transform:uppercase;letter-spacing:.06em;margin-top:6px}
+.dv-list{display:flex;flex-direction:column;gap:8px}
+.dv-li{
+  background:#fff;border-radius:8px;padding:10px 14px;font-size:12px;color:#1D2438;
+  box-shadow:0 1px 3px rgba(0,0,0,.05);
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+.dv-li strong{font-weight:700}
+.dv-li-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:600;letter-spacing:.06em;
+  padding:3px 8px;border-radius:4px;text-transform:uppercase;
+}
+.dv-li-tag.red{background:rgba(215,48,48,.12);color:#D73030}
+.dv-li-tag.amber{background:rgba(245,166,35,.15);color:#b45309}
+.dv-li-tag.green{background:rgba(61,168,74,.12);color:#43A047}
+.dv-table{display:flex;flex-direction:column;gap:1px;background:#e5e7eb;border-radius:10px;overflow:hidden}
+.dv-tr{display:grid;grid-template-columns:1.4fr 1.2fr .8fr .7fr .7fr;background:#fff;padding:10px 14px;font-size:12px;color:#1D2438;align-items:center}
+.dv-tr.dv-th{background:#f1f3f6;font-size:10px;font-weight:700;color:#555;text-transform:uppercase;letter-spacing:.05em}
+.dv-pill{
+  padding:3px 8px;border-radius:10px;font-size:10px;font-weight:600;
+  display:inline-block;text-align:center;
+}
+.dv-pill.green{background:rgba(61,168,74,.12);color:#43A047}
+.dv-pill.amber{background:rgba(255,152,0,.15);color:#b45309}
+.dv-pill.red{background:rgba(215,48,48,.12);color:#D73030}
+.dv-pill.grey{background:#eee;color:#666}
+
+/* ── Richer chart components for the alt-view panels ── */
+.dv-chart-card{
+  background:#fff;border-radius:10px;padding:14px 16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  display:flex;flex-direction:column;gap:8px;
+  animation: dvFade .4s ease-out;
+}
+.dv-chart-head{display:flex;align-items:center;justify-content:space-between;font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.06em}
+.dv-chart-head-val{font-size:18px;font-weight:700;color:#1D2438;text-transform:none;letter-spacing:0}
+.dv-chart-head-val.green{color:#43A047}
+.dv-chart-head-val.amber{color:#b45309}
+.dv-chart-head-val.red{color:#D73030}
+.dv-chart-svg{width:100%;height:120px;display:block}
+.dv-chart-svg.sm{height:80px}
+.dv-chart-svg.lg{height:160px}
+
+/* Gauge */
+.dv-gauge{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:8px;gap:4px;
+}
+.dv-gauge-svg{width:120px;height:80px;display:block}
+.dv-gauge-val{font-size:24px;font-weight:800;color:#1D2438;line-height:1}
+.dv-gauge-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:.06em}
+
+/* Ranked horizontal bars */
+.dv-ranked{display:flex;flex-direction:column;gap:6px}
+.dv-rank-row{
+  display:grid;grid-template-columns:1fr 80px 50px;gap:8px;align-items:center;
+  font-size:11px;color:#1D2438;
+}
+.dv-rank-bar{
+  height:6px;background:#f0f0f5;border-radius:3px;overflow:hidden;position:relative;
+}
+.dv-rank-bar-fill{
+  position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#D73030,#F5A623);
+  border-radius:3px;
+  animation: dvBar 1s cubic-bezier(.5,0,.2,1);
+  transform-origin:left;
+}
+@keyframes dvBar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.dv-rank-num{font-family:'JetBrains Mono',monospace;font-size:11px;color:#555;text-align:right;font-weight:600}
+
+/* Activity heatmap 24x7 */
+.dv-heatmap{display:grid;grid-template-columns:auto repeat(24,1fr);gap:2px;font-size:9px;color:#888}
+.dv-hm-day{padding:2px 6px;text-align:right;font-weight:600;color:#555;align-self:center}
+.dv-hm-cell{aspect-ratio:1;border-radius:2px;background:#eef0f3}
+.dv-hm-cell.l1{background:rgba(67,160,71,.20)}
+.dv-hm-cell.l2{background:rgba(67,160,71,.40)}
+.dv-hm-cell.l3{background:rgba(67,160,71,.65)}
+.dv-hm-cell.l4{background:rgba(67,160,71,.85)}
+.dv-hm-cell.l5{background:#2e7d32}
+.dv-hm-hours{display:grid;grid-template-columns:auto repeat(24,1fr);gap:2px;font-size:8px;color:#aaa;margin-top:4px}
+.dv-hm-hours span:first-child{visibility:hidden}
+.dv-hm-hours span{text-align:center}
+
+/* Audit log */
+.dv-audit{display:flex;flex-direction:column;gap:6px;max-height:180px;overflow:auto}
+.dv-audit-row{display:grid;grid-template-columns:90px 1fr auto;gap:10px;font-size:11px;color:#1D2438;padding:6px 0;border-bottom:1px solid #f0f0f5}
+.dv-audit-row:last-child{border-bottom:none}
+.dv-audit-time{font-family:'JetBrains Mono',monospace;font-size:10px;color:#888}
+.dv-audit-who{font-size:10px;color:#888}
+
+/* Slider read-only */
+.dv-slider{display:flex;flex-direction:column;gap:4px}
+.dv-slider-label{display:flex;justify-content:space-between;font-size:11px;color:#555}
+.dv-slider-label strong{color:#1D2438}
+.dv-slider-track{height:6px;background:#eef0f3;border-radius:3px;position:relative}
+.dv-slider-fill{position:absolute;left:0;top:0;bottom:0;background:#1D2438;border-radius:3px}
+.dv-slider-fill.amber{background:#F5A623}
+.dv-slider-fill.green{background:#43A047}
+
+/* Two-column block */
+.dv-2col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:900px){ .dv-2col{grid-template-columns:1fr} }
+
+/* ── Headquarters View Point — centered overlay, shrinks to top on scroll ── */
+#s3-hq-header{
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  font-family:'Inter',sans-serif;
+  font-weight:600;
+  font-size:64px;
+  letter-spacing:-0.02em;
+  color:rgba(242,240,235,1);
+  z-index:60;
+  pointer-events:none;
+  text-shadow:0 4px 32px rgba(0,0,0,.6);
+  white-space:nowrap;
+  opacity:0;
+  text-align:center;
+}
+.dash-header{
+  padding:16px 20px 0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.dash-header h1{font-size:22px;font-weight:700;color:#1D2438;margin:0}
+.dash-tabs{display:flex;gap:0}
+.dash-tab{
+  padding:8px 16px;font-size:12px;font-weight:600;
+  border-radius:8px 8px 0 0;color:#888;cursor:pointer;
+}
+.dash-tab.active{background:#D73030;color:#fff;border-radius:8px}
+
+/* Fleet overview row */
+.fleet-overview-row{
+  display:flex;gap:12px;padding:12px 20px;
+  align-items:stretch;
+}
+.fleet-card{
+  background:#fff;border-radius:10px;padding:12px 16px;
+  box-shadow:0 1px 4px rgba(0,0,0,.06);
+  display:flex;flex-direction:column;gap:4px;
+}
+.fleet-card.overview{min-width:160px}
+.fleet-card.vehicles{flex:1}
+.fleet-card-title{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em}
+.fleet-big-num{font-size:32px;font-weight:800;color:#1D2438;line-height:1}
+.fleet-big-label{font-size:10px;color:#888;margin-top:2px}
+.fleet-overview-nums{display:flex;gap:20px;align-items:flex-end}
+.fleet-stat-group{text-align:center}
+.fleet-change{font-size:10px;color:#D73030;margin-top:4px}
+.fleet-track-btn{
+  margin-left:auto;padding:5px 14px;
+  border:1px solid #ddd;border-radius:6px;
+  font-size:11px;font-weight:600;color:#555;
+  background:#fff;cursor:pointer;align-self:flex-start;
+}
+
+/* Vehicle status bar */
+.fleet-status-bar{display:flex;height:10px;border-radius:5px;overflow:hidden;margin-top:6px;gap:2px}
+.fleet-status-bar .seg{border-radius:4px}
+.seg-running{background:#43A047;flex:4}
+.seg-idle{background:#FF9800;flex:2}
+.seg-stopped{background:#E53935;flex:2}
+.seg-offline{background:#424242;flex:1}
+.fleet-legend{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap}
+.fleet-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#666}
+.fleet-legend-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* Map area */
+.dash-map-area{
+  flex:1;margin:0 20px 12px;
+  border-radius:10px;
+  overflow:hidden;position:relative;
+  background:#d4e6d0;
+  box-shadow:0 1px 4px rgba(0,0,0,.08);
+}
+.map-toggle{
+  position:absolute;top:10px;left:10px;z-index:5;
+  display:flex;background:#fff;border-radius:6px;overflow:hidden;
+  box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+.map-toggle-btn{
+  padding:6px 14px;font-size:11px;font-weight:600;color:#555;
+  cursor:pointer;border:none;background:transparent;
+}
+.map-toggle-btn.active{background:#fff;color:#1D2438;font-weight:700}
+.map-filter-row{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);z-index:5;
+  display:flex;gap:6px;
+}
+.map-filter-chip{
+  padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;color:#fff;
+  cursor:pointer;border:none;
+}
+.map-filter-chip.running{background:#43A047}
+.map-filter-chip.idle{background:#FF9800}
+.map-filter-chip.stopped{background:#E53935}
+.map-filter-chip.offline{background:#424242}
+.map-filter-chip{cursor:pointer;transition:opacity .2s,transform .15s}
+.map-filter-chip.dim{opacity:.4}
+.map-filter-chip:active{transform:scale(.95)}
+.map-toggle-btn{cursor:pointer;transition:background .2s}
+.fleet-track-btn{cursor:pointer;transition:background .2s,transform .15s}
+.fleet-track-btn:active{transform:scale(.97)}
+.map-marker{transition:opacity .25s ease,transform .25s ease}
+
+/* India map container */
+.india-map-wrap{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+.india-map-wrap svg{width:100%;height:100%;opacity:.85}
+.india-map-wrap img{width:100%;height:100%;object-fit:cover;opacity:.85}
+
+/* Vehicle markers on map */
+.map-marker{
+  position:absolute;z-index:4;
+  width:14px;height:14px;border-radius:3px;
+  border:2px solid #fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.25);
+}
+.map-marker.running{background:#43A047}
+.map-marker.idle{background:#FF9800}
+.map-marker.stopped{background:#E53935}
+.map-marker.offline{background:#424242}
+.map-cluster{
+  position:absolute;z-index:5;
+  width:28px;height:28px;border-radius:50%;
+  background:#1976D2;color:#fff;
+  font-size:12px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(25,118,210,.4);
+}
+
+/* ── Dashboard RIGHT PANEL (Trip Details) ── */
+.dash-right{
+  grid-row:1;grid-column:3;
+  background:#fff;
+  border-left:1px solid #e8e8ec;
+  padding:16px;
+  display:flex;flex-direction:column;gap:14px;
+  overflow-y:auto;
+  transform:translateX(100%);
+  transition:transform .6s cubic-bezier(.4,0,.2,1);
+}
+.dash-right.in{transform:translateX(0)}
+
+.dr-section-title{font-size:11px;font-weight:600;color:#555;text-transform:uppercase;letter-spacing:.04em}
+.dr-metric-card{
+  background:#f8f8fc;border-radius:10px;padding:12px;
+  display:flex;flex-direction:column;gap:4px;
+}
+.dr-metric-big{font-size:36px;font-weight:800;color:#1D2438;line-height:1;display:flex;align-items:baseline;gap:6px}
+.dr-metric-badge{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;
+}
+.dr-metric-badge.up{background:rgba(67,160,71,.15);color:#43A047}
+.dr-metric-badge.down{background:rgba(215,48,48,.1);color:#D73030}
+.dr-metric-sub{font-size:10px;color:#888}
+
+/* Progress bars in right panel */
+.dr-progress{display:flex;flex-direction:column;gap:6px;margin-top:4px}
+.dr-progress-row{display:flex;align-items:center;gap:8px;font-size:11px;color:#555}
+.dr-progress-label{min-width:70px;font-weight:500}
+.dr-progress-bar{flex:1;height:8px;background:#eee;border-radius:4px;overflow:hidden}
+.dr-progress-fill{height:100%;border-radius:4px}
+.dr-progress-fill.ongoing{background:#FF9800}
+.dr-progress-fill.completed{background:#43A047}
+
+/* Top drivers table */
+.dr-drivers-table{width:100%;border-collapse:collapse;margin-top:4px}
+.dr-drivers-table th{
+  font-size:10px;font-weight:600;color:#999;text-transform:uppercase;
+  letter-spacing:.04em;text-align:left;padding:6px 0;
+  border-bottom:1px solid #eee;
+}
+.dr-drivers-table td{
+  font-size:12px;color:#1D2438;padding:8px 0;
+  border-bottom:1px solid #f0f0f5;
+}
+.dr-drivers-table td:last-child{text-align:right;font-weight:600}
+
+/* ── Legacy classes kept for S4 compatibility ── */
+.dash-top{
+  display:none; /* replaced by dash-header in light theme */
+}
+.dash-top.in{display:none}
+
+/* ══════════════════════════════════════════════
+   S3 — CONNECTED JOURNEY (Fleet Dashboard)
+══════════════════════════════════════════════ */
+/* S3 styles now applied to #s23-trans via .dash-shell — no separate #s3 needed */
+#s3-headline{
+  position:absolute;bottom:40px;left:24px;
+  transform:none;
+  font-family:'Inter',sans-serif;
+  font-size:22px;font-weight:600;
+  line-height:1.35;text-align:left;
+  letter-spacing:.04em;text-transform:none;
+  z-index:10;pointer-events:none;
+  opacity:0;
+  color:#1D2438;
+  padding:18px 28px 18px 22px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:10px;
+  border-left:3px solid var(--red);
+  box-shadow:0 8px 32px rgba(0,0,0,.10);
+  text-shadow:0 1px 2px rgba(255,255,255,.4);
+  max-width:300px;
+}
+
+/* Dashboard persistent panels — now in #s23-trans */
+#s23-trans .dash-left.in{transform:translateX(0)}
+#s23-trans .dash-right.in{transform:translateX(0)}
+
+/* Scroll-driven overrides — disable CSS transitions so scroll progress controls transforms directly */
+#s23-trans .dash-left.scroll-driven{transition:none}
+#s23-trans .dash-right.scroll-driven{transition:none}
+
+/* Dashboard centre sub-elements start hidden for staggered reveal */
+.dash-header.scroll-hidden,
+.fleet-overview-row.scroll-hidden,
+.map-toggle.scroll-hidden,
+.map-filter-row.scroll-hidden,
+.map-marker.scroll-hidden{opacity:0}
+
+/* Data overlays — positioned on the map area, light theme */
+.data-ov{
+  position:absolute;z-index:5;
+  background:rgba(255,255,255,.92);
+  border:1px solid rgba(0,0,0,.08);
+  border-left:3px solid var(--red);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  padding:12px 16px;min-width:170px;
+  border-radius:8px;
+  box-shadow:0 2px 12px rgba(0,0,0,.1);
+  opacity:0;transform:translateY(12px);
+}
+.ov-label{font-family:'Outfit',sans-serif;font-size:9px;font-weight:600;color:#888;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.ov-value{font-family:'Outfit',sans-serif;font-size:18px;color:#1D2438;font-weight:700}
+.ov-value.red{color:var(--red)}
+.ov-value.green{color:#43A047}
+
+/* Gauge SVG */
+.gauge-wrap{display:flex;align-items:center;gap:12px}
+.gauge-svg{flex-shrink:0}
+
+/* Bar fill */
+.bar-track{height:6px;background:#eee;border-radius:3px;margin-top:4px;overflow:hidden}
+.bar-fill{height:100%;width:0%;background:var(--red);border-radius:3px;transition:width 1s ease}
+
+/* ETA line */
+.eta-line{display:flex;align-items:center;gap:6px;margin-top:4px}
+.eta-dot{width:5px;height:5px;border-radius:50%;background:var(--red);flex-shrink:0}
+.eta-path{flex:1;height:1px;border-top:1px dashed rgba(0,0,0,.25);
+  transform:scaleX(0);transform-origin:left;transition:transform .8s ease}
+.eta-dest{width:5px;height:5px;border-radius:50%;border:1px solid #1D2438;flex-shrink:0}
+
+/* Status pill */
+.status-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  border:1px solid rgba(67,160,71,.35);
+  background:rgba(67,160,71,.08);
+  padding:4px 10px;border-radius:20px;margin-top:4px;
+}
+.pill-dot{width:5px;height:5px;border-radius:50%;background:#43A047;animation:breathe 2s ease-in-out infinite}
+.pill-text{font-family:'Outfit',sans-serif;font-size:10px;color:#43A047;font-weight:600;letter-spacing:.04em}
+
+/* Overlay positions — inside dashboard map area (relative to .dash-map-area) */
+#ov1{top:15%;left:16px}
+#ov2{top:15%;right:16px}
+#ov3{bottom:22%;left:16px}
+#ov4{bottom:22%;right:16px}
+#ov5{bottom:5%;left:50%;transform:translateX(-50%)}
+
+/* ══════════════════════════════════════════════
+   S4 — THE SIGNAL (Dashboard persistent)
+══════════════════════════════════════════════ */
+
+/* S4 red screen overlay — covers entire pinned section */
+#s4-red-overlay{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at center, rgba(215,48,48,.0) 0%, rgba(140,20,20,.0) 100%);
+  z-index:5;pointer-events:none;
+  opacity:0;
+}
+
+/* S4 text box — mirrors #s3-headline style exactly */
+#s4-textbox{
+  position:absolute;bottom:40px;left:24px;
+  transform:none;
+  font-family:'Inter',sans-serif;
+  font-size:22px;font-weight:600;
+  line-height:1.35;text-align:left;
+  letter-spacing:.04em;text-transform:none;
+  z-index:10;pointer-events:none;
+  opacity:0;
+  color:#1D2438;
+  padding:18px 28px 18px 22px;
+  background:rgba(255,255,255,0.55);
+  backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:10px;
+  border-left:3px solid var(--red);
+  box-shadow:0 8px 32px rgba(0,0,0,.10);
+  text-shadow:0 1px 2px rgba(255,255,255,.4);
+  max-width:300px;
+  transition:opacity .4s ease, background .4s ease, color .4s ease;
+}
+#s4-textbox.alert{
+  background:rgba(255,220,220,0.6);
+  border-left-color:var(--red);
+  color:#8B1F1F;
+}
+
+/* Right edge amber bar */
+.edge-bar{
+  position:absolute;right:0;top:0;bottom:0;width:4px;
+  background:rgba(255,255,255,.05);z-index:8;overflow:hidden;
+}
+.edge-fill{
+  position:absolute;bottom:0;left:0;right:0;height:0%;
+  background:var(--amber);
+  transform-origin:bottom;
+}
+
+/* Coolant card — lives in the right sidebar as a dr-metric-card */
+#coolant-card{
+  transition:border-color .4s, box-shadow .4s;
+}
+#coolant-val{
+  transition:color .4s;
+}
+#coolant-card.alert{
+  border-color:var(--amber) !important;
+  box-shadow:0 0 12px rgba(245,166,35,.25);
+}
+#coolant-card.alert #coolant-val{
+  color:var(--red) !important;
+  animation:alertPulse 1s ease-in-out infinite;
+}
+
+@keyframes alertPulse{
+  0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(215,48,48,.4)}
+  70%{opacity:.7;box-shadow:0 0 0 8px rgba(215,48,48,0)}
+}
+
+/* ══════════════════════════════════════════════
+   COUNTDOWN OVERLAY (inside pinned S23)
+══════════════════════════════════════════════ */
+#countdown-overlay{
+  position:absolute;inset:0;z-index:50;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0);
+  pointer-events:none;
+  opacity:0;
+}
+#countdown-center{
+  position:relative;width:160px;height:160px;
+  display:flex;align-items:center;justify-content:center;
+}
+#countdown-ring{
+  position:absolute;inset:0;width:100%;height:100%;
+}
+#countdown-ring .cd-track{
+  fill:none;stroke:rgba(255,255,255,0.06);stroke-width:3;
+}
+#countdown-ring #cd-progress{
+  fill:none;stroke:var(--red);stroke-width:3;
+  stroke-linecap:round;
+  stroke-dasharray:452.4;  /* 2 * PI * 72 */
+  stroke-dashoffset:452.4; /* starts invisible */
+  transform:rotate(-90deg);
+  transform-origin:center;
+}
+#cd-numeral{
+  font-family:'Bebas Neue',sans-serif;
+  font-size:64px;color:#fff;
+  line-height:1;letter-spacing:0.02em;
+  opacity:0;
+}
+#cd-log{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--amber);letter-spacing:.06em;
+  margin-top:32px;opacity:0;
+}
+#cd-scanline{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(245,166,35,.15),transparent);
+  opacity:0;pointer-events:none;top:40%;
+}

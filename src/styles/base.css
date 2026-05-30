@@ -1,0 +1,116 @@
+/* ── RESET ──────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--off-white);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* Grain — fixed, GPU-isolated */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  z-index:9000;
+  pointer-events:none;
+  opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:256px 256px;
+}
+
+/* ── TYPE ───────────────────────────────────── */
+.f-display{font-family:'Inter',sans-serif;font-weight:600;text-transform:none;letter-spacing:-0.02em;line-height:1.15}
+.f-mono{font-family:'JetBrains Mono',monospace}
+
+/* ── VIDEO PLACEHOLDER ──────────────────────── */
+.video-slot{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#090a10 0%,#0f1018 100%);
+  display:flex;align-items:flex-end;
+  padding:18px;
+  overflow:hidden;
+}
+.video-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.06);
+  padding:5px 10px;
+  pointer-events:none;
+}
+
+/* ── SCROLL INDICATOR ───────────────────────── */
+#scroll-ind{
+  position:fixed;
+  bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  opacity:0;z-index:500;pointer-events:none;
+  transition:opacity .4s;
+}
+#scroll-ind.show{opacity:1}
+.si-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--off-white);
+  animation:siTravel 1.6s ease-in-out infinite;
+}
+.si-line{width:1px;height:36px;background:linear-gradient(to bottom,var(--off-white),transparent)}
+@keyframes siTravel{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(42px);opacity:0}
+}
+
+/* ── NAV ────────────────────────────────────── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:800;
+  padding:20px 48px;
+  display:flex;justify-content:space-between;align-items:center;
+  transition:background .4s,backdrop-filter .4s,opacity .4s,transform .4s;
+  /* Hidden by default — only visible in S8 */
+  opacity:0;transform:translateY(-100%);pointer-events:none;
+}
+#nav.nav-visible{
+  opacity:1;transform:translateY(0);pointer-events:auto;
+}
+#nav.nav-hidden{
+  opacity:0;transform:translateY(-100%);pointer-events:none;
+}
+#nav.scrolled{
+  background:rgba(13,13,15,.92);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+}
+.nav-mark{font-family:'Outfit',sans-serif;font-size:18px;letter-spacing:.14em;color:var(--off-white)}
+.nav-mark strong{color:var(--red);font-weight:400}
+.nav-demo{
+  font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--off-white);background:var(--red);
+  border:none;padding:9px 22px;cursor:pointer;text-decoration:none;
+  transition:background .2s;display:inline-block;
+}
+.nav-demo:hover{background:#b82020}
+
+/* ── BUTTONS ────────────────────────────────── */
+.btn-outline{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--red);color:var(--off-white);background:transparent;
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:.18em;text-transform:uppercase;
+  padding:14px 32px;cursor:pointer;
+  transition:background .25s,color .25s;
+  text-decoration:none;
+}
+.btn-outline:hover{background:var(--red)}
+.btn-outline svg{flex-shrink:0;transition:transform .2s}
+.btn-outline:hover svg{transform:translateX(4px)}
+
+.btn-solid{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--red);color:var(--off-white);border:none;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+  letter-spacing:.16em;text-transform:uppercase;
+  padding:16px 40px;cursor:pointer;transition:background .2s,transform .12s;
+}
+.btn-solid:hover{background:#b82020}
+.btn-solid:active{transform:scale(.98)}

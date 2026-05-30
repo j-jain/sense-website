@@ -1,0 +1,223 @@
+/* ══════════════════════════════════════════════
+   S1 — THE WORLD (Cinematic Game Start)
+══════════════════════════════════════════════ */
+#s1{
+  position:relative;min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  background:#050608;
+}
+
+/* ── Boot sequence overlay ─────────────────── */
+.s1-boot{
+  position:absolute;inset:0;z-index:50;
+  background:#050608;
+  display:flex;align-items:center;justify-content:center;
+  pointer-events:none;
+}
+.s1-boot-inner{
+  width:100%;max-width:520px;padding:0 24px;
+}
+.boot-line{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;letter-spacing:.06em;
+  color:rgba(255,255,255,.5);
+  line-height:1.8;
+  opacity:0;
+  white-space:nowrap;
+}
+.boot-line .bl-ok{color:var(--green)}
+.boot-line .bl-red{color:var(--red)}
+.boot-line .bl-dim{color:rgba(255,255,255,.2)}
+.boot-cursor{
+  display:inline-block;width:7px;height:13px;
+  background:var(--red);
+  vertical-align:middle;margin-left:2px;
+  animation:bootBlink .6s step-end infinite;
+}
+@keyframes bootBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── Cinematic container ───────────────────── */
+.s1-cinema{
+  position:relative;
+  width:100%;
+  max-width:1400px;
+  margin:0 auto;
+  aspect-ratio:16/9;
+  overflow:hidden;
+  opacity:0;
+}
+
+#s1-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  pointer-events:none;
+}
+
+.s1-overlay{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(to bottom,rgba(5,6,8,.1) 0%,rgba(5,6,8,.35) 100%);
+}
+
+/* Side vignettes — soft fade into dark background */
+.s1-vignette-l,.s1-vignette-r{
+  position:absolute;top:0;bottom:0;width:22%;
+  z-index:3;pointer-events:none;
+}
+.s1-vignette-l{left:0;background:linear-gradient(to right,rgba(5,6,8,1) 0%,rgba(5,6,8,.7) 30%,transparent 100%)}
+.s1-vignette-r{right:0;background:linear-gradient(to left,rgba(5,6,8,1) 0%,rgba(5,6,8,.7) 30%,transparent 100%)}
+/* Top/bottom vignettes for full edge fade */
+.s1-vignette-t,.s1-vignette-b{
+  position:absolute;left:0;right:0;height:18%;
+  z-index:3;pointer-events:none;
+}
+.s1-vignette-t{top:0;background:linear-gradient(to bottom,rgba(5,6,8,.8),transparent)}
+.s1-vignette-b{bottom:0;background:linear-gradient(to top,rgba(5,6,8,.8),transparent)}
+
+/* ── Scene bleed — extends video colors into side zones ── */
+.s1-bleed{
+  position:absolute;inset:0;z-index:1;
+  pointer-events:none;
+  opacity:0;
+}
+.s1-bleed-l{
+  position:absolute;top:0;bottom:0;left:0;width:22%;
+  background:linear-gradient(135deg,
+    rgba(43,91,138,.14) 0%,
+    rgba(14,23,40,.10) 35%,
+    transparent 100%);
+}
+.s1-bleed-l-warm{
+  position:absolute;top:30%;left:0;width:16%;height:40%;
+  background:radial-gradient(ellipse at left center,rgba(43,91,138,.08),transparent 80%);
+}
+.s1-bleed-r{
+  position:absolute;top:0;bottom:0;right:0;width:22%;
+  background:linear-gradient(225deg,
+    rgba(92,74,110,.10) 0%,
+    rgba(245,166,35,.04) 30%,
+    transparent 100%);
+}
+.s1-bleed-r-warm{
+  position:absolute;top:25%;right:0;width:16%;height:45%;
+  background:radial-gradient(ellipse at right center,rgba(245,166,35,.06),transparent 80%);
+}
+/* Thin vertical divider lines at bleed boundary */
+.s1-bleed-line{
+  position:absolute;top:10%;bottom:10%;width:1px;
+  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.06),transparent);
+}
+.s1-bleed-line.left{left:17%}
+.s1-bleed-line.right{right:17%}
+
+/* ── Side data panels — sparse JetBrains Mono readouts ── */
+.s1-side-data{
+  position:absolute;top:0;bottom:0;z-index:10;
+  pointer-events:none;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:0 3%;
+  opacity:0;
+}
+.s1-side-data.left{left:0;align-items:flex-start}
+.s1-side-data.right{right:0;align-items:flex-end;text-align:right}
+.sd-group{margin-bottom:20px}
+.sd-label{
+  font-family:'JetBrains Mono',monospace;
+  font-size:8px;letter-spacing:.12em;
+  color:rgba(255,255,255,.12);
+  margin-bottom:3px;
+}
+.sd-value{
+  font-family:'JetBrains Mono',monospace;
+  font-size:10px;letter-spacing:.08em;
+  color:rgba(255,255,255,.25);
+  line-height:1.6;
+}
+.sd-value .red{color:rgba(215,48,48,.4)}
+.sd-value .green{color:rgba(61,168,74,.35)}
+.sd-value .dim{color:rgba(255,255,255,.10)}
+
+/* ── Headline — left, upper third ─────────── */
+.s1-headline-wrap{
+  position:absolute;
+  top:30%;left:clamp(48px,6vw,120px);
+  z-index:15;
+  text-align:left;
+}
+#s1-headline{
+  font-family:'Outfit',sans-serif;
+  font-size:clamp(28px,3.2vw,46px);
+  line-height:.95;letter-spacing:.02em;
+  color:var(--off-white);
+  opacity:0;transform:translateY(24px);
+  text-shadow:0 4px 40px rgba(0,0,0,.8);
+}
+
+/* ── CTA — centered bottom ────────────────── */
+.s1-cta-wrap{
+  position:absolute;
+  top:62%;left:0;right:0;
+  transform:translateY(60px);
+  z-index:15;
+  text-align:center;
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+#start-btn{
+  opacity:0;transform:translateY(12px);
+  /* ── Video-game cinematic overrides ── */
+  border:1px solid rgba(215,48,48,.55);
+  border-radius:999px;
+  padding:14px 44px;
+  background:rgba(215,48,48,.14);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  font-family:'Outfit',sans-serif;
+  font-size:11px;font-weight:600;
+  letter-spacing:.20em;text-transform:uppercase;
+  color:#fff;
+  box-shadow:
+    0 0 24px rgba(215,48,48,.25),
+    0 0 60px rgba(215,48,48,.10),
+    inset 0 0 24px rgba(215,48,48,.08);
+  transition:
+    background .35s ease,
+    box-shadow .35s ease,
+    border-color .35s ease,
+    transform .2s ease;
+  animation:btnGlow 3s ease-in-out infinite;
+}
+#start-btn:hover{
+  background:rgba(215,48,48,.25);
+  border-color:rgba(215,48,48,.75);
+  box-shadow:
+    0 0 36px rgba(215,48,48,.4),
+    0 0 90px rgba(215,48,48,.15),
+    inset 0 0 36px rgba(215,48,48,.12);
+  transform:translateY(-2px) scale(1.03);
+}
+#start-btn:active{
+  transform:scale(.97);
+  background:rgba(215,48,48,.32);
+}
+@keyframes btnGlow{
+  0%,100%{box-shadow:0 0 24px rgba(215,48,48,.20),0 0 60px rgba(215,48,48,.08),inset 0 0 24px rgba(215,48,48,.06)}
+  50%{box-shadow:0 0 32px rgba(215,48,48,.35),0 0 90px rgba(215,48,48,.14),inset 0 0 32px rgba(215,48,48,.10)}
+}
+/* Pulsing prompt under button */
+.s1-key-hint{
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;letter-spacing:.18em;
+  color:rgba(255,255,255,.2);
+  opacity:0;
+  animation:hintPulse 2.5s ease-in-out infinite;
+}
+@keyframes hintPulse{0%,100%{opacity:.15}50%{opacity:.4}}
+
+/* ── S1→S2 cinematic zoom-blur transition ── */
+.s1-transition{
+  position:fixed;inset:0;z-index:900;
+  background:#050608;
+  opacity:0;
+  pointer-events:none;
+}
+.s1-transition.active{pointer-events:all}

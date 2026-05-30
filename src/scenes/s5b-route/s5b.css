@@ -1,0 +1,58 @@
+/* ══════════════════════════════════════════════
+   S5B — SERVICE NETWORK
+══════════════════════════════════════════════ */
+#s5b-wrapper{position:relative}
+#s5b{
+  position:relative;min-height:100dvh;
+  overflow:hidden;background:var(--bg);
+}
+#s5b .map-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+/* States — BOLD borders, clearly India */
+#s5b .st{fill:rgba(255,255,255,0.025);stroke:rgba(255,255,255,0.35);stroke-width:0.7;opacity:0}
+
+/* Highways */
+#s5b .hw{fill:none;stroke:rgba(255,255,255,0.12);stroke-width:1.2;stroke-linecap:round;opacity:0}
+
+/* Routes */
+#s5b .route-trav{fill:none;stroke:rgba(255,255,255,0.18);stroke-width:2;stroke-linecap:round;stroke-dasharray:4 6;opacity:0}
+#s5b .route-orig{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:2;stroke-linecap:round;opacity:0}
+#s5b .route-det{fill:none;stroke:#D73030;stroke-width:2.5;stroke-linecap:round;opacity:0}
+#s5b .route-aft{fill:none;stroke:rgba(215,48,48,0.3);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:6 4;opacity:0}
+
+/* Truck */
+#s5b .truck{opacity:0}
+#s5b .truck-ring{fill:none;stroke:#D73030;stroke-width:1;opacity:0.4}
+
+/* Radar */
+#s5b .rr{fill:none;stroke:#D73030;stroke-width:0.6;opacity:0}
+
+/* Nodes — ALL start grey */
+#s5b .sn{opacity:0}
+#s5b .nd{fill:#444;stroke:none;transition:fill 0.3s}
+
+/* Labels — hidden by default */
+#s5b .nl{font-family:'JetBrains Mono',monospace;font-size:12px;fill:#c4841d;opacity:0;pointer-events:none;font-weight:500}
+#s5b .rl{font-family:'JetBrains Mono',monospace;font-size:13px;fill:#ff5555;opacity:0;pointer-events:none;font-weight:700}
+
+/* City markers */
+#s5b .cl{font-family:'JetBrains Mono',monospace;font-size:10px;fill:rgba(255,255,255,0.4);opacity:0}
+#s5b .cdot{fill:rgba(255,255,255,0.3);opacity:0}
+
+/* Detail card */
+#s5b .s5b-card{position:absolute;right:5%;top:50%;transform:translateY(-50%) translateX(40px);
+  background:rgba(8,8,9,0.95);border:1px solid rgba(255,255,255,0.08);
+  border-left:4px solid #D73030;padding:28px 32px;width:340px;opacity:0;
+  backdrop-filter:blur(12px)}
+#s5b .s5b-card h3{font-weight:600;font-size:17px;color:#fff;margin-bottom:6px}
+#s5b .s5b-card .tier{font-family:'JetBrains Mono',monospace;font-size:11px;color:#D73030;margin-bottom:20px;letter-spacing:0.5px}
+#s5b .s5b-card .li{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;color:#666;opacity:0}
+#s5b .s5b-card .li:last-child{border-bottom:none}
+#s5b .s5b-card .chk{color:#2ecc71;font-family:'JetBrains Mono',monospace;font-size:12px}
+#s5b .s5b-card .val{color:#aaa;font-family:'JetBrains Mono',monospace;font-size:12px}
+
+/* Route status */
+#s5b .s5b-rs{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:#D73030;
+  opacity:0;white-space:nowrap;letter-spacing:0.3px}
+#s5b .s5b-rs::before{content:'> ';opacity:0.4}

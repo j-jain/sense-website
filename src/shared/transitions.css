@@ -1,0 +1,36 @@
+/* ══════════════════════════════════════════════
+   BLACKOUT BEAT
+══════════════════════════════════════════════ */
+#blackout-wrapper{position:relative}
+#blackout{
+  position:relative;min-height:100dvh;
+  overflow:hidden;
+  background:#0d0d0f;
+  display:flex;align-items:center;justify-content:center;
+}
+.bb-amber{
+  position:absolute;inset:0;
+  background:radial-gradient(ellipse at center,rgba(245,166,35,.06) 0%,transparent 70%);
+  opacity:0;pointer-events:none;
+}
+.bb-log{
+  font-family:'JetBrains Mono',monospace;font-size:13px;
+  color:var(--amber);letter-spacing:.06em;
+  opacity:0;
+}
+.bb-scanline{
+  position:absolute;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(245,166,35,.15),transparent);
+  opacity:0;pointer-events:none;top:40%;
+}
+
+/* ══════════════════════════════════════════════
+   RUNNING TIMER (persistent across 5A/5B/5C)
+══════════════════════════════════════════════ */
+#running-timer{
+  position:fixed;top:20px;right:24px;z-index:800;
+  opacity:0;font-size:12px;
+  color:rgba(255,255,255,0.4);
+  letter-spacing:0.1em;
+  pointer-events:none;
+}
