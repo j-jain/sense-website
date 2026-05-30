@@ -241,10 +241,10 @@
   font-weight:600;
   font-size:64px;
   letter-spacing:-0.02em;
-  color:rgba(242,240,235,1);
+  color:#000;
   z-index:60;
   pointer-events:none;
-  text-shadow:0 4px 32px rgba(0,0,0,.6);
+  text-shadow:none;
   white-space:nowrap;
   opacity:0;
   text-align:center;
@@ -622,4 +622,150 @@
   position:absolute;left:0;right:0;height:1px;
   background:linear-gradient(to right,transparent,rgba(245,166,35,.15),transparent);
   opacity:0;pointer-events:none;top:40%;
+}
+
+/* Mobile Fleet Manager app — hidden on desktop */
+#s23-mobile-app{display:none}
+
+/* ══════════════════════════════════════════════
+   MOBILE (≤768px) — Scene 3/4 reframed as a phone-shaped Fleet Manager app.
+   Desktop dashboard + its stray overlays are hidden; the phone app takes over.
+   Scene 4 alert is driven by adding .alert to #ma-phone (see s23.js mobile branch).
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Hide the desktop dashboard and its viewport-level overlays */
+  #s23-dash,
+  #s3-hq-header,
+  #s3-headline,
+  #s4-textbox,
+  #s4-red-overlay,
+  #s23-trans .edge-bar{display:none}
+
+  /* ── Mobile app stage: headline above a centered phone ── */
+  #s23-mobile-app{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    position:absolute;inset:0;z-index:4;
+    gap:14px;padding:18px 12px;background:var(--bg);
+  }
+  .ma-headline{
+    font-family:'Inter',sans-serif;font-weight:600;
+    font-size:var(--m-h2);line-height:1.2;letter-spacing:-.01em;
+    text-align:center;color:var(--off-white);max-width:20ch;
+    transition:opacity .35s;
+  }
+
+  /* ── Phone frame ── */
+  .ma-phone{
+    width:min(84vw,340px);height:min(150vw,640px);max-height:76dvh;
+    background:#fff;border-radius:34px;
+    box-shadow:0 20px 70px rgba(0,0,0,.55),0 0 0 8px #0a0a0c,0 0 0 9px rgba(255,255,255,.05);
+    position:relative;overflow:hidden;
+    display:grid;grid-template-rows:auto auto auto 1fr auto auto;
+    font-family:'Outfit',sans-serif;color:#1D2438;transition:background .4s;
+  }
+  .ma-phone::before{
+    content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);
+    width:84px;height:22px;background:#0a0a0c;border-radius:0 0 13px 13px;z-index:30;
+  }
+
+  /* Status bar */
+  .ma-statusbar{display:flex;justify-content:space-between;align-items:center;padding:10px 20px 4px;font-size:11px;font-weight:600;color:#1D2438}
+  .ma-sb-right{display:flex;align-items:center;gap:5px}
+  .ma-signal{display:flex;align-items:end;gap:1.5px;height:9px}
+  .ma-signal span{width:2.5px;background:#1D2438;border-radius:1px}
+  .ma-signal span:nth-child(1){height:3px}
+  .ma-signal span:nth-child(2){height:5px}
+  .ma-signal span:nth-child(3){height:7px}
+  .ma-signal span:nth-child(4){height:9px}
+  .ma-battery{width:22px;height:11px;border:1.2px solid #1D2438;border-radius:3px;position:relative;display:flex;padding:1px}
+  .ma-battery::after{content:'';position:absolute;right:-3px;top:3px;width:1.5px;height:5px;background:#1D2438;border-radius:0 1px 1px 0}
+  .ma-battery span{flex:1;background:#1D2438;border-radius:1px}
+
+  /* App header */
+  .ma-app-header{display:flex;align-items:center;justify-content:space-between;padding:10px 16px 12px;border-bottom:1px solid #f0f0f4}
+  .ma-logo{font-size:17px;letter-spacing:.14em;color:#1D2438}
+  .ma-logo strong{color:var(--red);font-weight:400}
+  .ma-fleet{display:flex;align-items:center;gap:4px;font-size:11px;font-weight:500;color:#666;background:#f5f5f8;padding:5px 10px;border-radius:14px}
+  .ma-fleet svg{width:8px;height:8px}
+  .ma-avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--navy),var(--red));display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:600}
+
+  /* Stats */
+  .ma-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;padding:12px 12px 10px}
+  .ma-stat-card{background:#fafafd;border:1px solid #f0f0f4;border-radius:10px;padding:11px 9px;display:flex;flex-direction:column;gap:2px;position:relative}
+  .ma-stat-card .v{font-size:21px;font-weight:700;color:#1D2438;line-height:1}
+  .ma-stat-card .l{font-size:9px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-top:4px}
+  .ma-stat-card.ma-alerts .v{color:var(--green)}
+  .ma-stat-card.ma-alerts.fired .v{color:var(--red)}
+  .ma-stat-card.ma-alerts.fired::after{content:'';position:absolute;inset:0;border-radius:10px;box-shadow:inset 0 0 0 1.5px var(--red);animation:maCardPulse 1.4s ease infinite}
+
+  /* Map */
+  .ma-map-card{margin:0 12px;border-radius:12px;border:1px solid #f0f0f4;background:linear-gradient(180deg,#eef1f4,#e6e9ee);position:relative;overflow:hidden;min-height:160px}
+  .ma-road{position:absolute;height:2px;background:#d0d5dc;border-radius:1px}
+  .ma-road.r1{top:30%;left:0;right:0}
+  .ma-road.r2{top:55%;left:0;right:0;transform:rotate(-3deg)}
+  .ma-road.r3{top:80%;left:0;right:0}
+  .ma-road.v1{height:auto;width:2px;top:0;bottom:0;left:30%}
+  .ma-road.v2{height:auto;width:2px;top:0;bottom:0;left:62%}
+  .ma-route{position:absolute;top:55%;left:10%;right:10%;height:3px;background:var(--red);border-radius:2px;box-shadow:0 0 8px rgba(215,48,48,.5)}
+  .ma-truck-dot{position:absolute;top:calc(55% - 5px);left:38%;width:12px;height:12px;border-radius:50%;background:var(--red);border:2px solid #fff;box-shadow:0 0 0 4px rgba(215,48,48,.25);z-index:3}
+  .ma-truck-dot::after{content:'';position:absolute;inset:-8px;border-radius:50%;background:rgba(215,48,48,.15);animation:maPulseTruck 2.2s ease infinite}
+  @keyframes maPulseTruck{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(2);opacity:0}}
+  .ma-mm{position:absolute;width:7px;height:7px;border-radius:50%;border:1.5px solid #fff}
+  .ma-mm.mm-running{background:var(--green);box-shadow:0 0 0 3px rgba(67,160,71,.18)}
+  .ma-mm.mm-idle{background:var(--amber);box-shadow:0 0 0 3px rgba(245,166,35,.18)}
+  .ma-mm.mm-stopped{background:var(--red);box-shadow:0 0 0 3px rgba(215,48,48,.18)}
+  .ma-map-label{position:absolute;font-family:'JetBrains Mono',monospace;font-size:9px;color:#666;background:rgba(255,255,255,.85);padding:2px 6px;border-radius:4px}
+  .ma-map-overlay{position:absolute;left:10px;bottom:10px;right:10px;background:rgba(255,255,255,.94);border:1px solid rgba(0,0,0,.06);border-radius:8px;padding:7px 10px;display:flex;justify-content:space-between;align-items:center;font-size:10px}
+  .ma-map-overlay .left{display:flex;align-items:center;gap:6px;font-weight:600;color:#1D2438}
+  .ma-pulse{width:6px;height:6px;border-radius:50%;background:var(--green);animation:maPulseDot 1.5s ease infinite}
+  @keyframes maPulseDot{0%,100%{opacity:1}50%{opacity:.3}}
+  .ma-map-overlay .right{color:#888;font-family:'JetBrains Mono',monospace;font-size:9.5px}
+
+  /* Vehicle list */
+  .ma-veh-list-wrap{padding:12px 12px 0;overflow:hidden}
+  .ma-veh-list-title{display:flex;justify-content:space-between;align-items:center;font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+  .ma-veh-list-title .more{color:var(--red);font-weight:600;font-size:11px;letter-spacing:0;text-transform:none}
+  .ma-veh-list{display:flex;flex-direction:column;gap:7px;max-height:120px;overflow:hidden}
+  .ma-veh-card{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:9px 12px;background:#fafafd;border:1px solid #f0f0f4;border-radius:10px;transition:background .35s,border-color .35s}
+  .ma-veh-card .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .ma-veh-card.running .dot{background:var(--green)}
+  .ma-veh-card.idle .dot{background:var(--amber)}
+  .ma-veh-card.stopped .dot{background:var(--red)}
+  .ma-veh-card .meta{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .ma-veh-card .reg{font-family:'JetBrains Mono',monospace;font-size:11.5px;font-weight:600;color:#1D2438}
+  .ma-veh-card .sub{font-size:9.5px;color:#888}
+  .ma-veh-card .right{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+  .ma-veh-card .speed{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:600;color:#1D2438}
+  .ma-veh-card .speed-label{font-size:8.5px;color:#aaa;letter-spacing:.04em;text-transform:uppercase}
+  .ma-veh-card.ma-coolant.fired{background:rgba(215,48,48,.06);border-color:rgba(215,48,48,.35);animation:maCardPulse 1.4s ease infinite}
+  .ma-veh-card.ma-coolant.fired .dot,
+  .ma-veh-card.ma-coolant.fired .reg,
+  .ma-veh-card.ma-coolant.fired .sub,
+  .ma-veh-card.ma-coolant.fired .speed{color:var(--red)}
+  .ma-veh-card.ma-coolant.fired .dot{background:var(--red)}
+  @keyframes maCardPulse{0%,100%{box-shadow:0 0 0 0 rgba(215,48,48,0)}50%{box-shadow:0 0 0 4px rgba(215,48,48,.08)}}
+
+  /* Tab bar */
+  .ma-tabbar{display:flex;justify-content:space-around;align-items:stretch;padding:8px 0 12px;background:#fafafd;border-top:1px solid #f0f0f4}
+  .ma-tab{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9.5px;font-weight:500;color:#aaa;flex:1}
+  .ma-tab .icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:inherit}
+  .ma-tab.active{color:var(--red)}
+  .ma-tab.active .icon svg{stroke:var(--red)}
+
+  /* ── Scene 4 push-notification banner + red bleed ── */
+  .ma-alert-banner{
+    position:absolute;top:36px;left:12px;right:12px;z-index:25;
+    background:rgba(215,48,48,.97);color:#fff;border-radius:14px;padding:11px 14px;
+    display:flex;align-items:flex-start;gap:10px;
+    box-shadow:0 8px 24px rgba(215,48,48,.45);
+    opacity:0;transform:translateY(-12px);pointer-events:none;transition:opacity .4s,transform .4s;
+  }
+  .ma-phone.alert .ma-alert-banner{opacity:1;transform:translateY(0)}
+  .ma-ab-icon{width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
+  .ma-ab-body{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
+  .ma-ab-title{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+  .ma-ab-msg{font-size:13px;font-weight:600;line-height:1.2}
+  .ma-ab-sub{font-size:10px;opacity:.85;margin-top:2px;font-family:'JetBrains Mono',monospace}
+  .ma-red-bleed{position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;transition:opacity .6s;background:radial-gradient(ellipse at center,rgba(215,48,48,0) 0%,rgba(215,48,48,.18) 100%)}
+  .ma-phone.alert .ma-red-bleed{opacity:1}
 }

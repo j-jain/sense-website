@@ -7,7 +7,7 @@ import { lenis } from '../../shared/setup.js';
 ════════════════════════════════════════════ */
 (function(){
   var wrapper = document.getElementById('s23-wrapper');
-  wrapper.style.height = '280vh'; /* S3 overlays + S4 temperature climb; trimmed from 400vh */
+  wrapper.style.height = '180vh'; /* S3 overlays + S4 temperature climb; tightened from 280vh */
 
   /* S4 elements */
   var s4RedOverlay = document.getElementById('s4-red-overlay');
@@ -40,16 +40,27 @@ import { lenis } from '../../shared/setup.js';
 
   /* ── Headquarters View Point header — scroll-driven shrink ── */
   var hqHeader   = document.getElementById('s3-hq-header');
-  var dashHeader = document.querySelector('#s23-trans .dash-header');
-  /* Compute the small target position once dashboard is visible.
-     Target = top-left of .dash-header h1, scaled down to a small label. */
+  var s23Dash    = document.getElementById('s23-dash');
+  var HQ_BLUR_MAX = 12;   /* px the dashboard is blurred behind the big HQ title */
+  var HQ_SHRINK_END = 0.06; /* HQ finishes shrinking very early — small scroll */
+  var hqDocked = false;   /* once shrunk it stays docked; never re-animates */
+  /* Shrink target: stays horizontally CENTERED and docks near the top, so it
+     never slides left over the dashboard's own header text. */
   function getHqTarget(){
     var s23R = document.getElementById('s23-trans').getBoundingClientRect();
-    var h1 = document.querySelector('#s23-trans .dash-view.active .dash-header h1');
-    if(!h1) return {x: s23R.width * 0.5, y: 36, scale: 0.22};
-    var hR = h1.getBoundingClientRect();
-    return {x: hR.left - s23R.left + 80, y: hR.top - s23R.top + 12, scale: 0.22};
+    return {x: s23R.width * 0.5, y: 40, scale: 0.22};
   }
+  /* Pre-apply the BIG centered intro state immediately, so the title is already
+     visible the instant the dashboard appears — without waiting for the first
+     scroll onUpdate (that delay was the "only shows after scroll up+down" glitch).
+     The dashboard starts blurred behind it; the blur clears as the title shrinks. */
+  if(hqHeader){
+    hqHeader.style.opacity = '1';
+    hqHeader.style.color = '#000';
+    hqHeader.style.textShadow = 'none';
+    hqHeader.style.transform = 'translate(-50%,-50%) scale(1)';
+  }
+  if(s23Dash) s23Dash.style.filter = 'blur(' + HQ_BLUR_MAX + 'px)';
 
   /* ── Map cursor parallax — small GSAP motion on dashboard map ── */
   var mapImgWrap = document.querySelector('#s23-trans .india-map-wrap');
@@ -211,6 +222,14 @@ import { lenis } from '../../shared/setup.js';
   /* Set initial state for ov5 centering via GSAP (replaces inline style) */
   gsap.set(ov5, {xPercent:-50, y:12});
 
+  /* ── Desktop vs mobile choreography split ──
+     Desktop: the full dashboard overlay + coolant-climb sequence (unchanged).
+     Mobile: the phone-app Scene 3 → Scene 4 alert state.
+     Both pin #s23-trans and share runCountdownSequence() at p≥0.88.
+     gsap.matchMedia() auto-reverts each branch when the breakpoint is crossed. */
+  var mm = gsap.matchMedia();
+
+  mm.add('(min-width:769px)', function(){
   ScrollTrigger.create({
     trigger: wrapper,
     start: 'top top',
@@ -219,38 +238,39 @@ import { lenis } from '../../shared/setup.js';
     onUpdate: function(self){
       var p = self.progress;
 
-      /* ═══ Headquarters View Point — centered → top-left shrink (p 0 → 0.12) ═══ */
+      /* ═══ Headquarters View Point — big over blurred dashboard → shrinks to
+         small centered label as the blur clears (p 0 → 0.12) ═══ */
       if(hqHeader){
         if(p < 0.50){
-          /* Active phase */
+          var hqR = document.getElementById('s23-trans').getBoundingClientRect();
+          var hqSX = hqR.width * 0.5, hqSY = hqR.height * 0.5;
           var tgt = getHqTarget();
-          var s23R = document.getElementById('s23-trans').getBoundingClientRect();
-          var startX = s23R.width  * 0.5;
-          var startY = s23R.height * 0.5;
-          var startScale = 1;
-          var t = Math.min(1, p / 0.12); /* 0→1 across first 12% */
-          var e = 1 - Math.pow(1 - t, 3); /* easeOutCubic */
-          var x = startX + (tgt.x - startX) * e;
-          var y = startY + (tgt.y - startY) * e;
-          var s = startScale + (tgt.scale - startScale) * e;
-          /* Fade color from off-white headline → muted dashboard label */
-          var alpha = 1 - e * 0.4;        /* 1 → 0.6 */
-          var muted = e;                  /* 0 → 1 — interpolate to grey */
-          var r = Math.round(242 + (29  - 242) * muted);
-          var g = Math.round(240 + (36  - 240) * muted);
-          var b = Math.round(235 + (56  - 235) * muted);
           hqHeader.style.opacity = '1';
-          hqHeader.style.color = 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
-          hqHeader.style.transform = 'translate(-50%,-50%) translate(' + (x - startX) + 'px,' + (y - startY) + 'px) scale(' + s + ')';
-          hqHeader.style.textShadow = e > 0.5 ? 'none' : ('0 4px 32px rgba(0,0,0,' + (0.6 * (1 - e)) + ')');
-          /* Hide native dash-header h1 once HQ header docks in its place */
-          if(dashHeader){
-            var h1 = dashHeader.querySelector('h1');
-            if(h1) h1.style.opacity = String(1 - Math.min(1, t * 1.5));
+          hqHeader.style.color = '#000';
+          hqHeader.style.textShadow = 'none';
+          if(!hqDocked){
+            /* Big → small over a SHORT scroll (HQ_SHRINK_END). */
+            var t = Math.min(1, p / HQ_SHRINK_END);
+            var e = 1 - Math.pow(1 - t, 3); /* easeOutCubic */
+            var x = hqSX + (tgt.x - hqSX) * e;
+            var y = hqSY + (tgt.y - hqSY) * e;
+            var s = 1 + (tgt.scale - 1) * e;
+            hqHeader.style.transform = 'translate(-50%,-50%) translate(' + (x - hqSX) + 'px,' + (y - hqSY) + 'px) scale(' + s + ')';
+            if(s23Dash){
+              var blur = (1 - e) * HQ_BLUR_MAX;
+              s23Dash.style.filter = blur > 0.15 ? 'blur(' + blur + 'px)' : 'none';
+            }
+            if(t >= 1) hqDocked = true; /* latch — stop re-animating */
+          } else {
+            /* Latched: stay small & docked, blur cleared — no re-animation on
+               scroll up/down. */
+            hqHeader.style.transform = 'translate(-50%,-50%) translate(' + (tgt.x - hqSX) + 'px,' + (tgt.y - hqSY) + 'px) scale(' + tgt.scale + ')';
+            if(s23Dash) s23Dash.style.filter = 'none';
           }
         } else {
           /* S4 phase — fade out HQ header (would conflict with red overlay) */
           hqHeader.style.opacity = String(Math.max(0, 1 - (p - 0.50) / 0.05));
+          if(s23Dash) s23Dash.style.filter = 'none';
         }
       }
 
@@ -387,6 +407,59 @@ import { lenis } from '../../shared/setup.js';
       /* ═══ Progress 0.95–1.0: Hold, scene ends ═══ */
     }
   });
+  }); /* end desktop matchMedia branch */
+
+  /* ── MOBILE (≤768px): phone-app Scene 3 → Scene 4 alert ──
+     The phone shows the Fleet Manager (Scene 3). At p≥0.5 it enters the
+     alert state (push banner, alert counter 0→1, coolant card flips red,
+     red bleed, headline swap). Countdown handoff is shared with desktop. */
+  mm.add('(max-width:768px)', function(){
+    var mPhone        = document.getElementById('ma-phone');
+    var mAlertsNum    = document.getElementById('ma-alerts-num');
+    var mAlertsCard   = document.getElementById('ma-alerts-card');
+    var mCoolantCard  = document.getElementById('ma-coolant-card');
+    var mCoolantSub   = document.getElementById('ma-coolant-sub');
+    var mCoolantSpeed = document.getElementById('ma-coolant-speed');
+    var mHeadline     = document.getElementById('ma-headline');
+    var mAlerted      = false;
+
+    function fireAlert(){
+      mAlerted = true;
+      if(mPhone) mPhone.classList.add('alert');
+      if(mAlertsNum) mAlertsNum.textContent = '1';
+      if(mAlertsCard) mAlertsCard.classList.add('fired');
+      if(mCoolantCard) mCoolantCard.classList.add('fired');
+      if(mCoolantSub) mCoolantSub.textContent = 'Coolant 101°C ↑ Critical';
+      if(mCoolantSpeed) mCoolantSpeed.textContent = 'BRAKE';
+      if(mHeadline) mHeadline.innerHTML = 'Small signals before<br>major failures.';
+    }
+    function clearAlert(){
+      mAlerted = false;
+      if(mPhone) mPhone.classList.remove('alert');
+      if(mAlertsNum) mAlertsNum.textContent = '0';
+      if(mAlertsCard) mAlertsCard.classList.remove('fired');
+      if(mCoolantCard) mCoolantCard.classList.remove('fired');
+      if(mCoolantSub) mCoolantSub.textContent = 'Coolant 94°C · Normal';
+      if(mCoolantSpeed) mCoolantSpeed.textContent = '62 km/h';
+      if(mHeadline) mHeadline.innerHTML = 'Visibility throughout<br>the journey.';
+    }
+
+    ScrollTrigger.create({
+      trigger: wrapper,
+      start: 'top top',
+      end: 'bottom bottom',
+      pin: '#s23-trans',
+      onUpdate: function(self){
+        var p = self.progress;
+        if(p >= 0.5 && !mAlerted) fireAlert();
+        if(p < 0.48 && mAlerted) clearAlert();
+        if(p >= 0.88 && !window._countdownFired){
+          window._countdownFired = true;
+          runCountdownSequence();
+        }
+      }
+    });
+  });
 })();
 
 /* ════════════════════════════════════════════
@@ -396,6 +469,22 @@ import { lenis } from '../../shared/setup.js';
   var wrapper = document.getElementById('blackout-wrapper');
   wrapper.style.height = '0vh';
   wrapper.style.overflow = 'hidden';
+})();
+
+/* ════════════════════════════════════════════
+   GLOBAL SCROLL LOCK
+   Blocks user-driven scroll (wheel / touch / scroll keys) whenever
+   window.__scrollLocked is true. Lenis.stop() halts smooth scrolling but
+   does NOT prevent native keyboard or trackpad scroll — this seals that gap
+   so the countdown + Scene 5 autoplay can't be scrolled through.
+════════════════════════════════════════════ */
+(function(){
+  var SCROLL_KEYS = {' ':1,'Spacebar':1,'ArrowUp':1,'ArrowDown':1,'ArrowLeft':1,'ArrowRight':1,'PageUp':1,'PageDown':1,'Home':1,'End':1};
+  function blockEvent(e){ if(window.__scrollLocked) e.preventDefault(); }
+  function blockKey(e){ if(window.__scrollLocked && SCROLL_KEYS[e.key]) e.preventDefault(); }
+  window.addEventListener('wheel', blockEvent, {passive:false});
+  window.addEventListener('touchmove', blockEvent, {passive:false});
+  window.addEventListener('keydown', blockKey, {passive:false});
 })();
 
 /* ════════════════════════════════════════════
@@ -414,8 +503,11 @@ function runCountdownSequence(){
   /* Circumference of r=72 circle */
   var circumference = 2 * Math.PI * 72; /* ≈ 452.4 */
 
-  /* 1. Lock scroll */
+  /* 1. Lock scroll — Lenis alone doesn't stop native key/wheel scroll, so also
+     raise the global scroll-lock flag (see the blocker below). Released by the
+     Scene 5 autoplay when it finally hands control back with lenis.start(). */
   lenis.stop();
+  window.__scrollLocked = true;
 
   /* 2. Build the GSAP timeline — all real-time, not scroll-driven */
   var tl = gsap.timeline({

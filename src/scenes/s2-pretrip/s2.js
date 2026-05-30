@@ -1,4 +1,4 @@
-import { lenis, showSI, hideSI } from '../../shared/setup.js';
+import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
 
 /* ════════════════════════════════════════════
    S2 — BEFORE THE FIRST KILOMETER
@@ -67,8 +67,10 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
     s2Activated = true;
 
     /* Lock scroll until Screen D completes — the phone walkthrough is the story.
-       Without this, a single scroll wheel skips past everything. */
+       lenis.stop() alone doesn't block native key/trackpad scroll, so also raise
+       the global hard-lock flag (blocker lives in s23.js). */
     try{ lenis.stop(); }catch(e){}
+    window.__scrollLocked = true;
     hideSI();
 
     // Hide glow immediately
@@ -87,7 +89,12 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
     var tl = gsap.timeline({defaults:{ease:'power3.inOut',duration:1}});
 
     tl.to(phonePanel, {x:'0%', duration:1}, 0);
-    tl.to(imgPanel, {left:'25%', width:'75%', duration:1}, 0);
+    /* Desktop squeezes the cab to the right 75% to make room for the side panel.
+       Mobile keeps the cab full-bleed (blurred backdrop via CSS) with the phone
+       centered on top — so skip the squeeze. */
+    if(!isMobile()){
+      tl.to(imgPanel, {left:'25%', width:'75%', duration:1}, 0);
+    }
 
     // Phone frame fades in — 3D entrance
     tl.to(phoneFrame, {opacity:1, x:0, rotateY:0, duration:.8, ease:'power2.out'}, .4);
@@ -289,13 +296,79 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
   /* Called from animateScreen(3) when Screen D finishes animating */
   function onScreenDComplete(){
     screenDComplete = true;
-    /* Extend wrapper so there's scroll room for the animation */
-    wrapper.style.height = '280vh';
+    /* Re-enable smooth scrolling: the walkthrough locked Lenis with stop().
+       Without this, wheel/trackpad stays dead (only native arrow-key scroll
+       works) for the rest of the scene. */
+    try{ lenis.start(); }catch(e){}
+    window.__scrollLocked = false;
+    showSI();
+    /* Extend wrapper so there's scroll room for the animation.
+       Mobile skips the expand-to-dashboard morph, so it needs no extra scroll
+       room — the section just scrolls away to the S23 phone app. */
+    wrapper.style.height = isMobile() ? '100vh' : '230vh';
     ScrollTrigger.refresh();
+    /* Snap to the pin start so the slide always begins from progress 0 —
+       prevents any scroll accumulated during the walkthrough from making the
+       phone slide before Screen D is fully out. */
+    try{ lenis.scrollTo(wrapper, {immediate:true}); }catch(e){}
   }
 
   /* Expose so animateScreen can call it */
   window.__onScreenDComplete = onScreenDComplete;
+
+  /* ── Reset Scene 2 to its parked walkthrough state ──
+     Phone in its LEFT home panel (in-flow, no translate), dashboard/morph
+     hidden, panels + cab image restored, chrome back to defaults. Used both
+     in the BASE dead zone and on any reverse (scroll-up) so the phone stays
+     stuck on the left instead of sliding. */
+  function resetToWalkthrough(){
+    var _s23 = document.getElementById('s23-trans');
+    var _dash = document.getElementById('s23-dash');
+    if(_s23 && _s23.style.position === 'fixed'){
+      _s23.style.position = '';
+      _s23.style.top = '';
+      _s23.style.left = '';
+      _s23.style.width = '';
+      _s23.style.height = '';
+      _s23.style.zIndex = '';
+      _s23.style.overflow = '';
+      _s23.style.background = '#0d0d0f';
+    }
+    if(_dash && _dash.style.opacity === '1'){
+      _dash.style.opacity = '0';
+      _dash.style.clipPath = '';
+      _dash.style.pointerEvents = 'none';
+    }
+    if(mapMorph) mapMorph.style.opacity = '0';
+    phoneFrame.classList.remove('phone-fixed');
+    phoneFrame.style.position = '';
+    phoneFrame.style.left = '';
+    phoneFrame.style.top = '';
+    phoneFrame.style.zIndex = '';
+    phoneFrame.style.transition = '';
+    phoneFrame.style.opacity = '1';
+    phoneFrame.style.transform = 'translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg)';
+    mapMorphSrc = null;
+    parallaxActive = true;
+    if(s2Section){ s2Section.style.background = ''; s2Section.style.pointerEvents = ''; }
+    if(imgPanel) imgPanel.style.opacity = '';
+    if(headline) headline.style.opacity = '';
+    if(featureList) featureList.style.opacity = '';
+    if(sceneHeading) sceneHeading.style.opacity = '';
+    if(mapBgEl) mapBgEl.style.opacity = '';
+    if(phoneBody){
+      phoneBody.style.borderRadius = '';
+      phoneBody.style.borderWidth = '';
+      phoneBody.style.padding = '';
+      phoneBody.style.background = '';
+      phoneBody.style.boxShadow = '';
+    }
+    if(notch) notch.style.opacity = '';
+    if(uiOverlay) uiOverlay.style.opacity = '';
+    if(statusBar) statusBar.style.opacity = '';
+    if(screenWrapS2){ screenWrapS2.style.borderRadius = ''; screenWrapS2.style.background = ''; }
+    volBtns.forEach(function(v){ v.style.opacity = ''; });
+  }
 
   ScrollTrigger.create({
     trigger: wrapper,
@@ -303,71 +376,31 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
     end: 'bottom bottom',
     pin: '#s2',
     onUpdate: function(self){
+      /* Mobile: no phone→dashboard morph. The walkthrough plays, then S2 simply
+         scrolls away and the S23 phone-app takes over (see s23.js mobile branch). */
+      if(isMobile()) return;
+
       var p = self.progress;
 
       /* Don't animate until Screen D is done */
       if(!screenDComplete) return;
 
-      /* The first 100vh is the base section (p=0 when section fills viewport).
-         Animation scroll = 180vh (wrapper 280 - base 100). Map p into animation progress: */
-      var BASE = 100 / 280;          /* 0.357 */
+      /* Small dead zone before the slide begins, then the animation runs.
+         Wrapper is 230vh (130vh of pinned scroll). BASE is kept tiny so the
+         phone reaches center in ~5 scroll steps instead of ~11. */
+      var BASE = 0.14;
       if(p <= BASE){
-        /* Reset S23 if it was forced into viewport during transition */
-        var _s23 = document.getElementById('s23-trans');
-        var _dash = document.getElementById('s23-dash');
-        if(_s23 && _s23.style.position === 'fixed'){
-          _s23.style.position = '';
-          _s23.style.top = '';
-          _s23.style.left = '';
-          _s23.style.width = '';
-          _s23.style.height = '';
-          _s23.style.zIndex = '';
-          _s23.style.overflow = '';
-          _s23.style.background = '#0d0d0f';
-        }
-        if(_dash && _dash.style.opacity === '1'){
-          _dash.style.opacity = '0';
-          _dash.style.clipPath = '';
-          _dash.style.pointerEvents = 'none';
-        }
-        if(mapMorph) mapMorph.style.opacity = '0';
+        resetToWalkthrough();
+        return;
+      }
 
-        /* ── HARD RESET: restore phone to post-entry walkthrough state ──
-           Critical: do NOT clear opacity or transform to empty strings — the
-           CSS defaults are the pre-entry state (opacity:0, translateX(-40px)
-           rotateY(15deg)), which makes the phone vanish. Instead, explicitly
-           set the post-entry values so the phone stays visible at its panel
-           position throughout the walkthrough. */
-        phoneFrame.classList.remove('phone-fixed');
-        phoneFrame.style.position = '';
-        phoneFrame.style.left = '';
-        phoneFrame.style.top = '';
-        phoneFrame.style.zIndex = '';
-        phoneFrame.style.transition = '';
-        phoneFrame.style.opacity = '1';                              /* visible */
-        phoneFrame.style.transform = 'translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg)';
-        mapMorphSrc = null;
-        /* Re-enable mouse parallax for the walkthrough */
-        parallaxActive = true;
-        if(s2Section){ s2Section.style.background = ''; s2Section.style.pointerEvents = ''; }
-        if(imgPanel) imgPanel.style.opacity = '';
-        if(headline) headline.style.opacity = '';
-        if(featureList) featureList.style.opacity = '';
-        if(sceneHeading) sceneHeading.style.opacity = '';
-        if(mapBgEl) mapBgEl.style.opacity = '';
-        /* Reset phone chrome to defaults (the expand phase strips them) */
-        if(phoneBody){
-          phoneBody.style.borderRadius = '';
-          phoneBody.style.borderWidth = '';
-          phoneBody.style.padding = '';
-          phoneBody.style.background = '';
-          phoneBody.style.boxShadow = '';
-        }
-        if(notch) notch.style.opacity = '';
-        if(uiOverlay) uiOverlay.style.opacity = '';
-        if(statusBar) statusBar.style.opacity = '';
-        if(screenWrapS2) screenWrapS2.style.borderRadius = '';
-        volBtns.forEach(function(v){ v.style.opacity = ''; });
+      /* ═══ SCROLL-UP: phone stays STUCK on the left, no sliding ═══
+         The forward slide/expansion only ever plays going DOWN. On any reverse
+         scroll we snap straight back to the parked walkthrough state (phone in
+         its left home), so returning from the dashboard / later scenes never
+         drags the phone across the screen. */
+      if(self.direction === -1){
+        resetToWalkthrough();
         return;
       }
 
@@ -409,6 +442,7 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
         /* Reset morph element + map bg when scrolled back to slide phase */
         if(mapMorph) mapMorph.style.opacity = '0';
         if(mapBgEl) mapBgEl.style.opacity = '1';
+        if(screenWrapS2) screenWrapS2.style.background = '';
 
         /* Reset S23 if scrolled back to slide phase */
         var _s23s = document.getElementById('s23-trans');
@@ -512,6 +546,11 @@ import { lenis, showSI, hideSI } from '../../shared/setup.js';
 
           /* Hide original map bg inside phone (morph replaces it) */
           if(mapBgEl) mapBgEl.style.opacity = '0';
+
+          /* Darken the phone screen so it BLACKS out (not whites out) as it
+             fades — the white screen base would otherwise flash bright against
+             the dark Scene 2 backdrop. */
+          if(screenWrapS2) screenWrapS2.style.background = '#0a0a0f';
 
           /* Phone fades out in place — stays 280x580, no scaling, no moving */
           phoneFrame.style.transition = 'none';

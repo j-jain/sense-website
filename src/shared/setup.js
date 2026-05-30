@@ -26,5 +26,19 @@ function showSI(){si.classList.add('show')}
 function hideSI(){si.classList.remove('show')}
 lenis.on('scroll', () => hideSI());
 
-export { lenis, showSI, hideSI };
+/* ── Mobile detection ───────────────────────────
+   Single source of truth for the ≤768px breakpoint.
+   - isMobile(): live boolean for JS branching
+   - MOBILE_QUERY: reuse as a gsap.matchMedia() key so scene pins
+     can be gated without ever touching the desktop code path
+   - body.is-mobile: lets CSS hook mobile state if a selector ever
+     needs it (additive; desktop body never gets the class) */
+const MOBILE_QUERY = '(max-width:768px)';
+const mqlMobile = window.matchMedia(MOBILE_QUERY);
+const isMobile = () => mqlMobile.matches;
+const syncMobileClass = () => document.body.classList.toggle('is-mobile', mqlMobile.matches);
+syncMobileClass();
+mqlMobile.addEventListener('change', syncMobileClass);
+
+export { lenis, showSI, hideSI, isMobile, MOBILE_QUERY };
 

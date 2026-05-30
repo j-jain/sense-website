@@ -16,7 +16,8 @@
   pointer-events:none;
 }
 .s1-boot-inner{
-  width:100%;max-width:520px;padding:0 24px;
+  width:fit-content;max-width:520px;padding:0 24px;
+  text-align:left; /* lines stay terminal-left, but the block is centered on the page */
 }
 .boot-line{
   font-family:'JetBrains Mono',monospace;
@@ -62,18 +63,18 @@
 
 /* Side vignettes — soft fade into dark background */
 .s1-vignette-l,.s1-vignette-r{
-  position:absolute;top:0;bottom:0;width:22%;
+  position:absolute;top:0;bottom:0;width:11%;
   z-index:3;pointer-events:none;
 }
-.s1-vignette-l{left:0;background:linear-gradient(to right,rgba(5,6,8,1) 0%,rgba(5,6,8,.7) 30%,transparent 100%)}
-.s1-vignette-r{right:0;background:linear-gradient(to left,rgba(5,6,8,1) 0%,rgba(5,6,8,.7) 30%,transparent 100%)}
+.s1-vignette-l{left:0;background:linear-gradient(to right,rgba(5,6,8,.85) 0%,rgba(5,6,8,.45) 35%,transparent 100%)}
+.s1-vignette-r{right:0;background:linear-gradient(to left,rgba(5,6,8,.85) 0%,rgba(5,6,8,.45) 35%,transparent 100%)}
 /* Top/bottom vignettes for full edge fade */
 .s1-vignette-t,.s1-vignette-b{
-  position:absolute;left:0;right:0;height:18%;
+  position:absolute;left:0;right:0;height:9%;
   z-index:3;pointer-events:none;
 }
-.s1-vignette-t{top:0;background:linear-gradient(to bottom,rgba(5,6,8,.8),transparent)}
-.s1-vignette-b{bottom:0;background:linear-gradient(to top,rgba(5,6,8,.8),transparent)}
+.s1-vignette-t{top:0;background:linear-gradient(to bottom,rgba(5,6,8,.5),transparent)}
+.s1-vignette-b{bottom:0;background:linear-gradient(to top,rgba(5,6,8,.5),transparent)}
 
 /* ── Scene bleed — extends video colors into side zones ── */
 .s1-bleed{
@@ -220,4 +221,43 @@
   opacity:0;
   pointer-events:none;
 }
-.s1-transition.active{pointer-events:all}
+/* Soft, blurred handoff into S2 — no hard seam */
+.s1-transition.active{
+  pointer-events:all;
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+}
+
+/* Hint text: desktop default, mobile swap handled in media block below */
+.hint-mobile{display:none}
+
+/* ══════════════════════════════════════════════
+   MOBILE (≤768px) — full-bleed hero, no side HUD, tap-to-begin
+   CSS-only. No JS path touched. Desktop unaffected.
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  /* Video fills the portrait viewport instead of a centered 16:9 letterbox */
+  .s1-cinema{
+    position:absolute;inset:0;
+    width:100%;height:100dvh;max-width:none;
+    margin:0;aspect-ratio:auto;
+  }
+
+  /* Drop the sparse side-data HUD — no room on a phone */
+  .s1-side-data{display:none}
+
+  /* Boot terminal: full-width, tighter type so lines don't overflow 375px */
+  .s1-boot-inner{max-width:none;padding:0 var(--m-pad)}
+  .boot-line{font-size:9px;letter-spacing:.04em}
+
+  /* Headline: top-left, larger readable clamp, full-width gutters */
+  .s1-headline-wrap{top:16%;left:var(--m-pad);right:var(--m-pad)}
+  #s1-headline{font-size:var(--m-h1);line-height:1.05}
+
+  /* CTA anchored near the bottom (clear the headline); reset desktop offset */
+  .s1-cta-wrap{top:auto;bottom:11%;transform:none}
+
+  /* Swap the keyboard hint for a tap hint */
+  .hint-desktop{display:none}
+  .hint-mobile{display:inline}
+}

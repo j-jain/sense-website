@@ -552,11 +552,37 @@
   pointer-events:none;
 }
 
-/* ── S2 mobile responsive ── */
+/* ══════════════════════════════════════════════
+   S2 MOBILE (≤768px) — phone-dominant, cab as blurred backdrop
+   Cab fills the screen (blurred + darkened); the phone is centered
+   and large; the headline sits above the phone. Desktop unaffected:
+   the cab-squeeze is gated off in s2.js, layout is below.
+══════════════════════════════════════════════ */
 @media(max-width:768px){
-  .s2-phone-panel{width:40%}
-  .s2-phone-frame{width:220px;height:460px}
-  .s2-headline{top:auto;bottom:80px;right:20px;left:auto;transform:none;font-size:20px;max-width:12ch}
-  .s2-feature-list{left:44%;font-size:11px}
-  .s2-feat{font-size:11px}
+  /* Cab image stays full-bleed and becomes a soft backdrop */
+  .s2-img-panel img{
+    filter:blur(7px) brightness(.45) saturate(.9);
+    transform:scale(1.08);
+  }
+  /* A touch more darkening so white phone screens pop */
+  .s2-dark-overlay{
+    background:linear-gradient(180deg,rgba(0,0,0,.7) 0%,rgba(0,0,0,.55) 100%);
+  }
+
+  /* Phone panel fills the width; phone is flex-centered inside it */
+  .s2-phone-panel{width:100%}
+  .s2-phone-frame{width:min(70vw,260px);height:min(150vw,540px)}
+
+  /* Headline above the phone, centered */
+  .s2-headline{
+    top:6%;left:var(--m-pad);right:var(--m-pad);bottom:auto;
+    transform:none;text-align:center;max-width:none;
+    font-size:var(--m-h2);line-height:1.2;
+  }
+
+  /* Side feature list has no room next to a centered phone — hide it */
+  .s2-feature-list{display:none}
+
+  /* Keep the scene heading pinned at the very top */
+  .s2-scene-heading{top:18px}
 }

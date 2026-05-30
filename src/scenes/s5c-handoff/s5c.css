@@ -280,3 +280,14 @@
   font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:300;
   color:var(--off-white);opacity:0;letter-spacing:.05em;
 }
+
+/* ══════════════════════════════════════════════
+   MOBILE (≤768px) — migrated from styles/responsive.css 2026-05-30
+══════════════════════════════════════════════ */
+@media(max-width:768px){
+  .s5c-layout{flex-direction:column;gap:24px;padding:0 4%}
+  .s5c-phone{width:240px;height:500px}
+  .s5c-dashboard{max-width:100%}
+  .s5c-minimap{display:none}
+  .s5c-headline{position:static;transform:none;text-align:center;margin-top:20px;max-width:100%}
+}

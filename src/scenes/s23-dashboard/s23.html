@@ -822,6 +822,130 @@
     </div>
   </div>
 
+  <!-- ═══ MOBILE Fleet Manager app (≤768px) — replaces the desktop dashboard.
+       Hidden >768px via CSS. Scene 3 = normal state; Scene 4 = .alert state
+       (banner + counter + coolant card flip + red bleed), driven by s23.js. ═══ -->
+  <div id="s23-mobile-app">
+    <h2 class="ma-headline" id="ma-headline">Visibility throughout<br>the journey.</h2>
+    <div class="ma-phone" id="ma-phone">
+      <!-- Scene 4 push-notification banner -->
+      <div class="ma-alert-banner">
+        <div class="ma-ab-icon">&#9888;</div>
+        <div class="ma-ab-body">
+          <div class="ma-ab-title">Critical alert</div>
+          <div class="ma-ab-msg">Coolant rising past 100&deg;C</div>
+          <div class="ma-ab-sub">MH-12-AB-1234 &middot; 12s ago</div>
+        </div>
+      </div>
+      <!-- Scene 4 red bleed -->
+      <div class="ma-red-bleed"></div>
+
+      <!-- Status bar -->
+      <div class="ma-statusbar">
+        <span>9:41</span>
+        <div class="ma-sb-right">
+          <div class="ma-signal"><span></span><span></span><span></span><span></span></div>
+          <span style="font-size:9px;font-weight:600">5G</span>
+          <div class="ma-battery"><span></span></div>
+        </div>
+      </div>
+
+      <!-- App header -->
+      <div class="ma-app-header">
+        <div class="ma-logo"><strong>sense</strong></div>
+        <div class="ma-fleet">Bharat Logistics
+          <svg viewBox="0 0 12 12" fill="none"><path d="M2 4l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="ma-avatar">RK</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="ma-stats-row">
+        <div class="ma-stat-card"><div class="v">13</div><div class="l">Vehicles</div></div>
+        <div class="ma-stat-card"><div class="v">98.2%</div><div class="l">On-time</div></div>
+        <div class="ma-stat-card ma-alerts" id="ma-alerts-card"><div class="v" id="ma-alerts-num">0</div><div class="l">Alerts</div></div>
+      </div>
+
+      <!-- Map -->
+      <div class="ma-map-card">
+        <div class="ma-road r1"></div>
+        <div class="ma-road r2"></div>
+        <div class="ma-road r3"></div>
+        <div class="ma-road v1"></div>
+        <div class="ma-road v2"></div>
+        <div class="ma-route"></div>
+        <div class="ma-truck-dot"></div>
+        <div class="ma-mm mm-running" style="top:32%;left:55%"></div>
+        <div class="ma-mm mm-running" style="top:48%;left:24%"></div>
+        <div class="ma-mm mm-idle" style="top:25%;left:75%"></div>
+        <div class="ma-mm mm-running" style="top:70%;left:62%"></div>
+        <div class="ma-mm mm-stopped" style="top:78%;left:30%"></div>
+        <div class="ma-map-label" style="top:14%;left:14%">Mumbai</div>
+        <div class="ma-map-label" style="top:14%;right:14%">Delhi</div>
+        <div class="ma-map-overlay">
+          <div class="left"><span class="ma-pulse"></span> Live &middot; 11 active</div>
+          <div class="right">847 km remaining</div>
+        </div>
+      </div>
+
+      <!-- Vehicle list -->
+      <div class="ma-veh-list-wrap">
+        <div class="ma-veh-list-title">Vehicles <span class="more">View all (13)</span></div>
+        <div class="ma-veh-list">
+          <div class="ma-veh-card ma-coolant running" id="ma-coolant-card">
+            <div class="dot"></div>
+            <div class="meta">
+              <div class="reg">MH-12-AB-1234</div>
+              <div class="sub" id="ma-coolant-sub">Coolant 94&deg;C &middot; Normal</div>
+            </div>
+            <div class="right">
+              <div class="speed" id="ma-coolant-speed">62 km/h</div>
+              <div class="speed-label">Naman G.</div>
+            </div>
+          </div>
+          <div class="ma-veh-card running">
+            <div class="dot"></div>
+            <div class="meta">
+              <div class="reg">GJ-01-CD-5512</div>
+              <div class="sub">On route &middot; Surat &rarr; Mumbai</div>
+            </div>
+            <div class="right">
+              <div class="speed">54 km/h</div>
+              <div class="speed-label">Veer K.</div>
+            </div>
+          </div>
+          <div class="ma-veh-card idle">
+            <div class="dot"></div>
+            <div class="meta">
+              <div class="reg">DL-09-EF-7821</div>
+              <div class="sub">Idle 4m &middot; Pondicherry</div>
+            </div>
+            <div class="right">
+              <div class="speed">0 km/h</div>
+              <div class="speed-label">Shweta R.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom tab bar -->
+      <div class="ma-tabbar">
+        <div class="ma-tab active">
+          <div class="icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 8l7-5 7 5v9a1 1 0 01-1 1H4a1 1 0 01-1-1V8z"/></svg></div>Fleet
+        </div>
+        <div class="ma-tab">
+          <div class="icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3"/></svg></div>Routes
+        </div>
+        <div class="ma-tab">
+          <div class="icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M14 7a4 4 0 10-8 0c0 4.5-2 6-2 6h12s-2-1.5-2-6"/></svg></div>Alerts
+        </div>
+        <div class="ma-tab">
+          <div class="icon"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="14" height="14" rx="2"/><line x1="7" y1="8" x2="13" y2="8"/><line x1="7" y1="12" x2="11" y2="12"/></svg></div>Reports
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- S3 headline -->
   <div id="s3-headline">Visibility throughout<br>the journey.</div>
 
