@@ -234,6 +234,14 @@
   /* Mega headline wraps instead of one no-wrap line */
   #sc8-root .mega-headline{white-space:normal;width:90vw;font-size:20px;bottom:12%}
 
+  /* These reveal-only text overlays are scene-level (z above .main-area's
+     stacking context), so their opacity:0 boxes would otherwise float ABOVE
+     the pills and swallow taps meant for them (this is why the top pill row
+     was untappable). They're never interactive — make them pass taps through. */
+  #sc8-root .intro-text,
+  #sc8-root .stats-row,
+  #sc8-root .mega-headline{pointer-events:none}
+
   /* Closing words shrink to fit a phone */
   #sc8-root .closing-word{font-size:clamp(40px,14vw,72px)}
   #sc8-root .closing-brand{font-size:clamp(18px,5vw,28px);margin-top:28px}
