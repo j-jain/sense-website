@@ -282,40 +282,32 @@
 }
 
 /* ══════════════════════════════════════════════
-   S5C MOBILE (≤768px) — the scene is pinned + scroll-locked during autoplay,
-   so the user can't scroll. Instead the layout is a tall vertical stack
-   (readable phone hero + full fleet cards) and the timeline AUTO-PANS it
-   (translateY) during playback — see the mobile branch in s5c.js. The headline
-   is a fixed bottom overlay. Desktop untouched.
+   S5C MOBILE (≤768px) — unpinned, free-scroll tall section (the user scrolls
+   it; see s5c.js). Natural vertical stack: phone hero → fleet cards → headline,
+   everything in flow and readable. Desktop untouched.
 ══════════════════════════════════════════════ */
 @media(max-width:768px){
-  /* Top-align the (taller-than-viewport) stack so it pans from phone → fleet */
-  #s5c{align-items:flex-start;overflow:hidden}
+  /* Grow with content; the section scrolls instead of being one pinned frame */
+  #s5c{min-height:auto;height:auto;overflow:visible;display:block;padding:26px 0 34px}
   .s5c-layout{
-    flex-direction:column;align-items:center;gap:14px;
-    width:100%;max-width:100%;padding:18px 5% 96px;
-    will-change:transform;
+    flex-direction:column;align-items:center;gap:18px;
+    width:100%;max-width:100%;padding:0 5%;
   }
 
   /* Clear, legible viewpoint labels */
-  .s5c-viewpoint{font-size:10px;letter-spacing:1.6px;margin-bottom:7px}
+  .s5c-viewpoint{font-size:11px;letter-spacing:1.6px;margin-bottom:8px}
 
   /* Phone hero — readable size */
   .s5c-phone-col{flex:0 0 auto;width:100%;align-items:center}
-  .s5c-phone{width:248px;height:506px}
+  .s5c-phone{width:250px;height:512px}
 
   /* Fleet manager cards (incident + service); timeline strip too wide → hidden */
-  .s5c-dash-col{flex:0 0 auto;width:100%;max-width:320px;align-items:center}
-  .s5c-dashboard{max-width:100%;padding:11px;gap:8px}
+  .s5c-dash-col{flex:0 0 auto;width:100%;max-width:340px;align-items:center}
+  .s5c-dashboard{max-width:100%;padding:12px;gap:10px}
   #s5c-dash-timeline{display:none}
   .s5c-minimap{display:none}
 
-  /* Headline pinned at the bottom as a readable overlay; proof has no room */
-  .s5c-headline{
-    top:auto;bottom:10px;left:0;right:0;transform:none;
-    text-align:center;max-width:100%;font-size:13px;line-height:1.4;
-    padding:10px 16px 6px;
-    background:linear-gradient(to top,var(--bg) 62%,rgba(13,13,15,0));
-  }
-  .s5c-proof{display:none}
+  /* Headline + proof in normal flow, centered and readable */
+  .s5c-headline{position:static;transform:none;text-align:center;max-width:94%;margin:10px auto 0;font-size:14px;line-height:1.5}
+  .s5c-proof{position:static;transform:none;text-align:center;max-width:94%;margin:10px auto 0;font-size:11px}
 }

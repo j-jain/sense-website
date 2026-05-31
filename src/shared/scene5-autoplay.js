@@ -53,10 +53,31 @@ import { lenis } from './setup.js';
   }
 
   window.startScene5Autoplay = function(){
-    /* Make sure scroll stays locked through the whole sequence */
-    try{ lenis.stop(); }catch(e){}
-
     var tls = window.__s5Timelines || {};
+
+    /* ── MOBILE: no locked autoplay ──
+       On phones we don't trap the user. Release scroll and let them scroll
+       through Scene 5 at their own pace; each sub-scene plays its timeline
+       once when it enters the viewport. */
+    if(window.matchMedia('(max-width:768px)').matches){
+      window.__scrollLocked = false;
+      try{ lenis.start(); }catch(e){}
+      [['s5a-wrapper', tls.s5a, 0.12],
+       ['s5b-wrapper', tls.s5b, 0.11],
+       ['s5c-wrapper', tls.s5c, 0.09]].forEach(function(cfg){
+        var el = document.getElementById(cfg[0]);
+        if(!el || !cfg[1]) return;
+        ScrollTrigger.create({
+          trigger: el, start: 'top 78%', once: true,
+          onEnter: (function(tl, ts){ return function(){ tl.timeScale(ts).play(0); }; })(cfg[1], cfg[2])
+        });
+      });
+      ScrollTrigger.refresh();
+      return;
+    }
+
+    /* ── DESKTOP: scroll-locked cinematic autoplay ── */
+    try{ lenis.stop(); }catch(e){}
 
     scrollToWrapper('s5a-wrapper');
     playWith(tls.s5a, SPEED_5A)

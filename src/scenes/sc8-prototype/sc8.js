@@ -43,9 +43,17 @@
     });
   }
 
-  /* Touch detection by capability, not width — a phone reports (hover:none),
-     so this is robust even if the viewport is wider than the CSS breakpoint. */
-  var sc8IsTouch = function(){ return window.matchMedia('(hover:none)').matches; };
+  /* Robust touch detection: flip a flag on the first real touch. This avoids
+     hover-media-query quirks (some Android Chrome reports hover:hover on touch)
+     and the synthetic mouseenter→click double-fire that made taps appear dead. */
+  var sc8HadTouch = false;
+  window.addEventListener('touchstart', function(){
+    if(sc8HadTouch) return;
+    sc8HadTouch = true;
+    var instr = document.getElementById('instructionText');
+    if(instr) instr.textContent = 'Tap a capability to see it on its own device';
+  }, {passive:true});
+
   function sc8ShowPill(pill){
     clearAll();
     var t = pill.dataset.target;
@@ -56,27 +64,22 @@
     if (t === 'chat') resetChat();
   }
   pills.forEach(function(pill) {
-    /* Pointer devices reveal on hover. Touch devices have no hover, so the
-       hover handlers no-op there and a tap toggles the device instead. */
+    /* Pointer devices reveal on hover. After any touch, hover handlers no-op
+       and a tap toggles the device — so phones never depend on hover. */
     pill.addEventListener('mouseenter', function() {
-      if(sc8IsTouch()) return;
+      if(sc8HadTouch) return;
       sc8ShowPill(pill);
     });
     pill.addEventListener('mouseleave', function() {
-      if(sc8IsTouch()) return;
+      if(sc8HadTouch) return;
       clearAll();
     });
     pill.addEventListener('click', function() {
-      if(!sc8IsTouch()) return;
+      if(!sc8HadTouch) return;
       if(pill.classList.contains('active')){ clearAll(); return; }
       sc8ShowPill(pill);
     });
   });
-  /* Touch copy: the instruction says "Hover" by default — make it "Tap". */
-  if(sc8IsTouch()){
-    var sc8Instr = document.getElementById('instructionText');
-    if(sc8Instr) sc8Instr.textContent = 'Tap a capability to see it on its own device';
-  }
 
   // ==================================================
   // Element References
