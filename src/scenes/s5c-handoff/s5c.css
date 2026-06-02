@@ -274,12 +274,6 @@
   opacity:0;max-width:320px;text-align:right;line-height:1.5;
 }
 
-/* Proof point */
-.s5c-proof{
-  position:absolute;bottom:4%;left:50%;transform:translateX(-50%);z-index:20;
-  font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:300;
-  color:var(--off-white);opacity:0;letter-spacing:.05em;
-}
 
 /* ══════════════════════════════════════════════
    S5C MOBILE (≤768px) — unpinned, free-scroll tall section (the user scrolls
@@ -307,7 +301,6 @@
   #s5c-dash-timeline{display:none}
   .s5c-minimap{display:none}
 
-  /* Headline + proof in normal flow, centered and readable */
+  /* Headline in normal flow, centered and readable */
   .s5c-headline{position:static;transform:none;text-align:center;max-width:94%;margin:10px auto 0;font-size:14px;line-height:1.5}
-  .s5c-proof{position:static;transform:none;text-align:center;max-width:94%;margin:10px auto 0;font-size:11px}
 }

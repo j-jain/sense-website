@@ -24,13 +24,3 @@
   opacity:0;pointer-events:none;top:40%;
 }
 
-/* ══════════════════════════════════════════════
-   RUNNING TIMER (persistent across 5A/5B/5C)
-══════════════════════════════════════════════ */
-#running-timer{
-  position:fixed;top:20px;right:24px;z-index:800;
-  opacity:0;font-size:12px;
-  color:rgba(255,255,255,0.4);
-  letter-spacing:0.1em;
-  pointer-events:none;
-}

@@ -131,9 +131,8 @@
   s5ctl.to('#s5c-comm-call',      {opacity:1, y:0, duration:0.03, ease:'power2.out'}, b7+0.05);
   s5ctl.to('#s5c-comm-chat',      {opacity:1, y:0, duration:0.03, ease:'power2.out'}, b7+0.06);
 
-  /* ── BEAT 8: Headline + proof point ── */
+  /* ── BEAT 8: Headline ── */
   var b8 = b7 + 0.12;
   s5ctl.to('#s5c-headline', {opacity:0.65, duration:0.06, ease:'power2.out'}, b8);
-  s5ctl.to('#s5c-proof',    {opacity:1,    duration:0.06, ease:'power2.out'}, b8+0.03);
 
 })();
