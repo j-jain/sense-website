@@ -5,8 +5,9 @@
 <section id="s23-trans">
   <!-- S2's actual phone gets reparented here by JS during transition -->
 
-  <!-- Headquarters View Point — starts centered, shrinks to top-left as user scrolls -->
-  <div id="s3-hq-header">Headquarters View Point</div>
+  <!-- Scene 3 headline (doc: "Visibility throughout the journey.") — starts
+       centered as the hero, shrinks to a top-left label as the user scrolls -->
+  <div id="s3-hq-header">Visibility throughout the journey.</div>
 
   <!-- Dashboard shell that slides in — light theme -->
   <div class="dash-shell" id="s23-dash">
@@ -951,6 +952,10 @@
 
   <!-- S4 red screen overlay -->
   <div id="s4-red-overlay"></div>
+
+  <!-- S4 dark veil — dims the whole dashboard during the coolant anomaly so the
+       coolant card (re-parented above this, see s23.js) reads as a spotlight -->
+  <div id="s4-dark-overlay"></div>
 
   <!-- S4 text box (reuses S3 headline style, cycles through 3 messages) -->
   <div id="s4-textbox">Small signals before major failures.</div>

@@ -17,6 +17,43 @@ import { lenis } from '../../shared/setup.js';
   var coolantSub   = document.getElementById('coolant-sub');
   var edgeFill     = document.getElementById('edge-fill');
 
+  /* Coolant "spotlight" — dark veil + the real coolant card lifted above it */
+  var s4DarkOverlay = document.getElementById('s4-dark-overlay');
+  var s23Trans      = document.getElementById('s23-trans');
+  var coolantHome   = null;   /* original parent (#s23-right), restored on reverse */
+  var coolantPromoted = false;
+
+  /* Lift the actual coolant card out of the dashboard's stacking context
+     (.dash-shell is z3) and into #s23-trans so it can sit ABOVE the dark veil.
+     Mirrors the position-promote trick used for the S2 phone. */
+  function promoteCoolant(){
+    if(coolantPromoted || !coolantCard || !s23Trans) return;
+    coolantPromoted = true;
+    coolantHome = coolantCard.parentNode;
+    var r  = coolantCard.getBoundingClientRect();
+    var tr = s23Trans.getBoundingClientRect();
+    coolantCard.style.position  = 'absolute';   /* relative to #s23-trans */
+    coolantCard.style.left      = (r.left - tr.left) + 'px';
+    coolantCard.style.top       = (r.top  - tr.top)  + 'px';
+    coolantCard.style.width     = r.width + 'px';
+    coolantCard.style.margin    = '0';
+    coolantCard.style.zIndex    = '45';
+    coolantCard.style.transformOrigin = 'center center';
+    coolantCard.style.transition = 'none';
+    coolantCard.classList.add('coolant-focus');
+    s23Trans.appendChild(coolantCard);
+  }
+  function demoteCoolant(){
+    if(!coolantPromoted || !coolantCard) return;
+    coolantPromoted = false;
+    coolantCard.classList.remove('coolant-focus');
+    ['position','left','top','width','margin','zIndex','transformOrigin',
+     'transition','transform','boxShadow','background','border','borderColor']
+      .forEach(function(pp){ coolantCard.style[pp] = ''; });
+    if(coolantHome) coolantHome.appendChild(coolantCard);
+    coolantHome = null;
+  }
+
   /* Find the truck dot in the vehicle list (first running marker) */
   var truckDots = document.querySelectorAll('#s23-trans .map-marker.running');
   var targetTruckDot = truckDots.length > 0 ? truckDots[0] : null;
@@ -241,7 +278,7 @@ import { lenis } from '../../shared/setup.js';
       /* ═══ Headquarters View Point — big over blurred dashboard → shrinks to
          small centered label as the blur clears (p 0 → 0.12) ═══ */
       if(hqHeader){
-        if(p < 0.50){
+        if(p < 0.34){
           var hqR = document.getElementById('s23-trans').getBoundingClientRect();
           var hqSX = hqR.width * 0.5, hqSY = hqR.height * 0.5;
           var tgt = getHqTarget();
@@ -269,7 +306,7 @@ import { lenis } from '../../shared/setup.js';
           }
         } else {
           /* S4 phase — fade out HQ header (would conflict with red overlay) */
-          hqHeader.style.opacity = String(Math.max(0, 1 - (p - 0.50) / 0.05));
+          hqHeader.style.opacity = String(Math.max(0, 1 - (p - 0.34) / 0.05));
           if(s23Dash) s23Dash.style.filter = 'none';
         }
       }
@@ -307,8 +344,8 @@ import { lenis } from '../../shared/setup.js';
         if(gaugePct) gaugePct.textContent = '0%';
       }
 
-      /* ═══ Progress 0–0.5: Scene 3 overlays ═══ */
-      if(p < 0.5){
+      /* ═══ Dashboard overview overlays (before the S4 anomaly) ═══ */
+      if(p < 0.34){
         if(p > 0.01 && !s3OvsRevealed){
           revealS3Overlays();
         }
@@ -317,8 +354,9 @@ import { lenis } from '../../shared/setup.js';
         }
       }
 
-      /* ═══ Progress 0.50: Transition from S3 → S4 ═══ */
-      if(p >= 0.50 && !s4TextboxShown){
+      /* ═══ Progress 0.34: Transition from S3 → S4 (earlier, so the anomaly
+         climb gets more scroll room and the dashboard hold isn't dead) ═══ */
+      if(p >= 0.34 && !s4TextboxShown){
         s4TextboxShown = true;
         /* Fade out S3 headline and overlays */
         gsap.killTweensOf([ov1,ov2,ov3,ov4,ov5,s3Headline]);
@@ -329,7 +367,7 @@ import { lenis } from '../../shared/setup.js';
         s4TextStage = 1;
         gsap.to(s4Textbox, {opacity:1, duration:.6, delay:.2, ease:'power2.out'});
       }
-      if(p < 0.48 && s4TextboxShown){
+      if(p < 0.32 && s4TextboxShown){
         s4TextboxShown = false;
         s4TextStage = 0;
         gsap.to(s4Textbox, {opacity:0, duration:.3});
@@ -340,9 +378,10 @@ import { lenis } from '../../shared/setup.js';
         revealS3Overlays();
       }
 
-      /* ═══ Progress 0.55–0.85: Coolant temperature climb + red tint ═══ */
-      if(p >= 0.55 && p <= 0.85){
-        var tempP = (p - 0.55) / 0.30; /* 0→1 */
+      /* ═══ Coolant temperature climb + red tint — spread over a wider, more
+         gradual scroll window (0.40→0.84) so it doesn't feel rushed ═══ */
+      if(p >= 0.40 && p <= 0.84){
+        var tempP = (p - 0.40) / 0.44; /* 0→1 */
         var temp = 94 + tempP * 7; /* 94→101 */
 
         /* Update coolant display */
@@ -384,6 +423,21 @@ import { lenis } from '../../shared/setup.js';
         s4RedOverlay.style.background = 'radial-gradient(ellipse at center, rgba(215,48,48,' + (overlayAlpha * 0.6) + ') 0%, rgba(140,20,20,' + overlayAlpha + ') 100%)';
         s4RedOverlay.style.opacity = redIntensity > 0 ? 1 : 0;
 
+        /* ═══ SPOTLIGHT — dim the whole dashboard to near-black and make the
+           coolant card pop: brighter, larger, red glow. Ramps from 96°C → 101°C. ═══ */
+        var focusP = Math.min(1, Math.max(0, (temp - 96) / 5)); /* 0 at 96°, 1 at 101° */
+        if(focusP > 0){
+          promoteCoolant();
+          var sc = 1 + focusP * 0.5;                  /* scale 1 → 1.5, anchored in place */
+          coolantCard.style.transform = 'scale(' + sc + ')';
+          coolantCard.style.boxShadow =
+            '0 0 ' + (focusP * 48) + 'px rgba(215,48,48,' + (focusP * 0.85) + '),' +
+            '0 0 ' + (focusP * 120) + 'px rgba(215,48,48,' + (focusP * 0.45) + ')';
+        } else if(coolantPromoted){
+          demoteCoolant();
+        }
+        if(s4DarkOverlay) s4DarkOverlay.style.opacity = String(focusP * 0.82);
+
         /* ═══ Text stage 2: "Anomaly Detected" at 101°C ═══ */
         if(Math.round(temp) >= 101 && s4TextStage < 2){
           s4TextStage = 2;
@@ -396,6 +450,13 @@ import { lenis } from '../../shared/setup.js';
           setS4Text(S4_MSG1);
           s4Textbox.classList.remove('alert');
         }
+      }
+
+      /* Reverse: scrolled back below the climb window — restore the dashboard
+         from the spotlight (covers the 0.32–0.40 gap the resets above miss). */
+      if(p < 0.40 && coolantPromoted){
+        demoteCoolant();
+        if(s4DarkOverlay) s4DarkOverlay.style.opacity = 0;
       }
 
       /* ═══ Progress 0.88: COUNTDOWN TRIGGER — locks scroll, auto-plays ═══ */

@@ -423,6 +423,9 @@
 ══════════════════════════════════════════════ */
 /* S3 styles now applied to #s23-trans via .dash-shell — no separate #s3 needed */
 #s3-headline{
+  /* Hidden: the doc headline "Visibility throughout the journey." is now the
+     foregrounded hero (#s3-hq-header). This frosted caption would duplicate it. */
+  display:none;
   position:absolute;bottom:40px;left:24px;
   transform:none;
   font-family:'Inter',sans-serif;
@@ -517,6 +520,25 @@
   background:radial-gradient(ellipse at center, rgba(215,48,48,.0) 0%, rgba(140,20,20,.0) 100%);
   z-index:5;pointer-events:none;
   opacity:0;
+}
+
+/* S4 dark veil — dims the whole dashboard during the coolant anomaly. Sits
+   ABOVE the dashboard shell (z3) + red wash (z5) but BELOW the re-parented
+   coolant card (z45) and the countdown overlay (z50). Opacity driven by JS. */
+#s4-dark-overlay{
+  position:absolute;top:0;left:0;right:0;bottom:0;
+  background:radial-gradient(ellipse at center, rgba(10,7,9,.92) 0%, rgba(4,3,4,.99) 100%);
+  z-index:40;pointer-events:none;
+  opacity:0;
+}
+
+/* Coolant card spotlight state — set by JS while the card is re-parented to
+   #s23-trans and lifted above the dark veil. Transform/glow are scrubbed
+   inline by scroll; this just guarantees a bright, high-contrast base. */
+#coolant-card.coolant-focus{
+  background:#ffffff !important;
+  border:2px solid var(--red);
+  border-radius:12px;
 }
 
 /* S4 text box — mirrors #s3-headline style exactly */
