@@ -7,15 +7,16 @@
   overflow:hidden;background:var(--bg);
 }
 
-/* Scene headline (doc: "An intelligent service network behind every route.") */
+/* Scene headline (doc: "An intelligent service network behind every route.") —
+   right side, lower (below the map's middle); the detail card sits opposite on the left. */
 #s5b .s5b-scene-headline{
-  position:absolute;top:40px;left:50%;transform:translateX(-50%);z-index:25;
+  position:absolute;top:58%;right:5%;left:auto;transform:none;z-index:25;
   font-family:'Outfit',sans-serif;font-size:clamp(15px,1.7vw,22px);font-weight:500;
-  letter-spacing:.01em;color:var(--off-white);text-align:center;white-space:nowrap;
-  pointer-events:none;text-shadow:0 2px 22px rgba(0,0,0,.7);
+  letter-spacing:.01em;color:var(--off-white);text-align:right;max-width:340px;white-space:normal;
+  line-height:1.4;pointer-events:none;text-shadow:0 2px 22px rgba(0,0,0,.7);
 }
 @media(max-width:768px){
-  #s5b .s5b-scene-headline{top:24px;font-size:13px;white-space:normal;width:90%;}
+  #s5b .s5b-scene-headline{top:24px;right:auto;left:50%;transform:translateX(-50%);text-align:center;font-size:13px;max-width:none;width:90%;}
 }
 #s5b .map-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 /* States — BOLD borders, clearly India */
@@ -49,8 +50,8 @@
 #s5b .cl{font-family:'JetBrains Mono',monospace;font-size:10px;fill:rgba(255,255,255,0.4);opacity:0}
 #s5b .cdot{fill:rgba(255,255,255,0.3);opacity:0}
 
-/* Detail card */
-#s5b .s5b-card{position:absolute;right:5%;top:50%;transform:translateY(-50%) translateX(40px);
+/* Detail card — left side (slides in from the left) */
+#s5b .s5b-card{position:absolute;left:5%;top:50%;transform:translateY(-50%) translateX(-40px);
   background:rgba(8,8,9,0.95);border:1px solid rgba(255,255,255,0.08);
   border-left:4px solid #D73030;padding:28px 32px;width:340px;opacity:0;
   backdrop-filter:blur(12px)}
