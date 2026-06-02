@@ -41,10 +41,14 @@
 /* ── Cinematic container ───────────────────── */
 .s1-cinema{
   position:relative;
-  width:100%;
-  max-width:1400px;
+  /* Cap by viewport HEIGHT as well as width so 13"–16" laptops (which share a
+     similar dvh) render the cinema at a consistent size instead of ballooning
+     on wider screens. The height-derived cap leaves room for headline + CTA. */
+  width:min(92vw, 1180px, calc((100dvh - 120px) * 16 / 9));
+  max-width:none;
   margin:0 auto;
   aspect-ratio:16/9;
+  height:auto;
   overflow:hidden;
   opacity:0;
 }
@@ -203,6 +207,36 @@
 @keyframes btnGlow{
   0%,100%{box-shadow:0 0 24px rgba(215,48,48,.20),0 0 60px rgba(215,48,48,.08),inset 0 0 24px rgba(215,48,48,.06)}
   50%{box-shadow:0 0 32px rgba(215,48,48,.35),0 0 90px rgba(215,48,48,.14),inset 0 0 32px rgba(215,48,48,.10)}
+}
+
+/* ── "TAP" press indicator on Start Journey ──
+   Mirrors Scene 2's .s2-press-indicator (pulsing halo + floating TAP label),
+   tuned to S1's red palette. Overrides btnGlow while present so the click
+   affordance reads clearly. */
+#start-btn.s1-press-indicator{
+  animation:s1PressPulse 1.4s ease-out infinite;
+}
+#start-btn.s1-press-indicator::after{
+  content:'TAP';
+  position:absolute;
+  top:-22px;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;
+  font-size:9px;font-weight:600;
+  letter-spacing:.25em;
+  color:#F2F0EB;
+  opacity:.85;
+  text-shadow:0 0 6px rgba(0,0,0,.6);
+  pointer-events:none;
+  animation:s1PressLabel 1.4s ease-out infinite;
+}
+@keyframes s1PressPulse{
+  0%   {box-shadow:0 0 0 0 rgba(255,255,255,.5), 0 0 0 0 rgba(215,48,48,.5)}
+  70%  {box-shadow:0 0 0 12px rgba(255,255,255,0), 0 0 0 22px rgba(215,48,48,0)}
+  100% {box-shadow:0 0 0 0 rgba(255,255,255,0),   0 0 0 0 rgba(215,48,48,0)}
+}
+@keyframes s1PressLabel{
+  0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}
+  50%    {opacity:1; transform:translateX(-50%) translateY(-3px)}
 }
 /* Pulsing prompt under button */
 .s1-key-hint{

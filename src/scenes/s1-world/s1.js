@@ -8,6 +8,67 @@ const s1Video  = document.getElementById('s1-video');
 const s1Cinema = document.getElementById('s1-cinema');
 const s1Boot   = document.getElementById('s1-boot');
 
+/* ── Shared scene flags ───────────────────────── */
+let s1Ready     = false;  /* button is interactive */
+let s1Advanced  = false;  /* the S1→S2 jump has fired (run once) */
+let videoHalfway = false; /* the hero video has crossed 50% */
+let advanceArmed = false; /* first-scroll listeners attached */
+
+/* ════════════════════════════════════════════
+   SCROLL GATE — locked until the video is halfway
+   ────────────────────────────────────────────
+   Reuses the global hard-lock honored by the blocker in s23.js
+   (wheel/touch/keys check window.__scrollLocked). We hold it from module
+   load and release once the hero video passes the 50% mark. */
+window.__scrollLocked = true;
+try{ lenis.stop(); }catch(e){}
+
+function releaseScrollGate(){
+  if(videoHalfway) return;
+  videoHalfway = true;
+  /* Don't unlock here — tryArmAdvance unlocks AND arms together once the scene
+     is also interactive, so there's never a window of free (un-intercepted)
+     scroll that could dribble into Scene 2 and trip its activation lock early. */
+  tryArmAdvance();
+}
+
+s1Video.addEventListener('timeupdate', function(){
+  if(s1Video.duration && s1Video.currentTime >= s1Video.duration * 0.5){
+    releaseScrollGate();
+  }
+});
+/* Safety: never trap the user if the video stalls / never reports duration. */
+setTimeout(releaseScrollGate, 15000);
+
+/* ── First-scroll advance ──
+   Once the video is halfway AND the button is interactive, the first scroll
+   gesture (wheel / touch / arrow-key) runs the SAME cinematic jump as the
+   button — exactly once. We preventDefault so a free native scroll never
+   dribbles Scene 2 partway into view (which used to trip its activation lock
+   before Scene 2 was actually on screen). */
+const S1_SCROLL_KEYS = {' ':1,'Spacebar':1,'ArrowUp':1,'ArrowDown':1,'PageUp':1,'PageDown':1,'Home':1,'End':1};
+function onFirstGesture(e){ e.preventDefault(); fireAdvance(); }
+function onFirstKey(e){ if(S1_SCROLL_KEYS[e.key]){ e.preventDefault(); fireAdvance(); } }
+function detachAdvance(){
+  window.removeEventListener('wheel', onFirstGesture, {passive:false});
+  window.removeEventListener('touchmove', onFirstGesture, {passive:false});
+  window.removeEventListener('keydown', onFirstKey, {passive:false});
+}
+function fireAdvance(){ detachAdvance(); startTransition(); }
+function tryArmAdvance(){
+  if(advanceArmed || s1Advanced) return;
+  if(!(videoHalfway && s1Ready)) return;
+  advanceArmed = true;
+  /* Release the gate exactly as we arm the interceptors: from here scroll is
+     never "free" — it's either locked (before this) or the first gesture fires
+     the cinematic jump. */
+  window.__scrollLocked = false;
+  try{ lenis.start(); }catch(e){}
+  window.addEventListener('wheel', onFirstGesture, {passive:false});
+  window.addEventListener('touchmove', onFirstGesture, {passive:false});
+  window.addEventListener('keydown', onFirstKey, {passive:false});
+}
+
 // ── Phase 1: Boot sequence ────────────────────
 const bootTL = gsap.timeline({delay: 0.4});
 bootTL
@@ -50,8 +111,12 @@ function startCinema(){
     .to('#start-btn',   {opacity:1, y:0, duration:0.8, ease:'power2.out'}, 4.0)
     .to('#s1-key-hint',  {opacity:1, duration:0.5, ease:'power2.out'}, 4.6)
     .add(() => {
-      showSI();
       s1Ready = true;
+      /* Tap affordance on the button (mirrors the phone's TAP indicator in S2).
+         No scroll-indicator here — the button is the cue now. */
+      const b = document.getElementById('start-btn');
+      if(b) b.classList.add('s1-press-indicator');
+      tryArmAdvance();
     });
 }
 
@@ -82,7 +147,6 @@ document.getElementById('s1').addEventListener('mousemove', e => {
 });
 
 // ── Keyboard: ENTER to start ──────────────────
-let s1Ready = false;
 document.addEventListener('keydown', e => {
   if(e.key === 'Enter' && s1Ready){
     document.getElementById('start-btn').click();
@@ -97,13 +161,21 @@ setTimeout(() => {
   }
 }, 12000);
 
-document.getElementById('start-btn').addEventListener('click', e => {
-  // Always preventDefault — stops the href="#s2" anchor from hard-jumping
-  // (which used to read like a page reload if user clicked before s1Ready)
-  e.preventDefault();
-  if(!s1Ready) return;
+// Both the button and the first scroll gesture call this — guarded to run once.
+function startTransition(){
+  if(s1Advanced) return;
+  s1Advanced = true;
   s1Ready = false;
+  detachAdvance();
   hideSI();
+
+  // Block user input through the cinematic jump (programmatic lenis.scrollTo
+  // still works). S2's activatePhone keeps the lock and onScreenDComplete
+  // releases it.
+  window.__scrollLocked = true;
+
+  const startBtn = document.getElementById('start-btn');
+  if(startBtn) startBtn.classList.remove('s1-press-indicator');
 
   const trans    = document.getElementById('s1-transition');
   const cinema   = document.getElementById('s1-cinema');
@@ -115,54 +187,60 @@ document.getElementById('start-btn').addEventListener('click', e => {
 
   trans.classList.add('active');
 
+  // Guaranteed jump to Scene 2 — uses the ABSOLUTE document position (Lenis +
+  // native fallback) so the Start button ALWAYS lands on Scene 2.
+  function goToScene2(){
+    const s2 = document.getElementById('s2');
+    if(!s2) return;
+    const top = s2.getBoundingClientRect().top + window.scrollY;
+    try{ lenis.scrollTo(top, {immediate:true, force:true}); }catch(e){}
+    window.scrollTo(0, top);
+  }
+  // Hard safety net (real-time): fire the scroll even if the GSAP callback
+  // misbehaves. Fires while the screen is fully black (~3.3s after click).
+  const scrollSafety = setTimeout(goToScene2, 3300);
+
   const jumpTL = gsap.timeline();
   jumpTL
-    // ── Phase A: Pure camera push (0.0–1.4s) ──
-    // Scale only. No blur, no brightness change — the user sees the truck coming closer first.
-    .to(cinema, {
-      scale:2.4,
-      duration:1.4,
-      ease:'power2.in',
+    // ── Phase A: Text/UI gone FIRST (0.0–0.6s) ──
+    .to([headWrap, ctaWrap, dataL, dataR, bleed], {
+      opacity:0, duration:0.6, ease:'power2.in'
     }, 0)
 
-    // ── Phase B: Motion blur kicks in (1.0–2.0s) ──
-    // Camera is now lunging — blur sells the speed.
+    // ── Phase B: PAN — camera pushes toward the truck (0.55–1.9s) ──
     .to(cinema, {
-      filter:'blur(18px) brightness(1)',
-      duration:1.0,
-      ease:'power1.in',
-    }, 1.0)
+      scale:2.4, duration:1.35, ease:'power2.in',
+    }, 0.55)
 
-    // ── Phase C: Brightness drops to black (1.6–2.4s) ──
-    // Blends with phase B's blur into the same `filter` property.
-    .to(cinema, {
-      filter:'blur(18px) brightness(0)',
-      duration:0.8,
-      ease:'power2.in',
-    }, 1.6)
+    // ── Phase C: BLUR — the truck blurs while still bright (1.5–2.5s) ──
+    // fromTo with explicit blur(0) avoids GSAP's "none"→filter flash.
+    .fromTo(cinema,
+      {filter:'blur(0px)'},
+      {filter:'blur(22px)', duration:1.0, ease:'power2.in'},
+    1.5)
 
-    // ── Phase C2: UI melts into the darkness alongside brightness drop (1.6–2.4s) ──
-    .to([headWrap, ctaWrap, dataL, dataR, bleed], {
-      opacity:0, duration:0.8, ease:'power2.in'
-    }, 1.6)
+    // ── Phase D: BLACK — one single fade to black over the blurred truck (2.5–3.2s) ──
+    .to(trans, {opacity:1, duration:0.7, ease:'power2.inOut'}, 2.5)
 
-    // ── Phase D: Black overlay seals it (2.2–2.6s) ──
-    .to(trans, {opacity:1, duration:0.4, ease:'power2.inOut'}, 2.2)
+    // ── Phase E: Jump to S2 while fully black (.call is the correct API for callbacks) ──
+    .call(function(){ clearTimeout(scrollSafety); goToScene2(); }, null, 3.25)
 
-    // ── Phase E: Hold + scroll to S2 (2.6–2.9s) ──
-    .to({}, {duration:0.3})
-    .add(() => {
-      lenis.scrollTo('#s2', {immediate:true});
-    })
-
-    // ── Phase F: Fade in S2 (2.9–3.9s) ──
-    .to(trans, {opacity:0, duration:1.0, ease:'power2.out'}, '+=0.1')
+    // ── Phase F: Reveal S2 from black (soft) ──
+    .to(trans, {opacity:0, duration:1.2, ease:'power2.out'}, 3.5)
 
     // ── Cleanup ──
-    .add(() => {
+    .call(function(){
       trans.classList.remove('active');
       gsap.set(cinema, {scale:1, filter:'none'});
       gsap.set([headWrap, ctaWrap, bleed, dataL, dataR], {opacity:1});
-    });
+    }, null, 4.8);
+}
+
+document.getElementById('start-btn').addEventListener('click', e => {
+  // Always preventDefault — stops the href="#s2" anchor from hard-jumping
+  // (which used to read like a page reload if user clicked before s1Ready)
+  e.preventDefault();
+  if(!s1Ready) return;
+  startTransition();
 });
 
