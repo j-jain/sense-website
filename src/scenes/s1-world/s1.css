@@ -43,12 +43,16 @@
   position:relative;
   /* Cap by viewport HEIGHT as well as width so 13"–16" laptops (which share a
      similar dvh) render the cinema at a consistent size instead of ballooning
-     on wider screens. The height-derived cap leaves room for headline + CTA. */
-  width:min(94vw, 1560px, calc((100dvh - 64px) * 16 / 9));
+     on wider screens. The height-derived cap leaves room for headline + CTA.
+     Height is derived first (same as before), then width gets +150px laterally
+     — the frame goes wider WITHOUT getting taller. object-fit:cover on the video
+     just crops a sliver off top/bottom (a crop, not a stretch — no clarity loss). */
+  --s1h: min(calc(100dvh - 64px), 877px);   /* 877 = 1560 * 9/16: the old height cap */
+  height: var(--s1h);
+  width: min(94vw, calc(var(--s1h) * 16 / 9 + 150px));
+  aspect-ratio:auto;
   max-width:none;
   margin:0 auto;
-  aspect-ratio:16/9;
-  height:auto;
   overflow:hidden;
   opacity:0;
 }
@@ -76,9 +80,29 @@
 }
 @media(prefers-reduced-motion:reduce){ .s1-grain{opacity:.05} }
 
-/* Side vignettes — soft fade into dark background */
+/* ── Camera viewfinder frame — thin border + red corner brackets.
+   Turns the surrounding black into intentional matte instead of empty space. ── */
+.s1-frame{
+  position:absolute;inset:0;z-index:5;pointer-events:none;
+  border:1px solid var(--border);
+}
+.s1-corner{position:absolute;width:24px;height:24px}
+.s1-corner::before,.s1-corner::after{content:'';position:absolute;background:var(--red-border)}
+.s1-corner::before{width:24px;height:2px}   /* horizontal arm */
+.s1-corner::after {width:2px;height:24px}    /* vertical arm */
+.s1-corner.tl{top:0;left:0}
+.s1-corner.tl::before,.s1-corner.tl::after{top:0;left:0}
+.s1-corner.tr{top:0;right:0}
+.s1-corner.tr::before,.s1-corner.tr::after{top:0;right:0}
+.s1-corner.bl{bottom:0;left:0}
+.s1-corner.bl::before,.s1-corner.bl::after{bottom:0;left:0}
+.s1-corner.br{bottom:0;right:0}
+.s1-corner.br::before,.s1-corner.br::after{bottom:0;right:0}
+
+/* Side vignettes — soft fade into dark background. Trimmed (11%→5%) so the
+   frame edge reads as the boundary instead of a wide blur. */
 .s1-vignette-l,.s1-vignette-r{
-  position:absolute;top:0;bottom:0;width:11%;
+  position:absolute;top:0;bottom:0;width:5%;
   z-index:3;pointer-events:none;
 }
 .s1-vignette-l{left:0;background:linear-gradient(to right,rgba(5,6,8,.85) 0%,rgba(5,6,8,.45) 35%,transparent 100%)}
@@ -290,6 +314,9 @@
 
   /* Drop the sparse side-data HUD — no room on a phone */
   .s1-side-data{display:none}
+
+  /* Full-bleed hero on mobile — drop the viewfinder brackets */
+  .s1-frame{display:none}
 
   /* Boot terminal: full-width, tighter type so lines don't overflow 375px */
   .s1-boot-inner{max-width:none;padding:0 var(--m-pad)}

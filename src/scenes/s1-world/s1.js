@@ -9,43 +9,20 @@ const s1Cinema = document.getElementById('s1-cinema');
 const s1Boot   = document.getElementById('s1-boot');
 
 /* ── Shared scene flags ───────────────────────── */
-let s1Ready     = false;  /* button is interactive */
+let s1Ready     = false;  /* button is interactive (Start button + Enter key) */
 let s1Advanced  = false;  /* the S1→S2 jump has fired (run once) */
-let videoHalfway = false; /* the hero video has crossed 50% */
-let advanceArmed = false; /* first-scroll listeners attached */
 
 /* ════════════════════════════════════════════
-   SCROLL GATE — locked until the video is halfway
+   INSTANT-SCROLL ADVANCE
    ────────────────────────────────────────────
-   Reuses the global hard-lock honored by the blocker in s23.js
-   (wheel/touch/keys check window.__scrollLocked). We hold it from module
-   load and release once the hero video passes the 50% mark. */
+   The FIRST scroll / touch / arrow-key gesture fires the cinematic S1→S2 jump
+   immediately, from page load — no waiting on the hero video. The page itself
+   never drifts: we keep the global hard-lock (honored by the blocker in s23.js)
+   and Lenis stopped, and our own interceptor turns that first gesture into the
+   transition. preventDefault stops any native/Lenis scroll from sneaking in. */
 window.__scrollLocked = true;
 try{ lenis.stop(); }catch(e){}
 
-function releaseScrollGate(){
-  if(videoHalfway) return;
-  videoHalfway = true;
-  /* Don't unlock here — tryArmAdvance unlocks AND arms together once the scene
-     is also interactive, so there's never a window of free (un-intercepted)
-     scroll that could dribble into Scene 2 and trip its activation lock early. */
-  tryArmAdvance();
-}
-
-s1Video.addEventListener('timeupdate', function(){
-  if(s1Video.duration && s1Video.currentTime >= s1Video.duration * 0.5){
-    releaseScrollGate();
-  }
-});
-/* Safety: never trap the user if the video stalls / never reports duration. */
-setTimeout(releaseScrollGate, 15000);
-
-/* ── First-scroll advance ──
-   Once the video is halfway AND the button is interactive, the first scroll
-   gesture (wheel / touch / arrow-key) runs the SAME cinematic jump as the
-   button — exactly once. We preventDefault so a free native scroll never
-   dribbles Scene 2 partway into view (which used to trip its activation lock
-   before Scene 2 was actually on screen). */
 const S1_SCROLL_KEYS = {' ':1,'Spacebar':1,'ArrowUp':1,'ArrowDown':1,'PageUp':1,'PageDown':1,'Home':1,'End':1};
 function onFirstGesture(e){ e.preventDefault(); fireAdvance(); }
 function onFirstKey(e){ if(S1_SCROLL_KEYS[e.key]){ e.preventDefault(); fireAdvance(); } }
@@ -55,19 +32,11 @@ function detachAdvance(){
   window.removeEventListener('keydown', onFirstKey, {passive:false});
 }
 function fireAdvance(){ detachAdvance(); startTransition(); }
-function tryArmAdvance(){
-  if(advanceArmed || s1Advanced) return;
-  if(!(videoHalfway && s1Ready)) return;
-  advanceArmed = true;
-  /* Release the gate exactly as we arm the interceptors: from here scroll is
-     never "free" — it's either locked (before this) or the first gesture fires
-     the cinematic jump. */
-  window.__scrollLocked = false;
-  try{ lenis.start(); }catch(e){}
-  window.addEventListener('wheel', onFirstGesture, {passive:false});
-  window.addEventListener('touchmove', onFirstGesture, {passive:false});
-  window.addEventListener('keydown', onFirstKey, {passive:false});
-}
+
+/* Arm immediately at load — the very first gesture fires the jump. */
+window.addEventListener('wheel', onFirstGesture, {passive:false});
+window.addEventListener('touchmove', onFirstGesture, {passive:false});
+window.addEventListener('keydown', onFirstKey, {passive:false});
 
 // ── Phase 1: Boot sequence ────────────────────
 const bootTL = gsap.timeline({delay: 0.4});
@@ -116,7 +85,6 @@ function startCinema(){
          No scroll-indicator here — the button is the cue now. */
       const b = document.getElementById('start-btn');
       if(b) b.classList.add('s1-press-indicator');
-      tryArmAdvance();
     });
 }
 
@@ -168,6 +136,9 @@ function startTransition(){
   s1Ready = false;
   detachAdvance();
   hideSI();
+  /* If the user scrolled during the boot terminal, make sure it's gone so it
+     can't linger underneath after the jump. */
+  if(s1Boot) s1Boot.style.display = 'none';
 
   // Block user input through the cinematic jump (programmatic lenis.scrollTo
   // still works). S2's activatePhone keeps the lock and onScreenDComplete
