@@ -21,7 +21,7 @@
 }
 #sc8-root .scene { width: 100vw; height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
   #sc8-root .bg-glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(67,160,71,0.06) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
-  #sc8-root .header { text-align: center; position: absolute; top: 13vh; left: 50%; transform: translateX(-50%); width: 100%; z-index: 5; margin-bottom: 0; }
+  #sc8-root .header { text-align: center; position: absolute; top: 6vh; left: 50%; transform: translateX(-50%); width: 100%; z-index: 5; margin-bottom: 0; }
   #sc8-root .header .tag { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 6px; }
   #sc8-root .header h1 { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.2; }
   #sc8-root .header p { font-size: 14px; color: var(--text-tertiary); margin-top: 6px; }
