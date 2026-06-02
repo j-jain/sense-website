@@ -3,3 +3,11 @@
 node_modules/
 *.log
 dist/
+
+# Local dev / editor config
+.claude/
+
+# Dev-only prototype & concept pages (not part of the shipped site)
+laptop-proto.html
+src/scenes/proto-laptop/
+public/interstitials.html
