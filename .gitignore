@@ -10,4 +10,6 @@ dist/
 # Dev-only prototype & concept pages (not part of the shipped site)
 laptop-proto.html
 src/scenes/proto-laptop/
+s5c-laptop-proto.html
+src/scenes/proto-s5c/
 public/interstitials.html
