@@ -123,6 +123,33 @@
     defsEl.innerHTML = '<filter id="cityGlow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>';
     svgEl.prepend(defsEl);
 
+    // Build road casing (under) + dashed centre lane (over) for each highway,
+    // so the .hw paths read as proper highways rather than thin lines.
+    var hwGroup = sc8.querySelector('#highways');
+    if (hwGroup) {
+      var casingsFrag = document.createDocumentFragment();
+      var lanesFrag = document.createDocumentFragment();
+      highways.forEach(function(hw, i){
+        var d = hw.getAttribute('d');
+        var c = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        c.setAttribute('class', 'hw-casing'); c.setAttribute('d', d); casingsFrag.appendChild(c);
+        var l = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        // Every other corridor reads as a live/active route (amber glow).
+        l.setAttribute('class', (i % 2 === 0) ? 'hw-lane hw-lane-active' : 'hw-lane');
+        l.setAttribute('d', d); lanesFrag.appendChild(l);
+      });
+      hwGroup.insertBefore(casingsFrag, hwGroup.firstChild); // casings beneath
+      hwGroup.appendChild(lanesFrag);                        // dashed lane on top
+    }
+
+    function mkRect(x, y, w, h, rx, fill) {
+      var r = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      r.setAttribute('x', x); r.setAttribute('y', y);
+      r.setAttribute('width', w); r.setAttribute('height', h);
+      r.setAttribute('rx', rx); r.setAttribute('fill', fill);
+      return r;
+    }
+
     var truckIdx = 0;
     highways.forEach(function(hw, hIdx) {
       var len = hw.getTotalLength();
@@ -131,28 +158,24 @@
       for (var t = 0; t < truckCount; t++) {
         var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         var isRed = truckIdx % 2 === 0;
-        var body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        body.setAttribute('x', '-7'); body.setAttribute('y', '-4');
-        body.setAttribute('width', '14'); body.setAttribute('height', '8');
-        body.setAttribute('rx', '2');
-        body.setAttribute('fill', isRed ? '#D73030' : '#EEEEEE');
-        g.appendChild(body);
-        var cabin = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-        cabin.setAttribute('x', '5'); cabin.setAttribute('y', '-3');
-        cabin.setAttribute('width', '5'); cabin.setAttribute('height', '6');
-        cabin.setAttribute('rx', '1');
-        cabin.setAttribute('fill', isRed ? '#ffffff' : '#888888');
-        g.appendChild(cabin);
-        [[-4, 4.5], [3, 4.5]].forEach(function(pos) {
-          var wheel = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          wheel.setAttribute('cx', pos[0]); wheel.setAttribute('cy', pos[1]);
-          wheel.setAttribute('r', '1.5'); wheel.setAttribute('fill', '#333');
-          g.appendChild(wheel);
+        var cargo = isRed ? '#C62828' : '#E6E6E6';
+        var cab   = isRed ? '#8E1B1B' : '#9AA0AC';
+        // soft drop shadow
+        g.appendChild(mkRect(-10.5, -6, 20, 12, 3.5, 'rgba(0,0,0,0.22)'));
+        // trailer / container (top-down)
+        g.appendChild(mkRect(-10, -5, 13, 10, 2, cargo));
+        // cab
+        g.appendChild(mkRect(3.5, -4, 6, 8, 2, cab));
+        // windshield
+        g.appendChild(mkRect(8, -2.8, 1.6, 5.6, 0.6, 'rgba(18,22,32,0.7)'));
+        // wheels poking out both sides (top-down)
+        [[-8.5, -6.2], [-8.5, 4.6], [-1.5, -6.2], [-1.5, 4.6], [5, -5.6], [5, 4.2]].forEach(function(p){
+          g.appendChild(mkRect(p[0], p[1], 3, 1.6, 0.6, '#1c1c1c'));
         });
         g.dataset.pathIndex = hIdx;
         g.dataset.speed = (8 + Math.random() * 7).toFixed(2);
         g.dataset.offset = (t / truckCount).toFixed(3);
-        g.style.opacity = '0.9';
+        g.style.opacity = '0.96';
         svgEl.appendChild(g);
         truckGroups.push(g);
         truckIdx++;
@@ -229,7 +252,7 @@
   // PHASE B (27-45%): Gradient Shift
   tl.to(scene, { backgroundColor: '#1D2438', duration: 0.18 }, 0.27);
   tl.to(states, { stroke: 'rgba(255,255,255,0.25)', fill: 'rgba(255,255,255,0.03)', duration: 0.18 }, 0.27)
-    .to(highways, { stroke: 'rgba(215,48,48,0.35)', duration: 0.18 }, 0.27)
+    .to(highways, { stroke: '#6e768a', duration: 0.18 }, 0.27)
     .to(cityDots, { fill: '#D73030', duration: 0.18 }, 0.27)
     .to(cityLabels, { fill: '#F2F0EB', duration: 0.18 }, 0.27);
   tl.to(filmGrain, { opacity: 0.03, duration: 0.12 }, 0.33);
@@ -288,7 +311,9 @@
   tl.to(indiaMap, { opacity: 0.15, duration: 0.04 }, 0.77);
   tl.to(truckGroups, { opacity: 0.3, duration: 0.04 }, 0.77);
   tl.to(scene, { backgroundColor: '#0D0F1A', duration: 0.05 }, 0.78);
+  tl.call(function(){ closingSection.classList.remove('cs-active'); }, null, 0.79);
   tl.to(closingSection, { opacity: 1, duration: 0.01 }, 0.80);
+  tl.call(function(){ closingSection.classList.add('cs-active'); }, null, 0.80);
   tl.to('#cw1', { opacity: 1, y: 0, duration: 0.03 }, 0.82);
   tl.to('#cw2', { opacity: 1, y: 0, duration: 0.03 }, 0.86);
   tl.to('#cw3', { opacity: 1, y: 0, duration: 0.03 }, 0.90);

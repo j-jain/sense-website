@@ -13,6 +13,7 @@ const lenis = new Lenis({
 lenis.on('scroll', ScrollTrigger.update);
 gsap.ticker.add(time => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
+window.__lenis = lenis; /* dev aid: lets tooling drive scroll precisely */
 
 /* ── Nav scroll ─────────────────────────────── */
 const nav = document.getElementById('nav');
