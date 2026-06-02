@@ -23,10 +23,15 @@
     <div class="s1-overlay"></div>
     <!-- Film grain — masks blue-hour gradient banding, adds cinematic texture -->
     <div class="s1-grain"></div>
-    <!-- Camera viewfinder frame — thin border + corner brackets (HUD look) -->
+    <!-- Camera viewfinder frame — border, AF corner brackets, REC, timecode -->
     <div class="s1-frame" aria-hidden="true">
       <span class="s1-corner tl"></span><span class="s1-corner tr"></span>
       <span class="s1-corner bl"></span><span class="s1-corner br"></span>
+      <div class="s1-rec"><span class="s1-rec-dot"></span>REC</div>
+      <div class="s1-tc" id="s1-tc">00:00:00:00</div>
+      <span class="s1-reticle"></span>
+      <span class="s1-tick top"></span><span class="s1-tick bottom"></span>
+      <span class="s1-tick left"></span><span class="s1-tick right"></span>
     </div>
     <div class="s1-vignette-l"></div>
     <div class="s1-vignette-r"></div>

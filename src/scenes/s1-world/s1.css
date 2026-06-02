@@ -86,10 +86,10 @@
   position:absolute;inset:0;z-index:5;pointer-events:none;
   border:1px solid var(--border);
 }
-.s1-corner{position:absolute;width:24px;height:24px}
-.s1-corner::before,.s1-corner::after{content:'';position:absolute;background:var(--red-border)}
-.s1-corner::before{width:24px;height:2px}   /* horizontal arm */
-.s1-corner::after {width:2px;height:24px}    /* vertical arm */
+.s1-corner{position:absolute;width:34px;height:34px}
+.s1-corner::before,.s1-corner::after{content:'';position:absolute;background:rgba(215,48,48,.6)}
+.s1-corner::before{width:34px;height:2px}   /* horizontal arm */
+.s1-corner::after {width:2px;height:34px}    /* vertical arm */
 .s1-corner.tl{top:0;left:0}
 .s1-corner.tl::before,.s1-corner.tl::after{top:0;left:0}
 .s1-corner.tr{top:0;right:0}
@@ -98,6 +98,45 @@
 .s1-corner.bl::before,.s1-corner.bl::after{bottom:0;left:0}
 .s1-corner.br{bottom:0;right:0}
 .s1-corner.br::before,.s1-corner.br::after{bottom:0;right:0}
+
+/* REC indicator (top-left) */
+.s1-rec{
+  position:absolute;top:16px;left:16px;
+  display:flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.2em;color:var(--red);
+}
+.s1-rec-dot{
+  width:7px;height:7px;border-radius:50%;background:var(--red);
+  box-shadow:0 0 8px rgba(215,48,48,.7);
+  animation:recBlink 1s steps(1,end) infinite;
+}
+@keyframes recBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
+
+/* Running timecode (bottom-right) — also sits where the old watermark was */
+.s1-tc{
+  position:absolute;bottom:16px;right:16px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;
+  letter-spacing:.12em;color:rgba(255,255,255,.55);
+}
+
+/* Center focus reticle — subtle crosshair */
+.s1-reticle{
+  position:absolute;top:50%;left:50%;width:22px;height:22px;
+  transform:translate(-50%,-50%);opacity:.3;
+}
+.s1-reticle::before,.s1-reticle::after{content:'';position:absolute;background:rgba(255,255,255,.9)}
+.s1-reticle::before{left:50%;top:0;width:1px;height:22px;transform:translateX(-.5px)}
+.s1-reticle::after{top:50%;left:0;height:1px;width:22px;transform:translateY(-.5px)}
+
+/* Viewfinder edge ticks (safe-area marks) */
+.s1-tick{position:absolute;background:rgba(255,255,255,.25)}
+.s1-tick.top{top:0;left:50%;width:1px;height:12px;transform:translateX(-.5px)}
+.s1-tick.bottom{bottom:0;left:50%;width:1px;height:12px;transform:translateX(-.5px)}
+.s1-tick.left{left:0;top:50%;height:1px;width:12px;transform:translateY(-.5px)}
+.s1-tick.right{right:0;top:50%;height:1px;width:12px;transform:translateY(-.5px)}
+
+@media(prefers-reduced-motion:reduce){ .s1-rec-dot{animation:none;opacity:1} }
 
 /* Side vignettes — soft fade into dark background. Trimmed (11%→5%) so the
    frame edge reads as the boundary instead of a wide blur. */

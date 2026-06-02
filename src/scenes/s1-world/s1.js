@@ -215,3 +215,20 @@ document.getElementById('start-btn').addEventListener('click', e => {
   startTransition();
 });
 
+// ── Camera viewfinder: running timecode (HH:MM:SS:FF @ ~25fps) ──
+(() => {
+  const tc = document.getElementById('s1-tc');
+  if(!tc) return;
+  let f = 0;
+  const pad = n => String(n).padStart(2,'0');
+  setInterval(() => {
+    f++;
+    const fr = f % 25;
+    const t  = Math.floor(f / 25);
+    const s  = t % 60;
+    const m  = Math.floor(t / 60) % 60;
+    const h  = Math.floor(t / 3600);
+    tc.textContent = `${pad(h)}:${pad(m)}:${pad(s)}:${pad(fr)}`;
+  }, 40);
+})();
+
