@@ -44,7 +44,7 @@
   /* Cap by viewport HEIGHT as well as width so 13"–16" laptops (which share a
      similar dvh) render the cinema at a consistent size instead of ballooning
      on wider screens. The height-derived cap leaves room for headline + CTA. */
-  width:min(92vw, 1180px, calc((100dvh - 120px) * 16 / 9));
+  width:min(94vw, 1560px, calc((100dvh - 64px) * 16 / 9));
   max-width:none;
   margin:0 auto;
   aspect-ratio:16/9;
