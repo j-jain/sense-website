@@ -1,0 +1,181 @@
+/* ════════════════════════════════════════════════════════════
+   PROTO — Phone → Laptop morph (standalone prototype)
+   Scroll-driven. The device's dims/transforms are set inline by
+   proto-laptop.js; this file is the static look + caption styling.
+   Brand palette mirrored locally so the page is self-contained.
+════════════════════════════════════════════════════════════ */
+:root{
+  --red:#D73030;
+  --green:#3DA84A;
+  --ink:#0d0d0f;
+  --paper:#f4f5f7;
+  --off-white:#F2F0EB;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#070809;color:var(--off-white);font-family:'Outfit',sans-serif;}
+
+.proto-banner{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  text-align:center;padding:8px;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.28em;
+  text-transform:uppercase;color:rgba(255,255,255,.45);
+  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+/* Tall scroll track; the stage is pinned by ScrollTrigger */
+#proto-wrapper{height:460vh;position:relative;}
+#proto-stage{
+  position:relative;
+  height:100vh;width:100%;
+  overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  perspective:1600px;
+  background:
+    radial-gradient(120% 90% at 50% 35%, #14171d 0%, #0a0b0e 55%, #060708 100%);
+}
+
+/* ── The device ─────────────────────────────────────────────
+   .proto-device is the transform root (rotateY/scale set in JS).
+   The screen sizes are interpolated in JS; the base unfolds. */
+.proto-device{
+  position:relative;
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+
+.proto-screen{
+  position:relative;
+  width:260px;height:540px;            /* phone defaults; JS interpolates */
+  border-radius:34px;
+  background:#0a0a0f;
+  border:2px solid #14151b;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.7),
+    inset 0 0 0 6px #1c1d24;
+  overflow:hidden;
+  z-index:2;
+}
+
+.proto-notch{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:96px;height:22px;border-radius:14px;background:#000;
+  z-index:6;
+}
+
+/* ── Boot shimmer ── */
+.proto-boot{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:radial-gradient(circle at 50% 40%, #15171e, #0a0a0f);
+}
+.proto-boot-mark{font-weight:800;font-size:30px;letter-spacing:.04em;color:#fff;}
+.proto-boot-text{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.45);text-transform:uppercase;}
+.proto-boot-bar{width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;}
+.proto-boot-bar span{display:block;height:100%;width:0;background:var(--red);}
+
+/* ── Dashboard inside the screen ── */
+.proto-dash{
+  position:absolute;inset:0;z-index:4;
+  opacity:0;                            /* JS fades in */
+  background:var(--paper);color:#16181d;
+  display:flex;flex-direction:column;
+  text-align:left;
+}
+.proto-dash-head{
+  flex:0 0 auto;height:42px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;background:#fff;border-bottom:1px solid rgba(0,0,0,.07);
+}
+.proto-dash-brand{font-size:13px;font-weight:600;color:#222;}
+.proto-dash-brand strong{color:var(--red);}
+.proto-dash-live{display:flex;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;color:var(--green);}
+.proto-dash-live .dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 0 rgba(61,168,74,.5);animation:protoPulse 1.6s infinite;}
+@keyframes protoPulse{0%{box-shadow:0 0 0 0 rgba(61,168,74,.5)}70%{box-shadow:0 0 0 8px rgba(61,168,74,0)}100%{box-shadow:0 0 0 0 rgba(61,168,74,0)}}
+
+.proto-dash-body{flex:1;display:flex;min-height:0;}
+.proto-dash-rail{
+  flex:0 0 130px;background:#fff;border-right:1px solid rgba(0,0,0,.06);
+  padding:14px 10px;display:flex;flex-direction:column;gap:4px;
+}
+.rail-item{font-size:12px;font-weight:600;color:#6a6e76;padding:8px 10px;border-radius:8px;}
+.rail-item.active{background:rgba(215,48,48,.10);color:var(--red);}
+
+.proto-dash-main{flex:1;padding:14px;display:flex;flex-direction:column;gap:12px;min-width:0;}
+.proto-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.kpi{background:#fff;border:1px solid rgba(0,0,0,.06);border-left:3px solid var(--red);border-radius:10px;padding:10px 12px;}
+.kpi-label{font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:#888;}
+.kpi-val{font-size:22px;font-weight:800;color:#16181d;margin:2px 0 6px;}
+.kpi-val span{font-size:11px;font-weight:600;color:#999;}
+.kpi-bar{height:5px;border-radius:5px;background:rgba(0,0,0,.07);overflow:hidden;}
+.kpi-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--green),#5fce72);}
+
+.proto-map{
+  flex:1;position:relative;border-radius:12px;overflow:hidden;min-height:120px;
+  background:
+    linear-gradient(135deg,#e9edf2,#dfe5ec),
+    repeating-linear-gradient(0deg,rgba(0,0,0,.03) 0 1px,transparent 1px 26px),
+    repeating-linear-gradient(90deg,rgba(0,0,0,.03) 0 1px,transparent 1px 26px);
+  border:1px solid rgba(0,0,0,.06);
+}
+.proto-map-route{position:absolute;inset:0;width:100%;height:100%;}
+.proto-map-pill{
+  position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  background:rgba(13,13,15,.85);color:#fff;font-size:11px;font-weight:600;
+  padding:6px 12px;border-radius:999px;white-space:nowrap;
+}
+
+/* ── Laptop keyboard deck (faux-3D, unfolds downward) ── */
+.proto-base{
+  position:absolute;top:100%;left:50%;
+  width:118%;height:62%;
+  transform-origin:top center;
+  transform:translateX(-50%) rotateX(80deg) scaleY(0);  /* JS unfolds scaleY 0→1 */
+  background:linear-gradient(180deg,#2a2d34,#16181d);
+  border-radius:6px 6px 14px 14px;
+  box-shadow:0 40px 60px rgba(0,0,0,.6);
+  opacity:0;                                   /* JS fades in */
+  z-index:1;
+  padding:10% 8% 6%;
+}
+.proto-keyboard{
+  height:62%;border-radius:6px;
+  background:#0e1014;
+  background-image:
+    repeating-linear-gradient(90deg,#23262e 0 8%,transparent 8% 10%),
+    repeating-linear-gradient(0deg,#23262e 0 18%,transparent 18% 25%);
+  opacity:.9;
+}
+.proto-trackpad{
+  margin:6% auto 0;width:32%;height:22%;
+  border-radius:6px;background:#1c1f26;border:1px solid #2a2d34;
+}
+
+/* ── Captions ── */
+.proto-caption{
+  position:absolute;z-index:30;opacity:0;will-change:opacity,transform;
+  max-width:280px;font-size:17px;line-height:1.45;font-weight:500;
+  color:rgba(255,255,255,.9);text-shadow:0 2px 24px rgba(0,0,0,.6);
+}
+.proto-cap-kicker{
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--red);margin-bottom:8px;
+}
+.proto-cap-top{top:13%;left:50%;transform:translateX(-50%);text-align:center;font-size:22px;font-weight:300;}
+.proto-cap-left{left:6vw;top:42%;text-align:left;}
+.proto-cap-right{right:6vw;top:38%;text-align:right;}
+.proto-cap-bottom{bottom:9%;left:50%;transform:translateX(-50%);text-align:center;font-size:18px;font-weight:300;max-width:520px;}
+
+.proto-scrollhint{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(255,255,255,.35);
+  animation:protoHint 2.2s ease-in-out infinite;
+}
+@keyframes protoHint{0%,100%{opacity:.25;transform:translateX(-50%) translateY(0)}50%{opacity:.6;transform:translateX(-50%) translateY(4px)}}
+
+/* The morph is a desktop story. On narrow screens, drop the side captions so
+   the laptop stays centered; the top/bottom captions still narrate. */
+@media(max-width:900px){
+  .proto-cap-left,.proto-cap-right{display:none;}
+}

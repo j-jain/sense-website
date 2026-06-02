@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>sense — Phone→Laptop morph (prototype)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/lenis@1.1.14/dist/lenis.min.js"></script>
+<link rel="stylesheet" href="/src/scenes/proto-laptop/proto-laptop.css">
+</head>
+<body>
+
+<!-- Prototype banner -->
+<div class="proto-banner">PROTOTYPE · phone → laptop morph · scroll to play</div>
+
+<div id="proto-wrapper">
+  <section id="proto-stage">
+
+    <!-- Captions that narrate around the device -->
+    <div class="proto-caption proto-cap-top" id="capTop">It begins in your hand.</div>
+    <div class="proto-caption proto-cap-left" id="capLeft">
+      <div class="proto-cap-kicker">01 — Turn</div>
+      Turn it sideways. The screen opens.
+    </div>
+    <div class="proto-caption proto-cap-right" id="capRight">
+      <div class="proto-cap-kicker">02 — Command center</div>
+      What fit in a pocket now watches the whole fleet — the same trip, a wider lens.
+    </div>
+    <div class="proto-caption proto-cap-bottom" id="capBottom">
+      From the cab to the command center — one continuous intelligence.
+    </div>
+
+    <!-- The morphing device -->
+    <div class="proto-device" id="device">
+
+      <!-- Laptop keyboard deck (unfolds as the morph completes) -->
+      <div class="proto-base" id="base">
+        <div class="proto-keyboard"></div>
+        <div class="proto-trackpad"></div>
+      </div>
+
+      <!-- The screen / display -->
+      <div class="proto-screen" id="screen">
+        <div class="proto-notch" id="notch"></div>
+
+        <!-- Boot shimmer -->
+        <div class="proto-boot" id="boot">
+          <div class="proto-boot-mark">sense</div>
+          <div class="proto-boot-text">Loading fleet command center…</div>
+          <div class="proto-boot-bar"><span id="bootBar"></span></div>
+        </div>
+
+        <!-- Dashboard that "loads up" inside the screen -->
+        <div class="proto-dash" id="dash">
+          <div class="proto-dash-head">
+            <div class="proto-dash-brand"><strong>sense</strong> · Fleet Command</div>
+            <div class="proto-dash-live"><span class="dot"></span>LIVE</div>
+          </div>
+          <div class="proto-dash-body">
+            <aside class="proto-dash-rail">
+              <div class="rail-item active">Overview</div>
+              <div class="rail-item">Vehicles</div>
+              <div class="rail-item">Trips</div>
+              <div class="rail-item">Alerts</div>
+              <div class="rail-item">Service</div>
+            </aside>
+            <main class="proto-dash-main">
+              <div class="proto-kpis">
+                <div class="kpi"><div class="kpi-label">Engine Health</div><div class="kpi-val">96<span>%</span></div><div class="kpi-bar"><i style="width:96%"></i></div></div>
+                <div class="kpi"><div class="kpi-label">Fuel Efficiency</div><div class="kpi-val">84<span>%</span></div><div class="kpi-bar"><i style="width:84%"></i></div></div>
+                <div class="kpi"><div class="kpi-label">Driver Score</div><div class="kpi-val">87<span>/100</span></div><div class="kpi-bar"><i style="width:87%"></i></div></div>
+              </div>
+              <div class="proto-map">
+                <svg class="proto-map-route" viewBox="0 0 400 200" preserveAspectRatio="none" fill="none">
+                  <path d="M40 160 C 120 60, 200 150, 280 70 S 360 40, 370 40" stroke="#D73030" stroke-width="2.5" stroke-dasharray="7 5"/>
+                  <circle cx="40" cy="160" r="5" fill="#D73030"/>
+                  <circle cx="370" cy="40" r="5" fill="#3DA84A"/>
+                </svg>
+                <div class="proto-map-pill">BLR → DEL · NH44 · ETA 34h</div>
+              </div>
+            </main>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+  <div class="proto-scrollhint" id="scrollHint">scroll ↓</div>
+</div>
+
+<script type="module" src="/src/scenes/proto-laptop/proto-laptop.js"></script>
+</body>
+</html>
