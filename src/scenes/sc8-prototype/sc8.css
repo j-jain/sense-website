@@ -21,27 +21,36 @@
 }
 #sc8-root .scene { width: 100vw; height: 100vh; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; overflow: hidden; }
   #sc8-root .bg-glow { position: absolute; width: 600px; height: 600px; border-radius: 50%; background: radial-gradient(circle, rgba(67,160,71,0.06) 0%, transparent 70%); top: 50%; left: 50%; transform: translate(-50%,-50%); pointer-events: none; }
-  #sc8-root .header { text-align: center; position: relative; z-index: 5; margin-bottom: 12px; }
+  #sc8-root .header { text-align: center; position: absolute; top: 13vh; left: 50%; transform: translateX(-50%); width: 100%; z-index: 5; margin-bottom: 0; }
   #sc8-root .header .tag { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--green); font-weight: 600; margin-bottom: 6px; }
   #sc8-root .header h1 { font-size: 32px; font-weight: 700; color: var(--navy); line-height: 1.2; }
   #sc8-root .header p { font-size: 14px; color: var(--text-tertiary); margin-top: 6px; }
-  #sc8-root .main-area { position: relative; width: 960px; height: 580px; z-index: 5; }
-  #sc8-root .india-map { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 2; }
-  #sc8-root .india-map svg { width: auto; height: 540px; }
+  /* top nudged +30px so the box lands where the old flow-centred layout put it —
+     keeps the map AND pills exactly in their original positions while the header
+     (now absolute) moves independently. */
+  #sc8-root .main-area { position: absolute; top: calc(50% + 30px); left: 50%; transform: translate(-50%, -50%); width: 960px; height: 580px; z-index: 5; }
+  #sc8-root .india-map { position: absolute; left: 50%; top: 44%; transform: translate(-50%, -50%); z-index: 2; }
+  #sc8-root .india-map svg { width: auto; height: 486px; }
   #sc8-root .st { fill: rgba(67,160,71,0.07); stroke: #666; stroke-width: 1.8; }
-  #sc8-root .hw { fill: none; stroke: var(--amber); stroke-width: 2; opacity: 0.5; stroke-dasharray: 1200; stroke-dashoffset: 1200; animation: drawH 3s ease forwards; }
-  @keyframes drawH { to { stroke-dashoffset: 0; } }
+  /* Proper highways: dark casing + asphalt surface + dashed centre lane */
+  /* Grey asphalt roads with white lane markings; ACTIVE corridors glow amber. */
+  #sc8-root .hw { fill: none; stroke: #5b6273; stroke-width: 5.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.95; }
+  #sc8-root .hw-casing { fill: none; stroke: #2b2f3b; stroke-width: 8.5; stroke-linecap: round; stroke-linejoin: round; opacity: 0.9; }
+  #sc8-root .hw-lane { fill: none; stroke: rgba(255,255,255,0.55); stroke-width: 1.2; stroke-linecap: round; stroke-dasharray: 5 10; opacity: 0.6; animation: laneFlow 1.4s linear infinite; }
+  #sc8-root .hw-lane.hw-lane-active { stroke: #F5A623; stroke-width: 1.7; opacity: 0.95; filter: drop-shadow(0 0 3px rgba(245,166,35,0.75)); animation: laneFlow 0.85s linear infinite; }
+  @keyframes laneFlow { to { stroke-dashoffset: -15; } }
   #sc8-root .city-dot { fill: var(--green); opacity: 0.9; }
   #sc8-root .city-dot { animation: cityPulse 2.5s ease infinite; }
   @keyframes cityPulse { 0%,100% { opacity: 0.8; } 50% { opacity: 0.35; } }
   #sc8-root .city-label { fill: var(--navy); font-family: Outfit; font-weight: 600; }
   #sc8-root .truck-dots-layer { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
-  #sc8-root .truck-dot { position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); opacity: 0; animation: popT 0.4s ease forwards; }
+  /* Real SVG trucks now drive the highways — hide the old pulsing icon dots. */
+  #sc8-root .truck-dot { display: none; position: absolute; width: 6px; height: 6px; border-radius: 50%; background: var(--amber); opacity: 0; animation: popT 0.4s ease forwards; }
   #sc8-root .truck-dot::after { content: ''; position: absolute; inset: -4px; border-radius: 50%; background: rgba(245,166,35,0.15); animation: pulseT 2.5s ease infinite; }
   @keyframes popT { from { transform: scale(0); } to { opacity: 1; transform: scale(1); } }
   @keyframes pulseT { 0%,100% { transform: scale(1); opacity: 0.15; } 50% { transform: scale(2.5); opacity: 0; } }
 
-  #sc8-root .pills { position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 20; }
+  #sc8-root .pills { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 25; }
   #sc8-root .pill { padding: 10px 20px; border-radius: 24px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-tertiary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; white-space: nowrap; user-select: none; box-shadow: var(--shadow-card); }
   #sc8-root .pill:hover, #sc8-root .pill.active { border-color: var(--green); color: var(--green); background: rgba(67,160,71,0.04); }
 
@@ -53,7 +62,7 @@
   @keyframes dashFlow { to { stroke-dashoffset: -20; } }
 
   /* PHONE */
-  #sc8-root .phone-device { right: -20px; top: 20px; width: 210px; }
+  #sc8-root .phone-device { right: 6px; top: 28px; width: 210px; }
   #sc8-root .phone-frame { background: var(--bg-card); border-radius: 28px; border: 2px solid var(--border); overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   #sc8-root .phone-notch { width: 70px; height: 5px; background: var(--border); border-radius: 0 0 6px 6px; margin: 0 auto; }
   #sc8-root .phone-top-bar { background: var(--green); padding: 8px 12px; display: flex; align-items: center; gap: 8px; }
@@ -76,7 +85,7 @@
   #sc8-root .phone-send { width: 26px; height: 26px; border-radius: 50%; background: var(--green); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; }
 
   /* TABLET */
-  #sc8-root .tablet-device { left: -50px; top: 10px; width: 250px; }
+  #sc8-root .tablet-device { left: 6px; top: 18px; width: 250px; }
   #sc8-root .tablet-frame { background: var(--bg-card); border-radius: 16px; border: 2px solid var(--border); overflow: hidden; padding: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   #sc8-root .tablet-screen { background: var(--bg-metric); border-radius: 10px; overflow: hidden; }
   #sc8-root .tablet-header { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-light); background: var(--bg-card); }
@@ -98,7 +107,7 @@
   @keyframes barGrow { from { width: 0; } }
 
   /* MONITOR */
-  #sc8-root .monitor-device { right: -40px; bottom: 60px; width: 260px; }
+  #sc8-root .monitor-device { right: 6px; bottom: 84px; width: 260px; }
   #sc8-root .monitor-frame { background: var(--bg-card); border-radius: 4px 4px 0 0; border: 2px solid var(--border); border-bottom: none; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   #sc8-root .monitor-screen { background: var(--bg-metric); min-height: 180px; }
   #sc8-root .monitor-stand { width: 80px; height: 6px; background: var(--border); margin: 0 auto; border-radius: 0 0 4px 4px; }
@@ -117,7 +126,7 @@
   #sc8-root .wave-container svg { width: 100%; height: 20px; }
 
   /* LAPTOP */
-  #sc8-root .laptop-device { left: -30px; bottom: 50px; width: 260px; }
+  #sc8-root .laptop-device { left: 6px; bottom: 72px; width: 260px; }
   #sc8-root .laptop-frame { background: var(--bg-card); border-radius: 8px 8px 0 0; border: 2px solid var(--border); border-bottom: none; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
   #sc8-root .laptop-screen { background: var(--bg-metric); }
   #sc8-root .laptop-keyboard { background: #ddd; height: 10px; border-radius: 0 0 4px 4px; border: 2px solid var(--border); border-top: none; position: relative; }
@@ -137,7 +146,8 @@
 
   #sc8-root .label-tag { position: absolute; font-size: 10px; font-weight: 600; padding: 3px 10px; border-radius: 10px; z-index: 16; opacity: 0; transition: all 0.4s ease; pointer-events: none; }
   #sc8-root .label-tag.visible { opacity: 1; }
-  #sc8-root .instruction { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 8px; position: relative; z-index: 5; }
+  /* Instruction sits ABOVE the pills inside .main-area (pills are at bottom:16px). */
+  #sc8-root .instruction { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 0; position: absolute; bottom: 60px; left: 50%; transform: translateX(-50%); z-index: 20; width: 100%; }
 
 /* ══ PROTOTYPE INTEGRATION: Scene 8→9→10 ══ */
 #sc8-root .film-grain {
@@ -149,7 +159,7 @@
 #sc8-root .intro-text .intro-main { font-family: 'Outfit', sans-serif; font-size: 22px; font-weight: 600; color: var(--off-white); line-height: 1.4; max-width: 520px; }
 #sc8-root .intro-text .intro-sub { font-family: 'Barlow', sans-serif; font-size: 13px; font-weight: 500; color: rgba(242,240,235,0.45); letter-spacing: 2px; text-transform: uppercase; margin-top: 10px; }
 #sc8-root .intel-cards-wrap { position: absolute; top: 0; bottom: 0; left: -100px; right: -100px; pointer-events: none; z-index: 8; }
-#sc8-root .intel-card { position: absolute; width: 145px; background: rgba(13,15,26,0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-left: 3px solid var(--red); border-radius: 8px; padding: 10px 12px; opacity: 0; transform: scale(0.7); pointer-events: auto; }
+#sc8-root .intel-card { position: absolute; width: 145px; background: rgba(13,15,26,0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-left: 3px solid var(--red); border-radius: 8px; padding: 10px 12px; opacity: 0; transform: scale(0.7); pointer-events: none; }
 #sc8-root .intel-card .card-category { font-family: 'Barlow', sans-serif; font-size: 10px; font-weight: 500; color: rgba(242,240,235,0.45); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
 #sc8-root .intel-card .card-value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500; color: var(--off-white); margin-bottom: 8px; line-height: 1; }
 #sc8-root .intel-card .micro-chart { height: 28px; display: flex; align-items: flex-end; }
@@ -179,13 +189,14 @@
 @media(max-width:768px){
   /* Scene stacks from the top so header + map + pills all fit */
   #sc8-root .scene{justify-content:flex-start;padding:16px 0}
-  #sc8-root .header{margin-bottom:6px;padding:0 12px}
+  /* Reset the desktop absolute positioning so the phone keeps its stacked flow */
+  #sc8-root .header{position:static;transform:none;top:auto;left:auto;width:auto;margin-bottom:6px;padding:0 12px}
   #sc8-root .header h1{font-size:20px;line-height:1.25}
   #sc8-root .header p{font-size:12px}
   #sc8-root .header .tag{font-size:10px;letter-spacing:3px}
 
   /* Main stage fills width; map scaled down */
-  #sc8-root .main-area{width:100vw;height:auto;flex:1;min-height:0}
+  #sc8-root .main-area{position:relative;top:auto;left:auto;transform:none;width:100vw;height:auto;flex:1;min-height:0}
   #sc8-root .india-map{top:40%}
   #sc8-root .india-map svg{height:300px}
   #sc8-root .bg-glow{width:340px;height:340px}
@@ -193,6 +204,8 @@
   /* Pills → wrapped, tap-activated strip */
   #sc8-root .pills{bottom:10px;flex-wrap:wrap;justify-content:center;width:94vw;gap:6px}
   #sc8-root .pill{padding:8px 14px;font-size:12px}
+  /* Instruction sits just above the wrapped mobile pill strip */
+  #sc8-root .instruction{bottom:52px}
 
   /* One device at a time, rendered CENTRED and fully visible. Each overlay
      becomes a full-area flex box (clearing header top + pills bottom); the
