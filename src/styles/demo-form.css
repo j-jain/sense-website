@@ -1,0 +1,149 @@
+/* ============================================================
+   demo-form.css — "Request a Demo" modal.
+   Imported by src/shared/demo-form.js (not main.css) so the whole
+   feature is self-contained. Brand tokens from tokens.css.
+   ============================================================ */
+
+.demo-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.demo-modal.is-open { display: flex; }
+
+.demo-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.78);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.demo-modal__card {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--bg-card, #131318);
+  border: 1px solid var(--red-border, rgba(215, 48, 48, 0.30));
+  padding: 40px 36px;
+  color: var(--off-white, #F2F0EB);
+  font-family: 'Outfit', sans-serif;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+}
+
+.demo-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--off-white, #F2F0EB);
+  font-size: 26px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.demo-modal__close:hover { opacity: 1; }
+
+.demo-modal__title {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0 0 6px;
+}
+.demo-modal__sub {
+  font-size: 13px;
+  line-height: 1.5;
+  color: rgba(242, 240, 235, 0.6);
+  margin: 0 0 24px;
+}
+
+.demo-field { display: flex; flex-direction: column; margin-bottom: 16px; }
+.demo-field label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(242, 240, 235, 0.7);
+  margin-bottom: 7px;
+}
+.demo-field label span {
+  text-transform: none;
+  letter-spacing: 0;
+  font-weight: 400;
+  color: rgba(242, 240, 235, 0.4);
+}
+.demo-field input,
+.demo-field textarea {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border, rgba(255, 255, 255, 0.12));
+  color: var(--off-white, #F2F0EB);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  padding: 11px 13px;
+  outline: none;
+  border-radius: 0;
+  transition: border-color 0.2s, background 0.2s;
+}
+.demo-field input:focus,
+.demo-field textarea:focus {
+  border-color: var(--red, #D73030);
+  background: rgba(255, 255, 255, 0.06);
+}
+.demo-field textarea { resize: vertical; min-height: 64px; }
+
+/* Honeypot — hidden from humans, off-screen + non-focusable */
+.demo-hp {
+  position: absolute !important;
+  left: -9999px !important;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.demo-form__msg {
+  font-size: 13px;
+  line-height: 1.45;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border: 1px solid transparent;
+}
+.demo-form__msg.is-error {
+  color: #ff9a9a;
+  border-color: rgba(215, 48, 48, 0.5);
+  background: rgba(215, 48, 48, 0.08);
+}
+
+.demo-submit {
+  width: 100%;
+  margin-top: 4px;
+  background: var(--red, #D73030);
+  color: var(--off-white, #F2F0EB);
+  border: none;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.demo-submit:hover { background: #b82020; }
+.demo-submit:disabled { opacity: 0.6; cursor: default; }
+
+.demo-success { text-align: center; padding: 18px 0; }
+.demo-success h2 { font-size: 24px; font-weight: 700; margin: 0 0 10px; }
+.demo-success p { font-size: 14px; line-height: 1.5; color: rgba(242, 240, 235, 0.6); margin: 0; }
+
+@media (max-width: 520px) {
+  .demo-modal__card { padding: 32px 22px; }
+  .demo-modal__title { font-size: 22px; }
+}

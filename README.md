@@ -34,8 +34,21 @@ npm run preview    # serve the production build locally
 
 ## Environment variables
 
-None required to build or run. See [`.env.example`](.env.example) — a placeholder is
-reserved for the future demo-form submission destination.
+The **frontend** needs none to build or run. The **demo-form API** (`/api`) needs a
+storage connection string — see [`.env.example`](.env.example) and "Demo form / API" below.
+
+## Demo form / API
+
+The "Request a Demo" CTA opens a modal (`src/shared/demo-form.js` + `src/styles/demo-form.css`,
+loaded via `setup.js`) that POSTs to an **Azure Static Web Apps managed Function** at
+`POST /api/demo-request` (`api/src/functions/demo-request.js`, Functions v4 / Node 20). The
+Function validates the payload (+ a honeypot field) and writes each lead to an **Azure Table**
+(`demosubmissions`) in the storage account named by the connection string.
+
+**Required app setting** (Portal → Static Web App → Settings → Configuration → Application
+settings): `STORAGE_CONNECTION_STRING` = the storage account's connection string. Optional
+`DEMO_TABLE_NAME` (defaults to `demosubmissions`). The table is auto-created on first submit.
+For local function dev, place these in `api/local.settings.json` (git-ignored).
 
 ## Project structure
 
@@ -43,8 +56,9 @@ reserved for the future demo-form submission destination.
 index.html              thin shell: <head>, nav, scroll indicator, the module <script>,
                         and <!-- include: ... --> markers for each scene
 vite.config.js          Vite config + a small built-in HTML-include helper
-staticwebapp.config.json  Azure Static Web Apps headers (CSP, HSTS, etc.) + SPA fallback
+staticwebapp.config.json  (in public/) Azure SWA headers (CSP, HSTS, etc.) + SPA fallback
 public/                 static assets served as-is (poster image, robots.txt, sitemap.xml)
+api/                    Azure SWA managed Function — POST /api/demo-request → Azure Table
 src/
   main.js               imports shared setup, then each scene's JS — in scroll order
   main.css              @imports fonts, tokens, base, then each scene's CSS — in cascade order

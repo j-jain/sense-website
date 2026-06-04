@@ -1,0 +1,13 @@
+{
+  "name": "denso-sense-api",
+  "version": "1.0.0",
+  "description": "Azure Static Web Apps managed API for the DENSO sense website (demo-request form).",
+  "main": "src/functions/*.js",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.0",
+    "@azure/data-tables": "^13.3.0"
+  }
+}

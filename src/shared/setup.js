@@ -56,3 +56,9 @@ mqlMobile.addEventListener('change', syncMobileClass);
 
 export { lenis, showSI, hideSI, isMobile, MOBILE_QUERY };
 
+/* ── Request-a-Demo modal ───────────────────────
+   Self-contained feature: builds its own DOM, ships its own CSS, and
+   wires itself to the .nav-demo + #closingCta CTAs. Uses window.__lenis
+   (set above) for scroll-lock at runtime. */
+import './demo-form.js';
+
