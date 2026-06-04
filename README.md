@@ -20,7 +20,7 @@ video is currently served from Cloudflare R2; migration to Azure Blob Storage is
 
 ## Prerequisites
 
-- **Node.js 18+** (Node 20 LTS recommended)
+- **Node.js 20.19+** (Node 20 LTS recommended; required by Vite 8). Pinned via `engines` in `package.json` so the Azure build uses Node 20.x.
 - npm (ships with Node)
 
 ## Install, run, build
