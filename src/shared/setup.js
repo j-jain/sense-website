@@ -1,3 +1,16 @@
+/* ── Self-hosted libs (no CDN) ──────────────────
+   GSAP, ScrollTrigger and Lenis ship from npm and are re-exposed on
+   window so every scene's JS can keep using them as bare globals
+   (gsap.*, ScrollTrigger.*, new Lenis()) exactly as before. setup.js is
+   imported first in main.js, so these globals exist before any scene
+   module evaluates. Versions pinned to the previous CDN build. */
+import gsap from 'gsap';
+import ScrollTrigger from 'gsap/ScrollTrigger';
+import Lenis from 'lenis';
+window.gsap = gsap;
+window.ScrollTrigger = ScrollTrigger;
+window.Lenis = Lenis;
+
 /* ── Refresh resets to top of Scene 1 ─────────── */
 if('scrollRestoration' in history) history.scrollRestoration = 'manual';
 window.addEventListener('load', function(){ window.scrollTo(0, 0); });

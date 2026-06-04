@@ -2,6 +2,7 @@
    main.css — orchestrator. Imports in cascade order.
    Edit a scene's styles in its own file under scenes/.
    ============================================================ */
+@import './styles/fonts.css';
 @import './styles/tokens.css';
 @import './styles/base.css';
 @import './scenes/s1-world/s1.css';
