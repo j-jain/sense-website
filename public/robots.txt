@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://sense-website-nu.vercel.app/sitemap.xml
