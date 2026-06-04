@@ -305,7 +305,10 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     /* Extend wrapper so there's scroll room for the animation.
        Mobile skips the expand-to-dashboard morph, so it needs no extra scroll
        room — the section just scrolls away to the S23 phone app. */
-    wrapper.style.height = isMobile() ? '100vh' : '230vh';
+    /* Desktop no longer expands the phone into the dashboard here — the iPad
+       prototype (#proto-stage, next section) owns that. We only need room for
+       the slide-to-centre + a short fade-to-black hand-off. */
+    wrapper.style.height = isMobile() ? '100vh' : '160vh';
     ScrollTrigger.refresh();
     /* Snap to the pin start so the slide always begins from progress 0 —
        prevents any scroll accumulated during the walkthrough from making the
@@ -322,23 +325,9 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
      in the BASE dead zone and on any reverse (scroll-up) so the phone stays
      stuck on the left instead of sliding. */
   function resetToWalkthrough(){
-    var _s23 = document.getElementById('s23-trans');
-    var _dash = document.getElementById('s23-dash');
-    if(_s23 && _s23.style.position === 'fixed'){
-      _s23.style.position = '';
-      _s23.style.top = '';
-      _s23.style.left = '';
-      _s23.style.width = '';
-      _s23.style.height = '';
-      _s23.style.zIndex = '';
-      _s23.style.overflow = '';
-      _s23.style.background = '#0d0d0f';
-    }
-    if(_dash && _dash.style.opacity === '1'){
-      _dash.style.opacity = '0';
-      _dash.style.clipPath = '';
-      _dash.style.pointerEvents = 'none';
-    }
+    /* (Removed: stale resets of the proto's dashboard #s23-trans/#s23-dash from
+       the retired "Scene 2 expands into the dashboard" morph — the iPad proto now
+       owns that dashboard, so Scene 2 must not touch it.) */
     if(mapMorph) mapMorph.style.opacity = '0';
     phoneFrame.classList.remove('phone-fixed');
     phoneFrame.style.position = '';
@@ -347,6 +336,7 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     phoneFrame.style.zIndex = '';
     phoneFrame.style.transition = '';
     phoneFrame.style.opacity = '1';
+    phoneFrame.style.visibility = '';   /* never leave the phone hidden in the walkthrough */
     phoneFrame.style.transform = 'translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg)';
     mapMorphSrc = null;
     parallaxActive = true;
@@ -444,265 +434,55 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
         if(mapBgEl) mapBgEl.style.opacity = '1';
         if(screenWrapS2) screenWrapS2.style.background = '';
 
-        /* Reset S23 if scrolled back to slide phase */
-        var _s23s = document.getElementById('s23-trans');
-        var _dashs = document.getElementById('s23-dash');
-        if(_s23s && _s23s.style.position === 'fixed'){
-          _s23s.style.position = ''; _s23s.style.top = ''; _s23s.style.left = '';
-          _s23s.style.width = ''; _s23s.style.height = ''; _s23s.style.zIndex = '';
-          _s23s.style.overflow = ''; _s23s.style.background = '#0d0d0f';
-        }
-        if(_dashs){ _dashs.style.opacity = '0'; _dashs.style.clipPath = ''; _dashs.style.pointerEvents = 'none'; }
+        /* (Removed: stale S23 dashboard resets — the iPad proto owns that dashboard
+           now; Scene 2 hiding #s23-dash here was what blanked it inside the iPad.) */
         mapMorphSrc = null; /* re-cache on next expansion */
       }
 
-      /* ═══ EXPANSION (ap 0.143 → 1.0): Phone centered, now expand ═══
-         EXACT prototype phases — same boundaries, same math.
-         Adapted: translate(-50%,-50%) added since phone is centered via fixed pos.
-         Phases 3+4 (haze/scene swap) → dashboard cross-fade (no haze). */
+      /* ═══ POST-SLIDE (ap 0.167 → 1.0): the phone holds at viewport centre, the
+         Scene-2 stage fades to solid black, then the phone itself fades out. The
+         iPad-morph prototype (#proto-stage, the next pinned section) takes over
+         from this identical centred phone — no dashboard expansion here. ═══ */
       if(ap > SLIDE_END){
-        var ep = (ap - SLIDE_END) / (1 - SLIDE_END); /* 0→1 across 300vh */
+        var ep = (ap - SLIDE_END) / (1 - SLIDE_END); /* 0→1 */
 
         parallaxActive = false;
 
-        /* ── First entry to expansion: switch from transform-only slide to
-           position:fixed mode. The phone's CURRENT visual center IS already at
-           viewport center (slide ended with translateX(distance)), so adopting
-           .phone-fixed with left:viewport-center + translate(-50%,-50%) lands
-           the phone at exactly the same pixel — no visible jump.
-           CRUCIAL: set left + transform IN THE SAME synchronous block so the
-           position-mode flip doesn't paint with a stale translateX. */
-        if(!phoneFrame.classList.contains('phone-fixed')){
-          phoneFrame.style.transition = 'none';
-          phoneFrame.classList.add('phone-fixed');
-          phoneFrame.style.zIndex = '9999';
-          phoneFrame.style.left = (window.innerWidth / 2) + 'px';
-          phoneFrame.style.transform = 'translate(-50%,-50%) scale(1)';
+        /* Keep the phone centred IN-FLOW — same translateX the slide ended on.
+           Crucially NOT position:fixed: the phone is a child of the pinned #s2,
+           so the pin already holds it in view, and when #s2 unpins at the hand-off
+           it scrolls away with the section. A fixed phone would freeze in the
+           viewport and linger over the proto (the duplicate phone + the white-
+           screen occluding the iPad dashboard). */
+        if(phoneFrame.classList.contains('phone-fixed')){
+          phoneFrame.classList.remove('phone-fixed');
+          phoneFrame.style.position = '';
+          phoneFrame.style.top = '';
+          phoneFrame.style.left = '';
+          phoneFrame.style.zIndex = '';
         }
+        var panelCenter = phonePanel.offsetLeft + phonePanel.offsetWidth / 2;
+        var distance = (window.innerWidth / 2) - panelCenter;
+        phoneFrame.style.transition = 'none';
+        phoneFrame.style.transform = 'translateX(' + distance + 'px)';
 
-        /* Keep phone centered */
-        phoneFrame.style.left = (window.innerWidth / 2) + 'px';
+        /* Fade the cab / headline / features out quickly and bring up a solid
+           black stage to hand off on. */
+        var ft = Math.min(1, ep / 0.30);
+        if(imgPanel)     imgPanel.style.opacity = String(1 - ft);
+        if(headline)     headline.style.opacity = String(1 - ft);
+        if(featureList)  featureList.style.opacity = String((1 - ft) * (featureList.classList.contains('active') ? 1 : 0));
+        if(sceneHeading) sceneHeading.style.opacity = String(1 - ft);
+        s2Section.style.background = 'rgba(0,0,0,' + ft + ')';
+        if(ft > 0.5) s2Section.style.pointerEvents = 'none';
 
-        /* Also fade cab/features as expansion starts */
-        if(ep < 0.05){
-          var ft = ep / 0.05;
-          imgPanel.style.opacity = String(1 - ft);
-          if(headline) headline.style.opacity = String(1 - ft);
-          featureList.style.opacity = String((1 - ft) * (featureList.classList.contains('active') ? 1 : 0));
-          sceneHeading.style.opacity = String(1 - ft);
-          s2Section.style.background = 'rgba(0,0,0,' + (ft * 0.85) + ')';
-        } else {
-          imgPanel.style.opacity = '0';
-          if(headline) headline.style.opacity = '0';
-          featureList.style.opacity = '0';
-          sceneHeading.style.opacity = '0';
-          s2Section.style.background = 'rgba(0,0,0,0.85)';
-        }
-
-        /* ── Target: dashboard map area position + size ──
-           Measured RELATIVE to #s23-trans since it will be pinned at (0,0). */
-        var s23Section = document.getElementById('s23-trans');
-        var mapArea = s23Section ? s23Section.querySelector('.dash-map-area') : null;
-        var mapW, mapH, mapFinalLeft, mapFinalTop;
-        if(mapArea && s23Section){
-          var s23R = s23Section.getBoundingClientRect();
-          var mapR = mapArea.getBoundingClientRect();
-          mapW = mapR.width;
-          mapH = mapR.height;
-          mapFinalLeft = mapR.left - s23R.left;
-          mapFinalTop = mapR.top - s23R.top;
-        } else {
-          mapW = window.innerWidth - 500;
-          mapH = window.innerHeight * 0.6;
-          mapFinalLeft = 220;
-          mapFinalTop = 200;
-        }
-
-        /* ── Source: phone's map bg position (cached on first frame) ── */
-        if(!mapMorphSrc && mapBgEl){
-          var bgR = mapBgEl.getBoundingClientRect();
-          mapMorphSrc = { left: bgR.left, top: bgR.top, width: bgR.width, height: bgR.height };
-        }
-        var src = mapMorphSrc || { left: window.innerWidth/2 - 130, top: window.innerHeight/2 - 280, width: 260, height: 560 };
-        var tgt = { left: mapFinalLeft, top: mapFinalTop, width: mapW, height: mapH };
-
-        /* ── Phase 1+2 combined (ep 0–0.40): Everything simultaneous ──
-           Map morph flies from phone to dashboard. Phone fades out in place.
-           UI, chrome, phone body all dissolve at the same time. */
-        if(ep < 0.40){
-          var t = ep / 0.40;
-          /* easeInOutCubic for smooth motion */
-          var eased = t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
-
-          /* Map morph: show and animate from phone to dashboard */
-          if(mapMorph){
-            mapMorph.style.opacity = '1';
-            mapMorph.style.left   = (src.left + (tgt.left - src.left) * eased) + 'px';
-            mapMorph.style.top    = (src.top  + (tgt.top  - src.top)  * eased) + 'px';
-            mapMorph.style.width  = (src.width  + (tgt.width  - src.width)  * eased) + 'px';
-            mapMorph.style.height = (src.height + (tgt.height - src.height) * eased) + 'px';
-            mapMorph.style.borderRadius = (32 - eased * 22) + 'px'; /* 32px phone → 10px dashboard */
-          }
-
-          /* Hide original map bg inside phone (morph replaces it) */
-          if(mapBgEl) mapBgEl.style.opacity = '0';
-
-          /* Darken the phone screen so it BLACKS out (not whites out) as it
-             fades — the white screen base would otherwise flash bright against
-             the dark Scene 2 backdrop. */
-          if(screenWrapS2) screenWrapS2.style.background = '#0a0a0f';
-
-          /* Phone fades out in place — stays 280x580, no scaling, no moving */
-          phoneFrame.style.transition = 'none';
-          phoneFrame.style.transform = 'translate(-50%,-50%) scale(1)';
-          phoneFrame.style.top = '50%';
-          phoneFrame.style.opacity = String(1 - t);
-
-          /* Screen D UI overlay fades */
-          if(uiOverlay) uiOverlay.style.opacity = String(1 - t);
-          if(statusBar) statusBar.style.opacity = String(1 - t);
-
-          /* Chrome dissolves (twice as fast — done by t=0.5) */
-          var chromeT = Math.min(1, t * 2);
-          if(notch) notch.style.opacity = String(1 - chromeT);
-          volBtns.forEach(function(v){ v.style.opacity = String(1 - chromeT); });
-          if(phoneBody){
-            phoneBody.style.borderRadius = (40 * (1 - chromeT)) + 'px';
-            phoneBody.style.borderWidth = (2 * (1 - chromeT)) + 'px';
-            phoneBody.style.padding = (8 * (1 - chromeT)) + 'px';
-            var bgO = 1 - chromeT;
-            phoneBody.style.background = 'linear-gradient(145deg,rgba(42,45,62,' + bgO + '),rgba(29,36,56,' + bgO + '),rgba(13,15,26,' + bgO + '))';
-            phoneBody.style.boxShadow = '0 ' + (30 * bgO) + 'px ' + (80 * bgO) + 'px rgba(0,0,0,' + (.7 * bgO) + ')';
-          }
-          if(screenWrapS2) screenWrapS2.style.borderRadius = (32 * (1 - chromeT)) + 'px';
-        }
-
-        /* ── Phase 3 (ep >= 0.40): Lock morph at target, phone gone ── */
-        if(ep >= 0.40){
-          phoneFrame.style.opacity = '0';
-          phoneFrame.style.transition = 'none';
-          if(uiOverlay) uiOverlay.style.opacity = '0';
-          if(statusBar) statusBar.style.opacity = '0';
-          if(mapMorph){
-            mapMorph.style.opacity = '1';
-            mapMorph.style.left   = tgt.left + 'px';
-            mapMorph.style.top    = tgt.top + 'px';
-            mapMorph.style.width  = tgt.width + 'px';
-            mapMorph.style.height = tgt.height + 'px';
-            mapMorph.style.borderRadius = '10px';
-          }
-          if(mapBgEl) mapBgEl.style.opacity = '0';
-        }
-
-        /* ── Dashboard expand (ep 0.15→0.55): Runs SIMULTANEOUSLY with morph ──
-           Dark curtain lifts while morph is flying. Dashboard clip-path
-           expands outward from the map area. By ep 0.40 (morph done),
-           dashboard is mostly visible. By ep 0.55, fully revealed. */
-        var dashEl = document.getElementById('s23-dash');
-        var s23El  = document.getElementById('s23-trans');
-        var s23Left  = document.getElementById('s23-left');
-        var s23Right = document.getElementById('s23-right');
-
-        if(ep >= 0.15){
-          /* Dashboard expand progress: ep 0.15→0.55 maps to exT 0→1 */
-          var exT = Math.min(1, Math.max(0, (ep - 0.15) / 0.40));
-          /* easeOutCubic */
-          var exE = 1 - Math.pow(1 - exT, 3);
-
-          /* ── KEY FIX: Force S23 into viewport ──
-             S23-trans is below S2-wrapper in the DOM and hasn't scrolled
-             into view yet. We force it to position:fixed so it overlays
-             the viewport, sitting ABOVE S2 but BELOW the morph (z:9998). */
-          if(s23El){
-            s23El.style.position = 'fixed';
-            s23El.style.top = '0';
-            s23El.style.left = '0';
-            s23El.style.width = '100vw';
-            s23El.style.height = '100dvh';
-            s23El.style.zIndex = '100';
-            s23El.style.overflow = 'hidden';
-          }
-
-          /* Lift the dark curtain — S2 bg fades to transparent */
-          var curtainT = Math.min(1, exT / 0.4); /* done by 40% of expand = ep ~0.31 */
-          s2Section.style.background = 'rgba(0,0,0,' + (0.85 * (1 - curtainT)) + ')';
-          if(curtainT > 0.5) s2Section.style.pointerEvents = 'none';
-
-          /* Dashboard is visible — opacity 1, clip-path controls reveal */
-          if(dashEl){
-            dashEl.style.opacity = '1';
-            dashEl.style.pointerEvents = exE > 0.5 ? 'auto' : 'none';
-          }
-
-          /* Clip-path: starts at map-area rectangle, expands to full viewport */
-          if(dashEl && s23El){
-            var sR = s23El.getBoundingClientRect();
-            var iTop    = tgt.top;
-            var iLeft   = tgt.left;
-            var iBottom = sR.height - (tgt.top + tgt.height);
-            var iRight  = sR.width  - (tgt.left + tgt.width);
-
-            var cTop    = iTop    * (1 - exE);
-            var cRight  = iRight  * (1 - exE);
-            var cBottom = iBottom * (1 - exE);
-            var cLeft   = iLeft   * (1 - exE);
-            var cRadius = 10 * (1 - exE);
-
-            dashEl.style.clipPath = 'inset(' + cTop + 'px ' + cRight + 'px ' + cBottom + 'px ' + cLeft + 'px round ' + cRadius + 'px)';
-          }
-
-          /* S23 background: dark → light */
-          if(s23El){
-            var r = Math.round(13 + exE * (244 - 13));
-            var g = Math.round(13 + exE * (245 - 13));
-            var b = Math.round(15 + exE * (247 - 15));
-            s23El.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
-          }
-
-          /* Panels at final positions — clip-path reveals them */
-          if(s23Left){
-            s23Left.style.transform = 'translateX(0%)';
-            if(!s23Left.classList.contains('scroll-driven')) s23Left.classList.add('scroll-driven');
-            if(exE >= 1) s23Left.classList.add('in');
-            else s23Left.classList.remove('in');
-          }
-          if(s23Right){
-            s23Right.style.transform = 'translateX(0%)';
-            if(!s23Right.classList.contains('scroll-driven')) s23Right.classList.add('scroll-driven');
-            if(exE >= 1) s23Right.classList.add('in');
-            else s23Right.classList.remove('in');
-          }
-
-          /* Once dashboard is fully revealed, hide morph — dashboard's own
-             map image is identical and now visible beneath it */
-          if(exE >= 1 && mapMorph){
-            mapMorph.style.opacity = '0';
-          }
-
-        } else {
-          /* ── REVERSE: ep < 0.15 — reset everything ── */
-          phoneFrame.style.zIndex = '9999';
-          if(dashEl){
-            dashEl.style.opacity = '0';
-            dashEl.style.clipPath = '';
-            dashEl.style.pointerEvents = 'none';
-          }
-          /* Reset S23 back to normal flow */
-          if(s23El){
-            s23El.style.position = '';
-            s23El.style.top = '';
-            s23El.style.left = '';
-            s23El.style.width = '';
-            s23El.style.height = '';
-            s23El.style.zIndex = '';
-            s23El.style.overflow = '';
-            s23El.style.background = '#0d0d0f';
-          }
-          if(s23Left){ s23Left.classList.remove('in'); s23Left.classList.remove('scroll-driven'); }
-          if(s23Right){ s23Right.classList.remove('in'); s23Right.classList.remove('scroll-driven'); }
-          s2Section.style.background = 'rgba(0,0,0,0.85)';
-          s2Section.style.pointerEvents = '';
-        }
+        /* The phone does NOT fade and does NOT hide — it stays fully visible at
+           centre. The proto wrapper is pulled up 100vh so its pin begins exactly
+           where this one ends; the proto's identical centred phone (#phone, same
+           Screen D) reveals on top at that instant and occludes this one, so the
+           hand-off reads as ONE continuous phone that morphs into the iPad. */
+        phoneFrame.style.opacity = '1';
+        phoneFrame.style.visibility = '';
       }
     }
   });

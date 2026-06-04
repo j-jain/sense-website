@@ -163,10 +163,12 @@
 #sc8-root .intel-card .card-category { font-family: 'Barlow', sans-serif; font-size: 10px; font-weight: 500; color: rgba(242,240,235,0.45); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 4px; }
 #sc8-root .intel-card .card-value { font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 500; color: var(--off-white); margin-bottom: 8px; line-height: 1; }
 #sc8-root .intel-card .micro-chart { height: 28px; display: flex; align-items: flex-end; }
-#sc8-root .stats-row { position: absolute; bottom: 22%; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; z-index: 10; opacity: 0; }
+/* pointer-events:none so this opacity:0 reveal box can't float above the pills
+   (main-area is its own z:5 stacking context) and swallow their hover. */
+#sc8-root .stats-row { position: absolute; bottom: 22%; left: 50%; transform: translateX(-50%); display: flex; gap: 40px; z-index: 10; opacity: 0; pointer-events: none; }
 #sc8-root .stat-item { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: rgba(242,240,235,0.5); text-align: center; opacity: 0; }
 #sc8-root .stat-item .num { font-size: 28px; font-weight: 600; color: var(--off-white); display: block; margin-bottom: 4px; }
-#sc8-root .mega-headline { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 600; color: var(--off-white); text-align: center; opacity: 0; z-index: 10; white-space: nowrap; }
+#sc8-root .mega-headline { position: absolute; bottom: 10%; left: 50%; transform: translateX(-50%); font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 600; color: var(--off-white); text-align: center; opacity: 0; z-index: 10; white-space: nowrap; pointer-events: none; }
 #sc8-root .closing-section { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 30; pointer-events: none; opacity: 0; }
 #sc8-root .closing-word { font-family: 'Outfit', sans-serif; font-size: clamp(64px, 10vw, 140px); font-weight: 600; line-height: 1.12; letter-spacing: .01em; color: var(--off-white); opacity: 0; transform: translateY(20px); }
 #sc8-root .closing-word:nth-child(2) { color: var(--red); }

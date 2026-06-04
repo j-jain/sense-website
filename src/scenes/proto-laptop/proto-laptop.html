@@ -1,0 +1,325 @@
+<!-- proto-laptop scene partial. Generated from laptop-proto.html body.
+     phone-screen ids prefixed lp- to avoid colliding with the real s2 scene;
+     running-timer omitted (main site has none). Includes s23.html below. -->
+<div id="proto-wrapper">
+  <section id="proto-stage">
+
+    <!-- Intro caption (morph phase only) -->
+    <div class="proto-caption proto-cap-top" id="capTop">It begins in your hand.</div>
+
+    <!-- ── "Take a closer look" feature explorer ── -->
+    <aside id="lp-explorer">
+      <div class="lp-explorer-kicker">Take a closer look</div>
+      <div class="lp-explorer-title">Visibility throughout<br>the journey.</div>
+
+      <button class="lp-feature" data-detail="vehicle-health">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">Vehicle health</span>
+      </button>
+      <button class="lp-feature" data-detail="route">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">Route visibility</span>
+      </button>
+      <button class="lp-feature" data-detail="fuel">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">Fuel efficiency</span>
+      </button>
+      <button class="lp-feature" data-detail="driving">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">Driving behaviour</span>
+      </button>
+      <button class="lp-feature" data-detail="eta">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">ETA</span>
+      </button>
+      <button class="lp-feature" data-detail="trip">
+        <span class="lp-feat-icon">+</span><span class="lp-feat-title">Trip status</span>
+      </button>
+    </aside>
+
+    <!-- ── Device area (phone centered during morph, slides right on settle) ── -->
+    <div id="lp-device-area">
+      <div class="proto-device" id="device">
+
+        <!-- Soft contact shadow under the laptop -->
+        <div class="lp-shadow" id="lpShadow"></div>
+
+        <!-- Laptop keyboard deck (unfolds as the morph completes) -->
+        <div class="proto-base" id="base">
+          <div class="proto-keyboard"></div>
+          <div class="proto-trackpad"></div>
+        </div>
+
+        <!-- Hinge bar between lid and deck -->
+        <div class="lp-hinge" id="lpHinge"></div>
+
+        <!-- The REAL Scene-2 phone. JS reshapes the frame into a laptop screen and
+             dissolves the chrome (notch / buttons / bezel) as the morph completes. -->
+        <div class="s2-phone-frame lp-phone" id="phone">
+          <div class="s2-phone-body" id="phoneBody">
+            <!-- Volume buttons -->
+            <div class="s2-phone-vol"></div>
+            <div class="s2-phone-vol2"></div>
+            <!-- Dynamic Island notch + camera -->
+            <div class="s2-phone-notch" id="phoneNotch"><div class="s2-phone-cam"></div></div>
+            <!-- Laptop webcam (fades in as the phone notch dissolves) -->
+            <div class="lp-webcam" id="lpWebcam"></div>
+            <!-- Status bar (white on the dark live-trip screen) -->
+            <div class="s2-phone-statusbar on-dark" id="phoneStatus">
+              <div class="s2-sb-time">9:41</div>
+              <div class="s2-sb-right">
+                <div class="s2-sb-cell"><span></span><span></span><span></span><span></span></div>
+                <div class="s2-sb-wifi"><svg viewBox="0 0 16 12" fill="none"><path d="M8 10.5a1 1 0 100 2 1 1 0 000-2z" fill="currentColor"/><path d="M4.5 8.2a5 5 0 017 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M2 5.5a8.5 8.5 0 0112 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+                <div class="s2-sb-batt"><div class="s2-sb-batt-fill"></div></div>
+              </div>
+            </div>
+
+            <div class="s2-phone-screen-wrap" id="screen">
+              <!-- Real phone screens (resting on the Live-Trip screen). Fades out in the morph. -->
+              <div class="s2-screens" id="phoneScreens" style="transform:translateX(-75%)">
+                <div class="s2-screen" id="lp-s2-screenA"></div>
+                <div class="s2-screen" id="lp-s2-screenB"></div>
+                <div class="s2-screen" id="lp-s2-screenC"></div>
+                <!-- SCREEN D — Live Trip -->
+                <div class="s2-screen" id="lp-s2-screenD">
+                  <div class="s2d-map-bg"><img src="Picture1.jpg" alt="Live trip map"/></div>
+                  <div class="s2d-ui-overlay" id="lp-s2d-ui-overlay">
+                    <div class="s2d-header s2d-anim-item">
+                      <div class="s2d-hamburger"><span></span><span></span><span></span></div>
+                      <div class="s2d-avatar">A</div>
+                      <div class="s2d-user-info">
+                        <div class="s2d-user-hello">Hello Ustaad</div>
+                        <div class="s2d-user-name">Mr Ankur Sharma</div>
+                      </div>
+                      <div class="s2d-sos">SOS</div>
+                      <div class="s2d-bell"><svg viewBox="0 0 24 24" fill="none"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M13.73 21a2 2 0 01-3.46 0" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg></div>
+                    </div>
+                    <div class="s2d-speed-bar s2d-anim-item">
+                      <div class="s2d-speed"><div class="s2d-speed-num">0.0</div><div class="s2d-speed-unit">Km/h</div></div>
+                      <div class="s2d-dest">
+                        <div class="s2d-dest-name"><svg viewBox="0 0 24 24" fill="#3DA84A"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 010-5 2.5 2.5 0 010 5z"/></svg>Delhi</div>
+                        <div class="s2d-dest-time">~34 Hours · 2,150 km via NH44</div>
+                      </div>
+                    </div>
+                    <div class="s2d-map-area s2d-anim-item" style="opacity:1;transform:none">
+                      <img src="Picture1.jpg" alt="Live trip map"/>
+                      <div class="s2d-map-fab">
+                        <div class="s2d-fab-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.362 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.338 1.85.573 2.81.7A2 2 0 0122 16.92z" stroke="#fff" stroke-width="1.8"/></svg></div>
+                        <div class="s2d-fab-btn"><svg viewBox="0 0 24 24" fill="none"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="10" r="3" stroke="#fff" stroke-width="1.8"/></svg></div>
+                      </div>
+                      <div class="s2d-map-truck"><svg viewBox="0 0 24 18" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="#444" stroke-width="1.5"/><rect x="15" y="6" width="5" height="5" rx="1" stroke="#444" stroke-width="1.5"/><circle cx="6" cy="14" r="2" stroke="#444" stroke-width="1.5"/><circle cx="14" cy="14" r="2" stroke="#444" stroke-width="1.5"/></svg></div>
+                      <div class="s2d-trip-badge"><svg viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>Trip Started</div>
+                    </div>
+                    <div class="s2d-bottom-section s2d-anim-item">
+                      <div class="s2d-vehicle-bar">
+                        <div class="s2d-truck-icon"><svg viewBox="0 0 24 18" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="#555" stroke-width="1.5"/><rect x="15" y="6" width="5" height="5" rx="1" stroke="#555" stroke-width="1.5"/><circle cx="6" cy="14" r="2" stroke="#555" stroke-width="1.5"/><circle cx="14" cy="14" r="2" stroke="#555" stroke-width="1.5"/></svg></div>
+                        <div class="s2d-plate">MH 12 AB 1234</div>
+                      </div>
+                      <div class="s2d-end-trip">
+                        <div class="s2d-slider-handle"><svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5l7 7-7 7" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                        <div class="s2d-end-text">End Trip</div>
+                      </div>
+                    </div>
+                    <div class="s2d-bottom-nav s2d-anim-item">
+                      <div class="s2d-nav-item active"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="currentColor" stroke-width="1.8"/><path d="M2 17l10 5 10-5" stroke="currentColor" stroke-width="1.8"/><path d="M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.8"/></svg>Live</div>
+                      <div class="s2d-nav-item"><svg viewBox="0 0 24 24" fill="none"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" stroke="currentColor" stroke-width="1.8"/><polyline points="9,22 9,12 15,12 15,22" stroke="currentColor" stroke-width="1.8"/></svg>Home</div>
+                      <div class="s2d-nav-item"><svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="7" r="4" stroke="currentColor" stroke-width="1.8"/></svg>Profile</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Boot shimmer masks the phone→dashboard handoff -->
+              <div class="proto-boot" id="boot">
+                <div class="proto-boot-mark">sense</div>
+                <div class="proto-boot-text">Loading fleet command center…</div>
+                <div class="proto-boot-bar"><span id="bootBar"></span></div>
+              </div>
+
+              <!-- The REAL Scene-3 dashboard, rendered at desktop logical width then scaled
+                   to fit the laptop screen so it looks identical to the live site. -->
+              <div class="proto-dash-host lp-screen" id="dash">
+                <div class="lp-dash-scale" id="dashScale">
+                  <!-- include: src/scenes/s23-dashboard/s23.html -->
+
+                  <!-- Feature detail screens (overlay the dashboard centre column) -->
+                  <div class="lp-detail" data-detail="vehicle-health">
+                    <div class="lp-detail-head"><span>Vehicle Health</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-grid">
+                        <div class="dv-card"><div class="dr-section-title">Engine Health</div><div class="dr-metric-big" style="color:#43A047">96%</div><div class="dr-metric-sub">uptime · last 30 days</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Coolant</div><div class="dr-metric-big">94 <span style="font-size:14px;color:#888">°C</span></div><div class="dr-metric-sub">normal range 88–95°C</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Oil life</div><div class="dr-metric-big">78%</div><div class="dr-metric-sub">~6,200 km to service</div></div>
+                      </div>
+                      <div class="dv-chart-card">
+                        <div class="dv-chart-head">Engine health trend · 12 weeks <span class="dv-chart-head-val green">stable</span></div>
+                        <svg class="dv-chart-svg" viewBox="0 0 320 120" preserveAspectRatio="none">
+                          <g stroke="#eef0f3" stroke-width="1"><line x1="0" y1="40" x2="320" y2="40"/><line x1="0" y1="80" x2="320" y2="80"/></g>
+                          <polyline points="10,46 36,44 62,48 88,42 114,45 140,40 166,43 192,38 218,41 244,37 270,39 296,36 320,38" stroke="#43A047" stroke-width="2.5" fill="none"/>
+                          <polyline points="10,46 36,44 62,48 88,42 114,45 140,40 166,43 192,38 218,41 244,37 270,39 296,36 320,38 320,120 10,120" fill="rgba(67,160,71,.10)" stroke="none"/>
+                        </svg>
+                      </div>
+                      <div class="dv-section-h">Component status</div>
+                      <div class="dv-list">
+                        <div class="dv-li"><span class="dv-li-tag green">OK</span><strong>DPF / Exhaust</strong> · regeneration normal</div>
+                        <div class="dv-li"><span class="dv-li-tag green">OK</span><strong>Cooling system</strong> · 94°C within range</div>
+                        <div class="dv-li"><span class="dv-li-tag green">OK</span><strong>Brakes</strong> · pad wear 18%</div>
+                        <div class="dv-li"><span class="dv-li-tag amber">Watch</span><strong>Battery</strong> · 88% · check at next service</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lp-detail" data-detail="route">
+                    <div class="lp-detail-head"><span>Route Visibility</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-card" style="padding:20px">
+                        <div class="dr-section-title">Vehicles on Map</div>
+                        <div class="dr-metric-big">11 <span class="dr-metric-badge up">9 running · 2 idle</span></div>
+                        <div class="dr-metric-sub" style="margin-top:8px">Real-time GPS sync · updated every 4s</div>
+                      </div>
+                      <div class="dv-2col">
+                        <div class="dv-chart-card">
+                          <div class="dv-chart-head">Position update rate <span class="dv-chart-head-val green">4.1s</span></div>
+                          <svg class="dv-chart-svg sm" viewBox="0 0 320 80" preserveAspectRatio="none">
+                            <polyline points="0,55 30,52 60,58 90,50 120,48 150,45 180,42 210,45 240,40 270,42 300,38 320,40" stroke="#43A047" stroke-width="2" fill="none"/>
+                            <polyline points="0,55 30,52 60,58 90,50 120,48 150,45 180,42 210,45 240,40 270,42 300,38 320,40 320,80 0,80" fill="rgba(67,160,71,.12)" stroke="none"/>
+                          </svg>
+                        </div>
+                        <div class="dv-chart-card">
+                          <div class="dv-chart-head">GPS signal quality <span class="dv-chart-head-val green">98%</span></div>
+                          <svg class="dv-chart-svg sm" viewBox="0 0 320 80" preserveAspectRatio="none">
+                            <polyline points="0,20 30,18 60,22 90,20 120,18 150,20 180,18 210,22 240,18 270,20 300,18 320,20" stroke="#1D2438" stroke-width="2" fill="none"/>
+                          </svg>
+                        </div>
+                      </div>
+                      <div class="dv-section-h">On the corridor</div>
+                      <div class="dv-list">
+                        <div class="dv-li"><span class="dv-li-tag green">On route</span><strong>MH-12-AB-1234</strong> · NH44 · 58 km/h</div>
+                        <div class="dv-li"><span class="dv-li-tag green">On route</span><strong>UP-32-IJ-9087</strong> · Kanpur bypass · 71 km/h</div>
+                        <div class="dv-li"><span class="dv-li-tag amber">Idle</span><strong>DL-09-EF-7821</strong> · Pondicherry · 4m</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lp-detail" data-detail="fuel">
+                    <div class="lp-detail-head"><span>Fuel Efficiency</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-grid">
+                        <div class="dv-card"><div class="dr-section-title">Fleet Avg</div><div class="dr-metric-big">8.4 <span style="font-size:14px;color:#888">km/L</span></div><div class="dr-metric-sub" style="color:#43A047">+0.3 vs last month</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Consumed (7d)</div><div class="dr-metric-big">14,620 <span style="font-size:14px;color:#888">L</span></div></div>
+                        <div class="dv-card"><div class="dr-section-title">Cost YTD</div><div class="dr-metric-big">₹ 1.04 <span style="font-size:14px;color:#888">Cr</span></div></div>
+                        <div class="dv-card"><div class="dr-section-title">Cost / km</div><div class="dr-metric-big">₹ 11.2</div></div>
+                      </div>
+                      <div class="dv-chart-card">
+                        <div class="dv-chart-head">Avg km/L · last 12 weeks <span class="dv-chart-head-val green">trending up</span></div>
+                        <svg class="dv-chart-svg" viewBox="0 0 320 120" preserveAspectRatio="none">
+                          <g stroke="#eef0f3" stroke-width="1"><line x1="0" y1="30" x2="320" y2="30"/><line x1="0" y1="60" x2="320" y2="60"/><line x1="0" y1="90" x2="320" y2="90"/></g>
+                          <polyline points="10,80 36,76 62,82 88,78 114,74 140,70 166,72 192,66 218,62 244,58 270,54 296,50 320,46" stroke="#43A047" stroke-width="2.5" fill="none"/>
+                          <polyline points="10,80 36,76 62,82 88,78 114,74 140,70 166,72 192,66 218,62 244,58 270,54 296,50 320,46 320,120 10,120" fill="rgba(67,160,71,.10)" stroke="none"/>
+                        </svg>
+                      </div>
+                      <div class="dv-2col">
+                        <div class="dv-chart-card">
+                          <div class="dv-chart-head">Top consumers</div>
+                          <div class="dv-ranked">
+                            <div class="dv-rank-row"><span>RJ-14-GH-3340</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:95%"></div></div><span class="dv-rank-num">6.1 km/L</span></div>
+                            <div class="dv-rank-row"><span>HR-26-KL-4456</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:80%"></div></div><span class="dv-rank-num">7.2 km/L</span></div>
+                            <div class="dv-rank-row"><span>UP-32-IJ-9087</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:68%"></div></div><span class="dv-rank-num">7.9 km/L</span></div>
+                            <div class="dv-rank-row"><span>MH-12-AB-1234</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:42%"></div></div><span class="dv-rank-num">9.1 km/L</span></div>
+                          </div>
+                        </div>
+                        <div class="dv-chart-card">
+                          <div class="dv-chart-head">Anomalies</div>
+                          <div class="dv-list">
+                            <div class="dv-li"><span class="dv-li-tag red">+18%</span><strong>RJ-14-GH-3340</strong> · over baseline · coaching</div>
+                            <div class="dv-li"><span class="dv-li-tag amber">+9%</span><strong>HR-26-KL-4456</strong> · suspected idling</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lp-detail" data-detail="driving">
+                    <div class="lp-detail-head"><span>Driving Behaviour</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-grid">
+                        <div class="dv-card"><div class="dr-section-title">Fleet Driver Score</div><div class="dr-metric-big" style="color:#43A047">87 <span style="font-size:14px;color:#888">/100</span></div><div class="dr-metric-sub" style="color:#43A047">+4 vs last week</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Harsh braking</div><div class="dr-metric-big" style="color:#F5A623">3</div><div class="dr-metric-sub">events · last 24h</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Over-speeding</div><div class="dr-metric-big" style="color:#D73030">1</div><div class="dr-metric-sub">NH44 · 09:42</div></div>
+                      </div>
+                      <div class="dv-section-h">Driver leaderboard</div>
+                      <div class="dv-chart-card">
+                        <div class="dv-ranked">
+                          <div class="dv-rank-row"><span>Naman Gupta</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:94%;background:linear-gradient(90deg,#43A047,#5fce72)"></div></div><span class="dv-rank-num">94</span></div>
+                          <div class="dv-rank-row"><span>Veer Kumar</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:85%;background:linear-gradient(90deg,#43A047,#5fce72)"></div></div><span class="dv-rank-num">85</span></div>
+                          <div class="dv-rank-row"><span>Shweta Rani</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:80%;background:linear-gradient(90deg,#F5A623,#ffcf6b)"></div></div><span class="dv-rank-num">80</span></div>
+                          <div class="dv-rank-row"><span>Manish Sharma</span><div class="dv-rank-bar"><div class="dv-rank-bar-fill" style="width:64%;background:linear-gradient(90deg,#D73030,#ff6b6b)"></div></div><span class="dv-rank-num">64</span></div>
+                        </div>
+                      </div>
+                      <div class="dv-list">
+                        <div class="dv-li"><span class="dv-li-tag amber">Harsh brake</span><strong>GJ-01-CD-5512</strong> · 3 events in 5 km · 4m ago</div>
+                        <div class="dv-li"><span class="dv-li-tag red">Over-speed</span><strong>RJ-14-GH-3340</strong> · 96 km/h in 80 zone · 12m ago</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lp-detail" data-detail="eta">
+                    <div class="lp-detail-head"><span>ETA — Delhi</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-card" style="padding:20px">
+                        <div class="dr-section-title">Estimated arrival</div>
+                        <div class="dr-metric-big">14h 22m <span class="dr-metric-badge up">on time</span></div>
+                        <div class="dr-metric-sub" style="margin-top:8px">Delhi · NH44 corridor · ETA 23:04 tomorrow</div>
+                      </div>
+                      <div class="dv-grid">
+                        <div class="dv-card"><div class="dr-section-title">Distance left</div><div class="dr-metric-big">847 <span style="font-size:14px;color:#888">km</span></div></div>
+                        <div class="dv-card"><div class="dr-section-title">Covered</div><div class="dr-metric-big">1,303 <span style="font-size:14px;color:#888">km</span></div></div>
+                        <div class="dv-card"><div class="dr-section-title">Avg speed</div><div class="dr-metric-big">58 <span style="font-size:14px;color:#888">km/h</span></div></div>
+                      </div>
+                      <div class="dv-chart-card">
+                        <div class="dv-chart-head">Route progress <span class="dv-chart-head-val">61%</span></div>
+                        <div class="dr-progress" style="margin-top:6px">
+                          <div class="dr-progress-row"><span class="dr-progress-label">Bangalore → Delhi</span><div class="dr-progress-bar"><div class="dr-progress-fill completed" style="width:61%"></div></div></div>
+                        </div>
+                        <div class="dv-list" style="margin-top:10px">
+                          <div class="dv-li"><span class="dv-li-tag green">Passed</span><strong>Hyderabad</strong> · 06:12</div>
+                          <div class="dv-li"><span class="dv-li-tag green">Passed</span><strong>Nagpur</strong> · 13:48</div>
+                          <div class="dv-li"><span class="dv-li-tag amber">Next</span><strong>Jhansi</strong> · ETA 04:30</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="lp-detail" data-detail="trip">
+                    <div class="lp-detail-head"><span>Trip Status</span><button class="lp-detail-close">&times;</button></div>
+                    <div class="dv-body">
+                      <div class="dv-card" style="padding:20px">
+                        <div class="dr-section-title">Current trip</div>
+                        <div class="status-pill" style="margin-top:8px"><div class="pill-dot"></div><span class="pill-text">In Transit · Day 1 of 2 · 847 km remaining</span></div>
+                        <div class="dr-metric-sub" style="margin-top:10px">MH-12-AB-1234 · Naman Gupta · started 9:41 AM</div>
+                      </div>
+                      <div class="dv-grid">
+                        <div class="dv-card"><div class="dr-section-title">On-time</div><div class="dr-metric-big" style="color:#43A047">98.2%</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Stops</div><div class="dr-metric-big">2 <span style="font-size:14px;color:#888">/ 3</span></div><div class="dr-metric-sub">rest stops taken</div></div>
+                        <div class="dv-card"><div class="dr-section-title">Cargo</div><div class="dr-metric-big">14.2 <span style="font-size:14px;color:#888">t</span></div><div class="dr-metric-sub">sealed · verified</div></div>
+                      </div>
+                      <div class="dv-chart-card">
+                        <div class="dv-chart-head">Trip log</div>
+                        <div class="dv-list">
+                          <div class="dv-li"><span class="dv-li-tag green">09:41</span><strong>Trip started</strong> · Bangalore depot · DVIR passed</div>
+                          <div class="dv-li"><span class="dv-li-tag green">14:02</span><strong>Rest stop</strong> · 30 min · driver hours compliant</div>
+                          <div class="dv-li"><span class="dv-li-tag amber">now</span><strong>In transit</strong> · NH44 · 58 km/h</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div><!-- /.lp-dash-scale -->
+              </div><!-- /#dash -->
+
+              <!-- Subtle glass glare on the laptop display -->
+              <div class="lp-glare" id="lpGlare"></div>
+            </div><!-- /.s2-phone-screen-wrap (#screen) -->
+          </div><!-- /.s2-phone-body -->
+        </div><!-- /#phone -->
+      </div><!-- /#device -->
+    </div><!-- /#lp-device-area -->
+
+  </section>
+  <div class="proto-scrollhint" id="scrollHint">scroll ↓</div>
+</div>

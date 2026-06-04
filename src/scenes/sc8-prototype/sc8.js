@@ -65,14 +65,12 @@
   }
   pills.forEach(function(pill) {
     /* Pointer devices reveal on hover. After any touch, hover handlers no-op
-       and a tap toggles the device — so phones never depend on hover. */
+       and a tap toggles the device — so phones never depend on hover.
+       No mouseleave handler: the selection PERSISTS so exactly one pill is
+       always active (sc8ShowPill clears the previous one when switching). */
     pill.addEventListener('mouseenter', function() {
       if(sc8HadTouch) return;
       sc8ShowPill(pill);
-    });
-    pill.addEventListener('mouseleave', function() {
-      if(sc8HadTouch) return;
-      clearAll();
     });
     pill.addEventListener('click', function() {
       if(!sc8HadTouch) return;
@@ -80,6 +78,18 @@
       sc8ShowPill(pill);
     });
   });
+
+  /* Default selection: Conversational AI is active the moment you reach the
+     scene and stays selected until you hover another pill. Gated to real
+     pointer devices so touch keeps its tap-to-reveal flow (no mockup over
+     the map on arrival). */
+  function sc8ShowDefault(){
+    var def = sc8.querySelector('.pill[data-target="chat"]') || pills[0];
+    if (def) sc8ShowPill(def);
+  }
+  if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+    sc8ShowDefault();
+  }
 
   // ==================================================
   // Element References
@@ -238,7 +248,18 @@
   });
 
   // PHASE A (17-27%): Clear the Stage
-  tl.call(function(){ clearAll(); }, null, 0.16);
+  // Scrolling DOWN: clear before the pills/devices fade out.
+  // Scrubbing back UP to the top: re-enable the pill strip (undo the 0.25
+  // pointer-events disable) and restore the default selection so you land
+  // back on Conversational AI, interactive again.
+  tl.call(function(){
+    if (tl.scrollTrigger && tl.scrollTrigger.direction === -1) {
+      pillsWrap.style.pointerEvents = '';
+      if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) sc8ShowDefault();
+    } else {
+      clearAll();
+    }
+  }, null, 0.16);
   tl.to(pillsWrap, { opacity: 0, y: 20, duration: 0.04 }, 0.17)
     .to(instruction, { opacity: 0, duration: 0.03 }, 0.17)
     .to(header, { opacity: 0, y: -20, duration: 0.04 }, 0.18)

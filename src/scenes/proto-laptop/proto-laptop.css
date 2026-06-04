@@ -1,0 +1,322 @@
+/* ════════════════════════════════════════════════════════════
+   PROTO — Real phone → laptop morph + "Take a closer look" explorer
+   The REAL Scene-2 phone (s2.css) reshapes into a laptop; the REAL
+   Scene-3 dashboard (s23.css) boots inside, rendered at desktop
+   logical width then scaled to fit so it stays legible and identical.
+   Clicking a feature opens that metric's detailed screen in the laptop.
+════════════════════════════════════════════════════════════ */
+/* Dependencies (tokens, s2, s23, transitions) are loaded by main.css ahead of
+   this file in the bundle, and by explicit <link>s in the standalone
+   laptop-proto.html dev page — so they are NOT @imported here (that double-
+   bundled them, ~58 KB). This file carries only the proto's own rules. */
+
+:root{ --paper:#f4f5f7; --lp-scale:0.78; }
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#070809;color:var(--off-white);font-family:'Outfit',sans-serif;}
+
+#proto-wrapper{height:420vh;position:relative;}
+/* Desktop: pull the morph wrapper up by exactly one viewport so its pin begins
+   the instant Scene 2 unpins — removes the 100vh un-pinned scroll gap that made
+   the centred phone vanish and a "second" phone rise from below. The gap is
+   provably always exactly one viewport (two stacked full-screen pins), so -100vh
+   is exact and resize-safe. Mobile keeps the original flow.
+   (#proto-stage is held hidden until its pin engages — see proto-laptop.js — so
+   this overlap can't let the stage creep up over Scene 2 during the hand-off.) */
+@media (min-width:769px){ #proto-wrapper{ margin-top:-100vh; } }
+#proto-stage{
+  position:relative;height:100vh;width:100%;overflow:hidden;
+  perspective:1800px;
+  /* Flat black — must match the pure black Scene 2 fades to at the hand-off, else
+     the shade behind the phone visibly jumps when S2 swaps to this stage. A radial
+     gradient also drifted shade behind the device as it slides right on settle. */
+  background:#000;
+}
+
+/* ── Device area — phone centered during morph, slides right on settle ── */
+#lp-device-area{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .7s cubic-bezier(.4,0,.2,1);
+  will-change:transform;
+}
+#proto-stage.explorer-on #lp-device-area{transform:translateX(16vw);}
+
+.proto-device{position:relative;transform-style:preserve-3d;will-change:transform;}
+
+/* ── iPad mode: drop the laptop hardware (keyboard deck, hinge, ground shadow).
+      The slab + its floating drop-shadow remain → reads as a tablet.
+      The screen dimensions are unchanged (see laptopDims() in the JS). ── */
+.proto-base,
+.lp-hinge,
+.lp-shadow{display:none !important;}
+
+/* ── Real phone: shown immediately (s2.css hides it by default), the
+      transform root is #device so the frame itself carries no transform.
+      JS drives width/height (phone → laptop) inline. ── */
+.lp-phone.s2-phone-frame{
+  opacity:1 !important;
+  transform:none !important;
+  transition:none !important;
+  perspective:none;
+  will-change:width,height;
+}
+/* When the morph dissolves the chrome */
+.s2-phone-body.bare::before,
+.s2-phone-body.bare::after{display:none;}
+
+/* The proto's hand-off phone is a STATIC copy of Scene 2's Screen D — it is never
+   run through animateScreen(3), so reveal its .s2d-anim-item chrome (header, speed
+   bar, end-trip, bottom nav) that s2.css hides by default. Without this the copy
+   paints map-only and the hand-off "changes to a screen with only maps". */
+#lp-s2-screenD .s2d-anim-item{ opacity:1; transform:none; }
+
+/* Once it's a laptop: swap the bluish phone bezel for a neutral matte one
+   (the phone start keeps its exact look — class only added at chromeT>0.9). */
+.lp-phone.lp-laptop .s2-phone-body{
+  background:linear-gradient(160deg,#1c1e22 0%,#121317 55%,#0a0b0d 100%);
+  border-color:rgba(255,255,255,.08);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.7),
+    inset 0 0 0 1px rgba(255,255,255,.04),   /* crisp inner bezel edge */
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.lp-phone.lp-laptop .s2-phone-screen-wrap{
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.6); /* tight screen-to-bezel seam */
+}
+
+/* ── Boot shimmer (masks the phone→dashboard handoff) ── */
+.proto-boot{
+  position:absolute;inset:0;z-index:5;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:radial-gradient(circle at 50% 40%, #15171e, #0a0a0f);
+}
+.proto-boot-mark{font-weight:800;font-size:30px;letter-spacing:.04em;color:#fff;}
+.proto-boot-text{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(255,255,255,.45);text-transform:uppercase;}
+.proto-boot-bar{width:120px;height:3px;border-radius:3px;background:rgba(255,255,255,.12);overflow:hidden;}
+.proto-boot-bar span{display:block;height:100%;width:0;background:var(--red);}
+
+/* ── Dashboard host: scaled-to-fit the laptop screen ── */
+.proto-dash-host{
+  position:absolute;inset:0;z-index:4;
+  opacity:0;                 /* JS fades in */
+  background:var(--paper);overflow:hidden;
+}
+.lp-dash-scale{
+  position:relative;
+  width:1080px;height:675px;          /* desktop logical size (16:10) */
+  transform-origin:top left;
+  transform:scale(var(--lp-scale));   /* JS sets --lp-scale = hostWidth / 1080 */
+}
+
+/* ── Laptop keyboard deck (faux-3D, unfolds downward) — aluminium chassis ── */
+.proto-base{
+  position:absolute;top:100%;left:50%;
+  width:100%;height:62%;
+  transform-origin:top center;
+  transform:translateX(-50%) rotateX(80deg) scaleY(0);
+  /* aluminium + a faint screen-reflection sheen near the hinge (top) */
+  background:
+    linear-gradient(180deg, rgba(120,140,170,.10) 0%, rgba(120,140,170,0) 16%),
+    linear-gradient(180deg,#41454d 0%,#33373f 9%,#262a31 55%,#1b1e24 100%);
+  border-radius:9px 9px 18px 18px;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.14),
+    inset 0 -3px 8px rgba(0,0,0,.55),
+    inset 2px 0 4px rgba(0,0,0,.25),
+    inset -2px 0 4px rgba(0,0,0,.25),
+    0 44px 70px rgba(0,0,0,.65);
+  opacity:0;z-index:1;
+  padding:9% 9% 8%;
+  overflow:hidden;
+}
+/* Top speaker grille band */
+.proto-base::before{
+  content:'';position:absolute;top:5%;left:14%;right:14%;height:6%;border-radius:3px;
+  background:radial-gradient(circle, rgba(0,0,0,.55) 36%, transparent 38%) 0 0 / 5px 5px;
+  opacity:.5;
+}
+/* Front-lip notch (centre cutout) */
+.proto-base::after{
+  content:'';position:absolute;left:50%;bottom:2.5%;transform:translateX(-50%);
+  width:15%;height:7px;border-radius:0 0 9px 9px;
+  background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.15));
+}
+/* Recessed key well + keycaps (dense key grid + function row) */
+.proto-keyboard{
+  margin-top:8%;height:54%;border-radius:6px;
+  background-color:#070809;
+  background-image:
+    /* per-key top-light → bottom-shade for a capped look */
+    linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.32)),
+    /* columns of keycaps (cap 4.4%, gap 1.1%) */
+    repeating-linear-gradient(90deg,#2d3038 0 4.4%, #070809 4.4% 5.5%),
+    /* rows of keycaps (cap 16%, gap 3.5%) */
+    repeating-linear-gradient(0deg,#2d3038 0 16%, #070809 16% 19.5%);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.8), inset 0 -1px 0 rgba(255,255,255,.04);
+  position:relative;
+  padding-top:12%;            /* room for the function row */
+}
+/* Function row — thinner keys along the top */
+.proto-keyboard::before{
+  content:'';position:absolute;top:3%;left:1.5%;right:1.5%;height:8%;border-radius:2px;
+  background:repeating-linear-gradient(90deg,#23262d 0 3.1%, transparent 3.1% 4.0%);
+}
+/* Spacebar */
+.proto-keyboard::after{
+  content:'';position:absolute;left:50%;bottom:7%;transform:translateX(-50%);
+  width:40%;height:11%;border-radius:3px;
+  background:linear-gradient(180deg,#30333b,#1a1d23);
+  box-shadow:0 1px 0 rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.05);
+}
+.proto-trackpad{
+  margin:3% auto 0;width:35%;height:24%;border-radius:8px;
+  background:linear-gradient(180deg,#2c2f37,#202329);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.07), inset 0 -2px 6px rgba(0,0,0,.45);
+}
+
+/* ── Laptop detail nodes (fade in with the morph; phone stays a phone) ── */
+.lp-hinge{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  width:88%;height:10px;margin-top:-4px;
+  background:linear-gradient(180deg,#202329 0%,#0c0d10 45%,#0a0b0e 62%,#1a1d22 100%);
+  border-radius:0 0 6px 6px;
+  box-shadow:0 4px 10px rgba(0,0,0,.7), inset 0 1px 0 rgba(255,255,255,.07);
+  opacity:0;z-index:2;
+}
+/* hinge cylinder sheen */
+.lp-hinge::after{
+  content:'';position:absolute;left:8%;right:8%;top:2px;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.10),transparent);
+}
+.lp-webcam{
+  /* Lowered so it clears the (now larger ~10px) bezel band and reads at the
+     screen edge instead of being swallowed dark-on-dark by the bezel. */
+  position:absolute;top:13px;left:50%;transform:translateX(-50%);
+  width:6px;height:6px;border-radius:50%;
+  background:radial-gradient(circle at 40% 35%,#33384f,#06070a);
+  box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 0 4px rgba(120,150,255,.15);
+  opacity:0;z-index:8;pointer-events:none;
+}
+.lp-shadow{
+  position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  width:74%;height:46px;margin-top:18px;
+  background:radial-gradient(ellipse at center, rgba(0,0,0,.55) 0%, rgba(0,0,0,0) 70%);
+  filter:blur(9px);opacity:0;z-index:0;pointer-events:none;
+}
+.lp-glare{
+  position:absolute;inset:0;z-index:20;pointer-events:none;opacity:0;
+  background:linear-gradient(123deg, rgba(255,255,255,.10) 0%, rgba(255,255,255,.02) 22%, rgba(255,255,255,0) 42%);
+  mix-blend-mode:screen;
+}
+
+/* R4: remove the bottom-left anomaly textbox */
+.lp-screen #s4-textbox{display:none !important;}
+
+/* R6: the nav sub-menu reveal is driven directly (inline max-height) — kill the
+   max-height transition so it applies instantly (the transition froze at 0 in the
+   explorer-driven flow, hiding the Tracking sub-items). */
+.lp-screen #s23-left .dl-nav-sub{transition:none !important;}
+
+/* ════════════════════════════════════════════════════════════
+   SCOPING — contain the s23 dashboard inside the scaled host
+════════════════════════════════════════════════════════════ */
+.lp-screen #s23-wrapper{height:100%;}
+.lp-screen #s23-trans{position:absolute;inset:0;min-height:0;height:100%;background:transparent;overflow:hidden;z-index:auto;}
+.lp-screen .dash-shell{opacity:1;pointer-events:auto;box-shadow:none;border-radius:0;}
+.lp-screen .dash-left,
+.lp-screen .dash-right{transform:none !important;}
+.lp-screen #s23-left{pointer-events:none;}
+.lp-screen #s3-hq-header,
+.lp-screen #s3-headline,
+.lp-screen #s23-mobile-app,
+.lp-screen #blackout-wrapper{display:none !important;}
+
+/* Smaller hero overlays — read as compact chips on the map */
+.lp-screen .data-ov{min-width:116px;padding:7px 9px;border-radius:6px;}
+.lp-screen .ov-label{font-size:8px;margin-bottom:3px;}
+.lp-screen .ov-value{font-size:13px;}
+.lp-screen .gauge-svg{width:40px;height:40px;}
+.lp-screen .gauge-wrap{gap:8px;}
+.lp-screen #ov2 .bar-track,
+.lp-screen #ov3 .bar-track{width:96px !important;}
+.lp-screen #ov4 .eta-line{width:104px !important;}
+.lp-screen .status-pill{padding:3px 8px;}
+.lp-screen .pill-text{font-size:9px;}
+
+/* ── Feature detail screen (overlays the dashboard centre column) ── */
+.lp-detail{
+  position:absolute;left:220px;top:0;width:580px;height:675px;z-index:40;
+  background:#f4f5f7;display:none;flex-direction:column;overflow:hidden;
+}
+.lp-detail.active{display:flex;animation:lpDetailIn .35s cubic-bezier(.4,0,.2,1);}
+@keyframes lpDetailIn{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+.lp-detail-head{
+  flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 12px;
+}
+.lp-detail-head span{font-size:22px;font-weight:700;color:#1D2438;}
+.lp-detail-close{
+  width:30px;height:30px;border-radius:50%;border:1px solid #d8d8de;background:#fff;
+  font-size:20px;line-height:1;color:#888;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.lp-detail-close:hover{color:#D73030;border-color:#D73030;}
+.lp-detail .dv-body{flex:1;overflow:auto;}
+
+/* ════════════════════════════════════════════════════════════
+   "Take a closer look" explorer
+════════════════════════════════════════════════════════════ */
+#lp-explorer{
+  position:absolute;left:4vw;top:50%;transform:translateY(-50%);
+  width:min(30vw,360px);z-index:60;
+  opacity:0;pointer-events:none;transition:opacity .6s ease;
+}
+#lp-explorer.on{opacity:1;pointer-events:auto;}
+.lp-explorer-kicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--red);margin-bottom:12px;}
+.lp-explorer-title{font-family:'Inter',sans-serif;font-size:30px;font-weight:600;line-height:1.12;letter-spacing:-.01em;color:#fff;margin-bottom:26px;}
+.lp-feature{
+  display:flex;align-items:center;gap:12px;width:100%;text-align:left;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;padding:14px 16px;margin-bottom:9px;cursor:pointer;
+  transition:background .25s ease,border-color .25s ease;
+  font-family:'Outfit',sans-serif;color:rgba(255,255,255,.92);
+}
+.lp-feature:hover{background:rgba(255,255,255,.07);}
+.lp-feature.active{background:var(--red-dim);border-color:var(--red-border);}
+.lp-feat-icon{
+  width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);
+  display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;
+  flex-shrink:0;color:rgba(255,255,255,.7);
+  transition:transform .3s ease,border-color .25s ease,color .25s ease;
+}
+.lp-feature.active .lp-feat-icon{transform:rotate(45deg);border-color:var(--red);color:var(--red);}
+.lp-feat-title{font-size:16px;font-weight:500;}
+
+/* ── Captions ── */
+.proto-caption{
+  position:absolute;z-index:30;opacity:0;will-change:opacity,transform;
+  max-width:520px;font-size:22px;line-height:1.45;font-weight:300;
+  color:rgba(255,255,255,.9);text-shadow:0 2px 24px rgba(0,0,0,.6);
+}
+.proto-cap-top{top:12%;left:50%;transform:translateX(-50%);text-align:center;}
+
+.proto-scrollhint{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;
+  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
+  text-transform:uppercase;color:rgba(255,255,255,.35);
+  animation:protoHint 2.2s ease-in-out infinite;
+}
+@keyframes protoHint{0%,100%{opacity:.25;transform:translateX(-50%) translateY(0)}50%{opacity:.6;transform:translateX(-50%) translateY(4px)}}
+
+/* ── Responsive ── desktop story; stack explorer below on narrow screens ── */
+@media(max-width:980px){
+  #proto-stage.explorer-on #lp-device-area{transform:translateY(-13vh) scale(.92);}
+  #lp-explorer{left:0;right:0;bottom:3vh;top:auto;transform:none;width:auto;padding:0 6vw;}
+  .lp-explorer-title{font-size:22px;margin-bottom:14px;}
+  .lp-feature{padding:11px 14px;margin-bottom:7px;}
+}
+@media(max-width:768px){
+  .lp-screen #s23-dash{display:grid !important;}
+  .lp-screen #s23-mobile-app{display:none !important;}
+}

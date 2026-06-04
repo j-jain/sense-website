@@ -9,6 +9,9 @@
 @import './scenes/s2-pretrip/s2.css';
 @import './scenes/s23-dashboard/s23.css';
 @import './shared/transitions.css';
+/* proto-laptop owns the phone→iPad morph + dashboard-in-iPad; its overrides must
+   cascade AFTER s23.css/transitions (its own @imports dedupe against the above). */
+@import './scenes/proto-laptop/proto-laptop.css';
 @import './scenes/s5a-diagnostic/s5a.css';
 @import './scenes/s5b-route/s5b.css';
 @import './scenes/s5c-handoff/s5c.css';

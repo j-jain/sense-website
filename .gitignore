@@ -8,8 +8,9 @@ dist/
 .claude/
 
 # Dev-only prototype & concept pages (not part of the shipped site)
+# NOTE: src/scenes/proto-laptop/ is now spliced into the shipped flow (referenced by
+# index.html / main.js / main.css), so it is tracked — do NOT re-ignore it or the deploy breaks.
 laptop-proto.html
-src/scenes/proto-laptop/
 s5c-laptop-proto.html
 src/scenes/proto-s5c/
 public/interstitials.html
