@@ -7,7 +7,13 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
 ════════════════════════════════════════════ */
 (function(){
   var wrapper = document.getElementById('s2-wrapper');
-  wrapper.style.height = '100vh'; /* Base — extended to 450vh once Screen D completes */
+  /* Desktop: pre-set to 160vh so proto-wrapper (margin-top:-100vh) starts 60vh
+     below s2's pin end — preventing the proto pin from firing at the same scroll
+     position as s2 and covering the phone walkthrough. The extra 60vh is inert
+     until Screen D completes (onUpdate returns early via !screenDComplete) and
+     scroll is locked during the walkthrough so the user can't reach it early.
+     Mobile: stays 100vh since proto-wrapper has no -100vh margin there. */
+  wrapper.style.height = isMobile() ? '100vh' : '160vh';
 
   var imgPanel     = document.getElementById('s2-img-panel');
   var cabImg       = document.getElementById('s2-cab-img');
