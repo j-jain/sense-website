@@ -37,12 +37,9 @@
 
 .proto-logo{position:absolute;top:4%;left:50%;transform:translateX(-50%);z-index:21;display:flex;align-items:center;gap:11px;font-family:var(--font-display);font-weight:600;letter-spacing:.34em;font-size:clamp(22px,2vw,30px);color:var(--off-white);padding-left:.34em}
 .proto-logo .mk{color:var(--red);font-weight:400;font-size:.46em;line-height:1;transform:translateY(-2px)}
-.proto-demopill{position:absolute;top:6%;right:3%;z-index:21;height:40px;padding:0 20px;border-radius:99px;background:var(--off-white);color:#0d0d0f;display:flex;align-items:center;font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer}
+.proto-demopill{position:absolute;top:calc(4% - 6px);right:3%;z-index:21;height:40px;padding:0 20px;border-radius:99px;background:var(--off-white);color:#0d0d0f;display:flex;align-items:center;font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;cursor:pointer}
 .proto-social{position:absolute;bottom:9%;left:var(--rail);z-index:21;display:flex;gap:10px}
 .proto-social div{width:34px;height:34px;border-radius:50%;border:1px solid var(--border);display:grid;place-items:center;font-size:12px;color:var(--text-2)}
-.proto-arrow{position:absolute;bottom:3.5%;left:50%;transform:translateX(-50%);z-index:21;display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--text-2);opacity:0}
-.proto-arrow .chev{font-size:16px;animation:protoArrowBob 2s ease-in-out infinite}
-@keyframes protoArrowBob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(4px);opacity:.9}}
 .proto-hero{position:absolute;left:var(--rail);top:32%;z-index:21;max-width:42%;text-align:left}
 .proto-eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--text-2);margin-bottom:16px;opacity:0}
 .proto-headline{font-family:var(--font-display);font-size:clamp(36px,4.6vw,72px);font-weight:300;line-height:1.04;letter-spacing:-0.03em;color:var(--text-1);text-wrap:pretty;opacity:0}

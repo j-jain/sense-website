@@ -46,7 +46,7 @@ import { lenis, isMobile } from '../../shared/setup.js';
 
   /* ── refs ── */
   var boot = $('#proto-boot'), intro = $('#proto-intro'), eyebrow = $('#proto-eyebrow'),
-      headline = $('#proto-headline'), arrow = $('#proto-arrow'), morph = $('#proto-morph'),
+      headline = $('#proto-headline'), morph = $('#proto-morph'),
       frame = $('#proto-frame'), cuboid = $('#proto-cuboid'), bgVideo = $('#proto-bg-video'),
       frameVideo = $('#proto-video'), statusbar = $('#proto-statusbar'), screens = $('#proto-screens'),
       sceneHeading = $('#proto-scene-heading'), headlineLeft = $('#proto-headline-left'),
@@ -149,12 +149,10 @@ import { lenis, isMobile } from '../../shared/setup.js';
     if (animated) {
       revealText(eyebrow, { stagger: 0.022, duration: 0.7 });
       revealText(headline, { stagger: 0.03, duration: 0.95, delay: 0.15 });
-      gsap.to(arrow, { opacity: 1, duration: 0.5, delay: 1.0 });
       /* unlock is scheduled unconditionally in the kickoff (below) */
     } else {
       var ec = splitText(eyebrow), hc = splitText(headline);
       gsap.set(ec.concat(hc), { yPercent: 0, opacity: 1 });
-      gsap.set(arrow, { opacity: 1 });
       enableScroll();
     }
   }

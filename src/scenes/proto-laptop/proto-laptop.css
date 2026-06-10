@@ -301,13 +301,6 @@ html,body{background:#070809;color:var(--off-white);font-family:'Outfit',sans-se
 }
 .proto-cap-top{top:12%;left:50%;transform:translateX(-50%);text-align:center;}
 
-.proto-scrollhint{
-  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:200;
-  font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.2em;
-  text-transform:uppercase;color:rgba(255,255,255,.35);
-  animation:protoHint 2.2s ease-in-out infinite;
-}
-@keyframes protoHint{0%,100%{opacity:.25;transform:translateX(-50%) translateY(0)}50%{opacity:.6;transform:translateX(-50%) translateY(4px)}}
 
 /* ── Responsive ── desktop story; stack explorer below on narrow screens ── */
 @media(max-width:980px){

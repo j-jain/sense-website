@@ -29,7 +29,6 @@ const bootBar     = document.getElementById('bootBar');
 const dash        = document.getElementById('dash');
 const dashScale   = document.getElementById('dashScale');
 const base        = document.getElementById('base');
-const scrollHint  = document.getElementById('scrollHint');
 const stage       = document.getElementById('proto-stage');
 const capTop      = document.getElementById('capTop');
 const lpHinge     = document.getElementById('lpHinge');
@@ -187,7 +186,6 @@ function render(p){
   }
 
   capTop.style.opacity = String(band(p, 0.00, 0.08));
-  scrollHint.style.opacity = p > 0.03 ? '0' : '';
 }
 
 /* ── Settle: reveal explorer + Scene-3 overlays (hold band only) ── */
