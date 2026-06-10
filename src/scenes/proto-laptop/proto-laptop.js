@@ -13,6 +13,7 @@
    shared/setup.js already created and registered — never build a second scroll
    system (it would fight the rest of the page). */
 import { lenis, isMobile } from '../../shared/setup.js';
+import { prepText, revealText } from '../../shared/text-reveal.js';
 
 /* ── Device / morph elements ── */
 const device      = document.getElementById('device');
@@ -49,8 +50,14 @@ document.body.appendChild(fsBlack);
 
 /* ── Explorer ── */
 const explorer = document.getElementById('lp-explorer');
+const lpTitle  = document.querySelector('.lp-explorer-title');
+prepText(lpTitle);  /* pre-split so the explorer title rises in on settle */
 const features = Array.from(document.querySelectorAll('.lp-feature'));
 const details  = Array.from(document.querySelectorAll('.lp-detail'));
+/* Declared up here (not beside the Explorer detail fns below) because the morph
+   ScrollTrigger fires onUpdate → enterScene4() → closeDetail() during create/
+   refresh, which reads openDetail before that block runs — a TDZ crash otherwise. */
+let openDetail = null;
 
 /* ── Scene-3 overlay elements ── */
 const ov1 = document.getElementById('ov1');
@@ -192,6 +199,7 @@ function settle(){
   explorer.classList.add('on');
   resetS3Overlays();
   revealS3Overlays();
+  revealText(lpTitle);
 }
 function unsettle(){
   if(!settled) return;
@@ -199,6 +207,7 @@ function unsettle(){
   stage.classList.remove('explorer-on');
   explorer.classList.remove('on');
   closeDetail();
+  prepText(lpTitle);  /* re-arm so a second scroll-down replays the reveal */
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -368,11 +377,12 @@ function runCountdown(){
 
   const tl = gsap.timeline({
     onComplete: function(){
-      /* Hand off to the REAL Scene 5 (unchanged). Mirror s23.js's handoff:
-         jump to the s5a wrapper under full-screen black, refresh, then let the
-         Scene-5 autoplay sequencer own scroll + its own blackouts. */
-      const s5a = document.getElementById('s5a-wrapper');
-      if(s5a) window.scrollTo(0, s5a.getBoundingClientRect().top + window.scrollY);
+      /* Hand off to the REAL Scene 5. Jump to the sideways Scene-5 STAGE (the
+         horizontal track of 5a/5b/5c lives inside it) under full-screen black,
+         refresh, then let the Scene-5 autoplay sequencer own scroll + the
+         sideways camera pans. */
+      const s5stage = document.getElementById('s5-stage');
+      if(s5stage) lenis.scrollTo(s5stage, { immediate: true, force: true });
       ScrollTrigger.refresh();
       if(typeof window.startScene5Autoplay === 'function'){
         window.startScene5Autoplay();
@@ -381,39 +391,25 @@ function runCountdown(){
         window.__scrollLocked = false;
         try{ lenis.start(); }catch(e){}
       }
-      /* Lift our curtain so Scene 5 (which manages its own blackouts) shows. */
+      /* Reset the expand so scrolling back into the proto isn't left zoomed. */
+      gsap.set(stage, { scale: 1, clearProps: 'transform' });
+      /* Lift the curtain so Scene 5 shows. */
       gsap.to(fsBlack, { opacity: 0, duration: 0.5, delay: 0.15,
         onComplete: function(){ fsBlack.style.opacity = '0'; } });
     }
   });
 
-  tl.to(overlay, { opacity: 1, background: 'rgba(0,0,0,1)', duration: 0.4, ease: 'power2.out' }, 0);
+  /* THE SCREEN EXPANDS — the dashboard zooms up to fill the viewport, then
+     dissolves into Scene 5's dark. No 3-2-1, no hard cut: one continuous push. */
   tl.to(s4Textbox, { opacity: 0, duration: 0.3 }, 0);
-  tl.set(cdLog, { position: 'absolute', top: '50%', left: '50%', xPercent: -50, yPercent: -50, margin: 0, fontSize: '18px' }, 0);
-
-  tl.set(cdNumeral, { textContent: '3', opacity: 0, scale: 1.3 }, 0.5);
-  tl.to(cdNumeral, { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.7)' }, 0.5);
-  tl.to(cdProgress, { strokeDashoffset: circumference * 0.667, duration: 0.85, ease: 'power1.inOut' }, 0.5);
-  tl.to(cdNumeral, { opacity: 0, scale: 0.8, duration: 0.15 }, 1.35);
-  tl.set(cdNumeral, { textContent: '2', scale: 1.3 }, 1.5);
-  tl.to(cdNumeral, { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.7)' }, 1.5);
-  tl.to(cdProgress, { strokeDashoffset: circumference * 0.333, duration: 0.85, ease: 'power1.inOut' }, 1.5);
-  tl.to(cdNumeral, { opacity: 0, scale: 0.8, duration: 0.15 }, 2.35);
-  tl.set(cdNumeral, { textContent: '1', scale: 1.3 }, 2.5);
-  tl.to(cdNumeral, { opacity: 1, scale: 1, duration: 0.25, ease: 'back.out(1.7)' }, 2.5);
-  tl.to(cdProgress, { strokeDashoffset: 0, duration: 0.85, ease: 'power1.inOut' }, 2.5);
-
-  tl.to(cdNumeral, { opacity: 0, duration: 0.2 }, 3.4);
-  tl.to(ring, { opacity: 0, scale: 1.1, duration: 0.3, ease: 'power2.in' }, 3.4);
-
-  tl.to(cdLog, { opacity: 1, duration: 1, ease: 'power2.out' }, 3.6);
-  tl.to(overlay, { background: 'rgba(0,0,0,1)', duration: 0.3, ease: 'power2.in' }, 4.8);
-
-  /* Go FULL-SCREEN after "Initiating platform response…": a viewport-filling
-     black curtain rises over the iPad, then onComplete hands off to Scene 5.
-     (Scene 5 owns the running timer from here — no timer beat in the proto.) */
-  tl.to(fsBlack, { opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 5.0);
-  tl.to({}, { duration: 0.5 }, 5.6);   /* hold full black before the jump */
+  tl.to(stage, { scale: 2.4, transformOrigin: '50% 46%', duration: 1.2, ease: 'power3.inOut' }, 0);
+  if(overlay) tl.set(overlay, { display: 'flex', opacity: 0, background: 'rgba(0,0,0,0)' }, 0);
+  if(cdLog){
+    tl.set(cdLog, { position: 'absolute', top: '63%', left: '50%', xPercent: -50, yPercent: -50, margin: 0, fontSize: '15px', opacity: 0 }, 0);
+    tl.to(cdLog, { opacity: 1, duration: 0.5, ease: 'power2.out' }, 0.45);
+  }
+  tl.to(fsBlack, { opacity: 1, duration: 0.7, ease: 'power2.inOut' }, 0.7);
+  tl.to({}, { duration: 0.4 }, 1.5);   /* hold full black before the handoff jump */
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -424,7 +420,12 @@ ScrollTrigger.create({
   start: 'top top',
   end: 'bottom bottom',
   pin: '#proto-stage',
-  scrub: true,
+  /* scrub:1 (1s smoothing) matches Scene 1's #proto pin (s12.js) so the phone
+     hand-off across the seam eases at the same rate on both sides instead of
+     one snapping while the other is still gliding. anticipatePin avoids a
+     visible "catch" when this pin engages mid-scroll under Lenis smoothing. */
+  scrub: 1,
+  anticipatePin: 1,
   /* Desktop: the morph wrapper is pulled up 100vh (proto-laptop.css) so this pin
      starts the instant Scene 2 unpins — a seamless phone hand-off. Keep the opaque
      stage HIDDEN until its pin is actually active, else it creeps up over Scene 2's
@@ -484,7 +485,7 @@ window.addEventListener('keydown',   e => { if(window.__scrollLocked && SCROLL_K
 /* ════════════════════════════════════════════════════════════
    EXPLORER — click a feature to open its detail screen
 ════════════════════════════════════════════════════════════ */
-let openDetail = null;
+/* (openDetail is declared near the top — see the TDZ note there.) */
 
 /* Which dashboard nav item the red marker should jump to per feature */
 const DETAIL_NAV = {
