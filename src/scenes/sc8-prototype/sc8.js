@@ -335,5 +335,19 @@ import { prepText, revealChars } from '../../shared/text-reveal.js';
     if(dir === 1){ if(!sc8MegaFired){ sc8MegaFired = true; revealChars(megaHeadline); } }
     else { sc8MegaFired = false; prepText(megaHeadline); }
   }, null, 0.79);
-  tl.to({}, { duration: 0.04 }, 0.96);
+
+  // ── CLOSING FINALE: headline out → "Connected. Verified. Resolved." (one line) → brand · tagline · CTA ──
+  tl.to(megaHeadline, { opacity: 0, y: -16, duration: 0.03 }, 0.84);
+  tl.to(indiaMap, { opacity: 0.08, duration: 0.04 }, 0.84);
+  if (truckGroups && truckGroups.length) tl.to(truckGroups, { opacity: 0.2, duration: 0.04 }, 0.84);
+  tl.call(function(){ if (closingSection) closingSection.classList.remove('cs-active'); }, null, 0.84);
+  tl.to(closingSection, { opacity: 1, duration: 0.02 }, 0.85);
+  tl.call(function(){ if (closingSection) closingSection.classList.add('cs-active'); }, null, 0.85);
+  tl.to('#cw1', { opacity: 1, y: 0, duration: 0.03, ease: 'power3.out' }, 0.86);
+  tl.to('#cw2', { opacity: 1, y: 0, duration: 0.03, ease: 'power3.out' }, 0.885);
+  tl.to('#cw3', { opacity: 1, y: 0, duration: 0.03, ease: 'power3.out' }, 0.91);
+  tl.to('#closingBrand', { opacity: 1, y: 0, duration: 0.025, ease: 'power2.out' }, 0.94);
+  tl.to('#closingTagline', { opacity: 1, y: 0, duration: 0.025, ease: 'power2.out' }, 0.965);
+  tl.to('#closingCta', { opacity: 1, y: 0, duration: 0.025, ease: 'power2.out' }, 0.985);
+  tl.to({}, { duration: 0.01 }, 1.0);
 })();
