@@ -1,0 +1,96 @@
+/* ══════════════════════════════════════════
+   PROTO A · 5B — Service Network (Fleet Console)
+   Dark navy "tracking" card expanded to the full stage = the live map.
+   Scoped under #s5b for paste-portability.
+══════════════════════════════════════════ */
+#s5b-wrapper { position: relative; }
+#s5b {
+  position: relative; width: 100%; height: 100vh;
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+}
+#s5b .pa5-headline {
+  position: absolute; top: 6.5vh; left: 50%; transform: translateX(-50%);
+  font-family: var(--font-display); font-weight: 300;
+  font-size: clamp(1.4rem, 2.6vw, 2.3rem); line-height: 1.1; letter-spacing: -0.01em;
+  color: var(--off-white); text-align: center; opacity: 0; white-space: nowrap; pointer-events: none; z-index: 5;
+}
+
+/* the dark card */
+#s5b .pa5b-card {
+  position: relative; width: min(1040px, 94vw); height: min(80vh, 700px);
+  display: flex; flex-direction: column;
+  background: linear-gradient(160deg, #11192C 0%, #0B1120 100%);
+  border: 1px solid rgba(255,255,255,0.06); border-radius: var(--radius-3);
+  box-shadow: 0 44px 120px rgba(0,0,0,0.6);
+  overflow: hidden; opacity: 0; transform: scale(0.965);
+  color: var(--off-white); font-family: var(--font-body);
+}
+
+/* top strip */
+#s5b .pa5b-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 22px; border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+#s5b .pa5b-route-chips { display: flex; align-items: center; gap: 12px; }
+#s5b .pa5b-chip { font-family: var(--font-mono); font-size: 11.5px; letter-spacing: .04em; color: var(--text-2); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 999px; }
+#s5b .pa5b-chip.dest { color: var(--text-3); }
+#s5b .pa5b-chip.dest.locked { color: #fff; background: rgba(215,48,48,0.16); border-color: var(--red-border); }
+#s5b .pa5b-arrow { color: var(--text-3); font-size: 13px; }
+#s5b .pa5b-status { display: flex; align-items: center; gap: 8px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--amber); }
+#s5b .pa5b-status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--amber); box-shadow: 0 0 8px var(--amber); animation: pa5b-blink 1.1s ease-in-out infinite; }
+#s5b .pa5b-status.locked { color: var(--green); }
+#s5b .pa5b-status.locked .pa5b-status-dot { background: var(--green); box-shadow: 0 0 8px var(--green); animation: none; }
+@keyframes pa5b-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* map area */
+#s5b .pa5b-map-area { position: relative; flex: 1; min-height: 0; }
+#s5b .pa5b-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+#s5b .pa5b-grid, #s5b .pa5b-land { opacity: 0; }
+
+/* nodes */
+#s5b .pa5b-node { opacity: 0; }
+#s5b .pa5b-dot { fill: #5A6076; }  /* fill animated by GSAP — no CSS transition (it would fight the tween) */
+#s5b .pa5b-nl { font-family: var(--font-ui); font-size: 10px; fill: var(--text-3); text-anchor: middle; opacity: 0; }
+#s5b .pa5b-nl.sel { fill: #fff; }
+#s5b .pa5b-rl { font-family: var(--font-mono); font-size: 8px; fill: #E8584F; text-anchor: middle; opacity: 0; }
+
+/* truck */
+#s5b .pa5b-truck { opacity: 0; }
+#s5b .pa5b-truck-core { fill: var(--red); }
+#s5b .pa5b-truck-ring { fill: none; stroke: var(--red); stroke-width: 1.4; }
+
+/* routes (drawn via dashoffset in JS) */
+#s5b .pa5b-route-orig, #s5b .pa5b-route-det, #s5b .pa5b-route-aft { opacity: 0; }
+
+/* detail card — light, floats over the dark map */
+#s5b .pa5b-detail {
+  position: absolute; left: 24px; bottom: 22px; width: 248px;
+  background: #fff; color: var(--navy); border-radius: var(--radius-2);
+  box-shadow: 0 18px 48px rgba(0,0,0,0.5); padding: 15px 17px;
+  opacity: 0; transform: translateX(-22px);
+}
+#s5b .pa5b-detail-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; padding-bottom: 11px; border-bottom: 1px solid #EFEFF3; }
+#s5b .pa5b-detail-name { font-family: var(--font-display); font-size: 16px; color: var(--navy); }
+#s5b .pa5b-sla { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: #9A7A1E; background: #FBF1D6; border: 1px solid #EBD79A; padding: 3px 9px; border-radius: 999px; }
+#s5b .pa5b-detail-rows { display: flex; flex-direction: column; gap: 8px; }
+#s5b .pa5b-drow { display: flex; align-items: baseline; justify-content: space-between; }
+#s5b .pa5b-dk { font-size: 11px; color: #8A8FA0; }
+#s5b .pa5b-dv { font-family: var(--font-mono); font-size: 11.5px; color: var(--navy); }
+#s5b .pa5b-dv.ok { color: #2F7D3A; }
+
+/* footer */
+#s5b .pa5b-foot { display: flex; align-items: center; justify-content: space-between; padding: 14px 22px; border-top: 1px solid rgba(255,255,255,0.06); }
+#s5b .pa5b-foot-meta { font-family: var(--font-mono); font-size: 11px; color: var(--text-3); }
+#s5b .pa5b-lock { display: inline-flex; align-items: center; gap: 9px; font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #fff; background: var(--red); padding: 9px 18px; border-radius: 999px; transition: background .35s; }
+#s5b .pa5b-lock.locked { background: var(--green); }
+#s5b .pa5b-lock-ico { font-size: 10px; }
+
+/* mobile */
+@media (max-width: 768px) {
+  #s5b .pa5-headline { font-size: 18px; white-space: normal; width: 86vw; top: 4vh; }
+  #s5b .pa5b-card { width: 94vw; height: 84vh; }
+  #s5b .pa5b-top { flex-direction: column; gap: 9px; align-items: flex-start; }
+  #s5b .pa5b-detail { width: 200px; left: 12px; bottom: 14px; padding: 12px 13px; }
+  #s5b .pa5b-detail-name { font-size: 14px; }
+  #s5b .pa5b-foot-meta { display: none; }
+}

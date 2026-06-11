@@ -1,6 +1,9 @@
 import { defineConfig } from 'vite';
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const root = path.dirname(fileURLToPath(import.meta.url));
 
 // Tiny built-in HTML include (no third-party plugin).
 // Replaces `<!-- include: relative/path.html -->` in index.html with the file's
@@ -42,5 +45,21 @@ export default defineConfig({
   },
   build: {
     outDir: 'dist',
+    rollupOptions: {
+      // Multi-page: the live site plus the standalone Scene-5 prototypes.
+      // proto-a = Fleet Console, proto-b = Holographic HUD (each a complete
+      // 5a/5b/5c flow under src/proto-a|b/). proto-5a/5b/5c are the newer
+      // per-scene prototypes built sideways (cinematic horizontal auto-pan);
+      // 5a is the detailed X-ray-scan build, 5b/5c are placeholders for now.
+      // The old Scene 1→2 morph prototype (proto-morph.html) has been removed.
+      input: {
+        main: path.resolve(root, 'index.html'),
+        protoA: path.resolve(root, 'proto-a.html'),
+        protoB: path.resolve(root, 'proto-b.html'),
+        proto5a: path.resolve(root, 'proto-5a.html'),
+        proto5b: path.resolve(root, 'proto-5b.html'),
+        proto5c: path.resolve(root, 'proto-5c.html'),
+      },
+    },
   },
 });

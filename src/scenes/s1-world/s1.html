@@ -1,5 +1,5 @@
 <!-- ══════════════════════════════════════════
-     S1 — THE WORLD
+     S1 — THE WORLD (forma-frame hero)
 ══════════════════════════════════════════ -->
 <section id="s1">
 
@@ -15,91 +15,52 @@
     </div>
   </div>
 
-  <!-- ── Cinematic frame ───────────────────── -->
+  <!-- ── Forma frame stage (video clipped to the tabbed shape + white outline) ── -->
   <div class="s1-cinema" id="s1-cinema">
-    <video id="s1-video" muted playsinline preload="auto" poster="/s1-hero-poster.jpg">
-      <source src="https://densosensemedia.blob.core.windows.net/media/Truck_yard_blue_hour_highway_202605201710.mp4" type="video/mp4">
-    </video>
-    <div class="s1-overlay"></div>
-    <!-- Film grain — masks blue-hour gradient banding, adds cinematic texture -->
-    <div class="s1-grain"></div>
-    <!-- Camera viewfinder frame — border, AF corner brackets, REC, timecode -->
-    <div class="s1-frame" aria-hidden="true">
-      <span class="s1-corner tl"></span><span class="s1-corner tr"></span>
-      <span class="s1-corner bl"></span><span class="s1-corner br"></span>
-      <div class="s1-rec"><span class="s1-rec-dot"></span>REC</div>
-      <div class="s1-tc" id="s1-tc">00:00:00:00</div>
-      <span class="s1-reticle"></span>
-      <span class="s1-tick top"></span><span class="s1-tick bottom"></span>
-      <span class="s1-tick left"></span><span class="s1-tick right"></span>
-    </div>
-    <div class="s1-vignette-l"></div>
-    <div class="s1-vignette-r"></div>
-    <div class="s1-vignette-t"></div>
-    <div class="s1-vignette-b"></div>
+    <svg id="s1-frame-svg" viewBox="0 0 1440 675" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <clipPath id="s1FormaClip">
+          <path d="M 56 16 L 570 16 C 620 16 620 102 720 102 C 820 102 820 16 870 16 L 1384 16 A 40 40 0 0 1 1424 56 L 1424 619 A 40 40 0 0 1 1384 659 L 870 659 C 820 659 820 573 720 573 C 620 573 620 659 570 659 L 56 659 A 40 40 0 0 1 16 619 L 16 56 A 40 40 0 0 1 56 16 Z"/>
+        </clipPath>
+      </defs>
+      <foreignObject x="0" y="0" width="1440" height="675" clip-path="url(#s1FormaClip)">
+        <div xmlns="http://www.w3.org/1999/xhtml" style="width:100%;height:100%">
+          <video id="s1-video" class="s1-vid" muted playsinline preload="auto" poster="/s1-hero-poster.jpg">
+            <source src="https://densosensemedia.blob.core.windows.net/media/Truck_yard_blue_hour_highway_202605201710.mp4" type="video/mp4">
+          </video>
+        </div>
+      </foreignObject>
+      <path class="s1-frame-stroke"
+            d="M 56 16 L 570 16 C 620 16 620 102 720 102 C 820 102 820 16 870 16 L 1384 16 A 40 40 0 0 1 1424 56 L 1424 619 A 40 40 0 0 1 1384 659 L 870 659 C 820 659 820 573 720 573 C 620 573 620 659 570 659 L 56 659 A 40 40 0 0 1 16 619 L 16 56 A 40 40 0 0 1 56 16 Z"
+            fill="none" stroke="rgba(242,240,235,0.9)" stroke-width="2.5" vector-effect="non-scaling-stroke"/>
+    </svg>
 
-    <!-- Scan line (kept for boot reveal) -->
-    <div class="hud-scanline" id="hud-scanline" style="position:absolute;left:0;right:0;height:1px;background:linear-gradient(to right,transparent,rgba(215,48,48,.08),transparent);z-index:11;pointer-events:none;opacity:0;"></div>
+    <!-- overlay UI, positioned over the framed video -->
+    <div class="s1-ov">
+      <div class="s1-scrim"></div>
 
-  </div>
+      <!-- logo in the top tab -->
+      <div class="s1-logo"><span class="mk">■</span> sense</div>
+      <!-- demo CTA top-right -->
+      <a class="s1-demopill nav-demo" href="#s8">Request a Demo</a>
 
-  <!-- ── Scene bleed — color wash extending past cinema frame ── -->
-  <div class="s1-bleed" id="s1-bleed">
-    <div class="s1-bleed-l"></div>
-    <div class="s1-bleed-l-warm"></div>
-    <div class="s1-bleed-r"></div>
-    <div class="s1-bleed-r-warm"></div>
-    <div class="s1-bleed-line left"></div>
-    <div class="s1-bleed-line right"></div>
-  </div>
+      <!-- headline + CTA, left -->
+      <div class="s1-headline-wrap" id="s1-headline-wrap">
+        <div class="s1-eyebrow">Commercial vehicle intelligence</div>
+        <h1 id="s1-headline" class="f-display">Every journey begins<br>with a promise.</h1>
+        <div class="s1-cta-wrap" id="s1-cta-wrap">
+          <a id="start-btn" class="s1-btn" role="button" tabindex="0">Start Journey <span class="c">→</span></a>
+        </div>
+      </div>
 
-  <!-- ── Side data — left ── -->
-  <div class="s1-side-data left" id="s1-data-l">
-    <div class="sd-group">
-      <div class="sd-label">COORDINATES</div>
-      <div class="sd-value" id="sd-coords">28.6139° N<br>77.2090° E</div>
-    </div>
-    <div class="sd-group">
-      <div class="sd-label">ROUTE</div>
-      <div class="sd-value"><span class="red">NH-44</span><br><span class="dim">DELHI → CHENNAI</span></div>
-    </div>
-    <div class="sd-group">
-      <div class="sd-label">DISTANCE</div>
-      <div class="sd-value">2,182 KM<br><span class="green">ETA 14H 22M</span></div>
+      <!-- social bottom-left -->
+      <div class="s1-social"><div>in</div><div>x</div><div>▶</div></div>
+      <!-- scroll arrow in the bottom tab -->
+      <div class="s1-arrow" id="s1-arrow" aria-hidden="true">↓</div>
     </div>
   </div>
 
-  <!-- ── Side data — right ── -->
-  <div class="s1-side-data right" id="s1-data-r">
-    <div class="sd-group">
-      <div class="sd-label">TIME</div>
-      <div class="sd-value" id="sd-time">05:45 IST<br><span class="dim">BLUE HOUR</span></div>
-    </div>
-    <div class="sd-group">
-      <div class="sd-label">VEHICLE</div>
-      <div class="sd-value">TN-38-BK-4271<br><span class="dim">TATA PRIMA 4928.S</span></div>
-    </div>
-    <div class="sd-group">
-      <div class="sd-label">DIAGNOSTICS</div>
-      <div class="sd-value"><span class="green">DTC: 0</span><br><span class="green">ALL CLEAR</span></div>
-    </div>
-  </div>
-
-  <!-- ── Headline — left, upper ─────────────── -->
-  <div class="s1-headline-wrap" id="s1-headline-wrap">
-    <h1 id="s1-headline" class="f-display">Every journey begins<br>with a promise.</h1>
-  </div>
-
-  <!-- ── CTA — centered bottom ────────────────── -->
-  <div class="s1-cta-wrap" id="s1-cta-wrap">
-    <a id="start-btn" class="btn-outline" role="button" tabindex="0">
-      Start Journey
-      <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M8.5 1L13 5L8.5 9M1 5H13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
-    <div class="s1-key-hint" id="s1-key-hint"><span class="hint-desktop">PRESS ENTER TO BEGIN</span><span class="hint-mobile">TAP TO BEGIN</span></div>
-  </div>
 </section>
 
 <!-- Cinematic transition overlay -->
 <div class="s1-transition" id="s1-transition"></div>
-

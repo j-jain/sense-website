@@ -1,0 +1,173 @@
+/* ══════════════════════════════════════════════════════════════
+   stats-c.css — Prototype C · "Intelligence Dashboard"
+   Clean small-multiples grid + fault-signature gradient bars + a
+   fleet-command panel, over a faint India-map watermark. Crisp,
+   generously-spaced, premium. Crimson wash scrubbed across scroll.
+══════════════════════════════════════════════════════════════ */
+
+#psc {
+  position: relative;
+  background: transparent;
+  color: var(--text-1);
+  font-family: var(--font-body);
+  overflow: hidden;
+}
+
+/* ── Colour wash ── */
+.psc-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.psc-cold { position: absolute; inset: 0; background: radial-gradient(130% 80% at 50% -10%, rgba(29,36,56,0.5) 0%, rgba(13,13,15,0) 60%); }
+.psc-warm { position: absolute; inset: 0; opacity: 0; background: radial-gradient(110% 80% at 80% 30%, rgba(215,48,48,0.16) 0%, rgba(245,166,35,0.05) 45%, rgba(13,13,15,0) 72%); }
+
+/* ── Faint India-map watermark ── */
+.psc-mapbg {
+  position: absolute; top: 6%; left: 50%; transform: translateX(-50%);
+  width: min(820px, 80vw); z-index: 0; opacity: 0.5; pointer-events: none;
+}
+.psc-mapbg .india-map svg { display: block; width: 100%; height: auto; }
+.psc-mapbg .st { fill: none; stroke: rgba(242,240,235,0.06); stroke-width: 0.7; }
+.psc-mapbg .hw { display: none; }
+.psc-mapbg .city-dot { fill: rgba(215,48,48,0.35); }
+.psc-mapbg .city-label { display: none; }
+
+.psc-wrap {
+  position: relative; z-index: 1;
+  max-width: min(1200px, 94vw);
+  margin: 0 auto;
+  padding-inline: clamp(20px, 4vw, 56px);
+}
+
+/* ── Opening (left-aligned dashboard title) ── */
+.psc-head {
+  padding-top: clamp(120px, 20vh, 220px);
+  padding-bottom: clamp(40px, 7vh, 84px);
+}
+.psc-tag {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .3em; text-transform: uppercase; color: var(--text-2);
+}
+.psc-tag::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--red); box-shadow: 0 0 12px rgba(215,48,48,0.8); }
+.psc-h1 {
+  margin-top: var(--space-3); max-width: 22ch;
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2.1rem, 4.6vw, 4rem);
+  line-height: 1.05; letter-spacing: -0.02em; color: var(--text-1);
+}
+.psc-lede { margin-top: var(--space-3); max-width: 46ch; font-size: clamp(1.02rem, 1.5vw, 1.3rem); line-height: 1.5; color: var(--text-2); }
+
+/* ── Intelligence grid ── */
+.psc-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: clamp(14px, 1.6vw, 22px);
+}
+.psc-tile {
+  display: flex; flex-direction: column;
+  min-height: 168px;
+  padding: clamp(18px, 1.8vw, 26px);
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+  transition: border-color .3s, transform .3s, background .3s;
+}
+.psc-tile:hover { border-color: var(--red-border); transform: translateY(-2px); background: rgba(255,255,255,0.04); }
+.psc-tile-cat {
+  font-family: var(--font-mono);
+  font-size: 10.5px; letter-spacing: .18em; text-transform: uppercase; color: var(--text-3);
+}
+.psc-tile-val { display: flex; align-items: baseline; gap: 8px; margin-top: var(--space-2); }
+.psc-num {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2.1rem, 3vw, 3rem);
+  line-height: 0.95; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums; color: var(--text-1);
+}
+.psc-tile > .psc-num { margin-top: var(--space-2); }
+.psc-unit {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--text-3);
+}
+.psc-viz { display: block; margin-top: auto; padding-top: 18px; height: 30px; }
+.psc-viz svg { width: 100%; height: 26px; display: block; }
+.psc-viz-ring { display: flex; }
+.psc-viz-ring svg { width: 34px; height: 34px; }
+.psc-ring-bg { fill: none; stroke: rgba(255,255,255,0.10); stroke-width: 3; }
+.psc-ring-fg { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: var(--p) 100; }
+.psc-viz-dots { display: flex; align-items: center; gap: 9px; height: 30px; margin-top: auto; padding-top: 18px; }
+.psc-viz-dots span { width: 8px; height: 8px; border-radius: 50%; background: var(--red); box-shadow: 0 0 8px rgba(215,48,48,0.6); }
+.psc-viz-dots span:nth-child(2) { background: var(--amber); box-shadow: 0 0 8px rgba(245,166,35,0.5); }
+.psc-viz-dots span:nth-child(4) { background: var(--amber); box-shadow: 0 0 8px rgba(245,166,35,0.5); }
+
+/* ── Panels: fault signatures + fleet command ── */
+.psc-panels {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: clamp(14px, 1.6vw, 22px);
+  margin-top: clamp(14px, 1.6vw, 22px);
+}
+.psc-panel {
+  padding: clamp(20px, 2vw, 30px);
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-3);
+  backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px);
+}
+.psc-panel-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: clamp(18px, 2vh, 26px); }
+.psc-panel-title { font-family: var(--font-ui); font-weight: 600; font-size: clamp(0.95rem, 1.3vw, 1.15rem); letter-spacing: .02em; color: var(--text-1); }
+.psc-live { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--green); display: inline-flex; align-items: center; gap: 6px; }
+.psc-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+.psc-count { font-family: var(--font-mono); font-size: 12px; letter-spacing: .1em; color: var(--text-2); }
+
+/* fault bars */
+.psc-bars { display: flex; flex-direction: column; gap: clamp(14px, 1.8vh, 20px); }
+.psc-bar-row { display: grid; grid-template-columns: minmax(110px, auto) 1fr auto; align-items: center; gap: 16px; }
+.psc-bar-name { font-family: var(--font-body); font-size: 13px; color: var(--text-2); }
+.psc-bar-track { height: 8px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.psc-bar-fill {
+  display: block; height: 100%; width: var(--w); border-radius: 999px;
+  background: linear-gradient(90deg, #D73030 0%, rgba(245,166,35,0.45) 100%);
+  transform: scaleX(0); transform-origin: left center;
+}
+.psc-bar-count { font-family: var(--font-mono); font-size: 14px; color: var(--text-1); white-space: nowrap; }
+.psc-bar-count em { font-style: normal; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--text-3); margin-left: 4px; }
+
+/* fleet stats */
+.psc-fleet-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: clamp(20px, 2.4vh, 28px); }
+.psc-fstat { display: flex; flex-direction: column; gap: 5px; }
+.psc-fnum { font-family: var(--font-display); font-weight: 400; font-size: clamp(1.6rem, 2.4vw, 2.3rem); line-height: 1; letter-spacing: -0.02em; }
+.psc-flbl { font-family: var(--font-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--text-3); }
+
+/* route bars */
+.psc-routes { display: flex; flex-direction: column; gap: 12px; }
+.psc-route { display: grid; grid-template-columns: 54px 1fr 44px; align-items: center; gap: 12px; }
+.psc-route-name { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; color: var(--text-2); }
+.psc-route-track { height: 6px; border-radius: 999px; background: rgba(255,255,255,0.06); overflow: hidden; }
+.psc-route-fill { display: block; height: 100%; width: var(--w); border-radius: 999px; background: var(--c); transform: scaleX(0); transform-origin: left center; }
+.psc-route-pct { font-family: var(--font-mono); font-size: 12px; color: var(--text-2); text-align: right; }
+
+/* ── Synthesis ── */
+.psc-synth { text-align: center; padding-top: clamp(70px, 13vh, 160px); padding-bottom: clamp(36px, 7vh, 80px); }
+.psc-synth-main { margin: 0 auto; max-width: 24ch; font-family: var(--font-display); font-weight: 400; font-size: clamp(1.6rem, 3.4vw, 2.8rem); line-height: 1.12; letter-spacing: -0.01em; color: var(--text-1); }
+.psc-synth-sub { margin-top: var(--space-2); font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-2); }
+.psc-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 4vw, 56px); max-width: 900px; margin: clamp(40px, 7vh, 80px) auto 0; padding-top: clamp(30px, 5vh, 52px); border-top: 1px solid var(--border); }
+.psc-stat { display: flex; flex-direction: column; align-items: center; }
+.psc-stat-num {
+  font-family: var(--font-display); font-weight: 400;
+  font-size: clamp(2.4rem, 5.5vw, 4.6rem); line-height: 0.9; letter-spacing: -0.02em; font-variant-numeric: tabular-nums;
+  background: linear-gradient(120deg, #F5A623 0%, #D73030 70%);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent;
+}
+.psc-stat-lbl { margin-top: var(--space-2); font-family: var(--font-mono); font-size: 11px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); text-align: center; }
+
+/* ── Finale ── */
+.psc-finale { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding-block: clamp(110px, 18vh, 220px); }
+.psc-mega { max-width: 18ch; font-family: var(--font-display); font-weight: 400; font-size: clamp(2.1rem, 6.4vw, 5.4rem); line-height: 1.04; letter-spacing: -0.02em; color: var(--text-1); text-shadow: 0 0 80px rgba(215,48,48,0.28); }
+
+/* ── Mobile ── */
+@media (max-width: 768px) {
+  .psc-grid { grid-template-columns: 1fr; }
+  .psc-panels { grid-template-columns: 1fr; }
+  .psc-fleet-stats { grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .psc-stats { grid-template-columns: 1fr; gap: 30px; }
+  .psc-bar-row { grid-template-columns: 1fr auto; }
+  .psc-bar-track { grid-column: 1 / -1; order: 3; }
+}

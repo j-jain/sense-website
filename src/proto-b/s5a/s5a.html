@@ -1,0 +1,99 @@
+<!-- ══════════════════════════════════════════
+     PROTO B · 5A — DIAGNOSTIC HUD (Holographic)
+     Wireframe truck centre-stage, radial gauges + readouts arranged
+     around it, a scan sweep that isolates the DPF/exhaust module and
+     ignites it red. Recoloured from Image-2's cyan to brand off-white +
+     DENSO-red glow on a near-black field.
+══════════════════════════════════════════ -->
+<div id="s5a-wrapper">
+<section id="s5a" class="hud">
+
+  <!-- bracket-corner frame -->
+  <div class="hud-frame" id="s5a-frame"><span class="hc tl"></span><span class="hc tr"></span><span class="hc bl"></span><span class="hc br"></span></div>
+
+  <!-- engineering grid -->
+  <div class="hud-grid" id="s5a-grid"></div>
+
+  <!-- top step indicators -->
+  <div class="hud-steps" id="s5a-steps">
+    <div class="hud-step" data-s="0"><span class="hs-num">01</span><span class="hs-lbl">Scan</span></div>
+    <div class="hud-step" data-s="1"><span class="hs-num">02</span><span class="hs-lbl">Analyze</span></div>
+    <div class="hud-step" data-s="2"><span class="hs-num">03</span><span class="hs-lbl">Isolate</span></div>
+  </div>
+
+  <div class="hud-id" id="s5a-id">GJ-01-AB-1234 · TATA PRIMA 5530.S</div>
+
+  <!-- LEFT readouts -->
+  <div class="hud-left" id="s5a-left">
+    <div class="hud-gauge">
+      <svg viewBox="0 0 120 120" fill="none">
+        <circle cx="60" cy="60" r="50" stroke="rgba(242,240,235,0.12)" stroke-width="6"/>
+        <circle class="hud-gauge-arc" id="s5a-gauge" cx="60" cy="60" r="50" stroke="var(--off-white)" stroke-width="6" stroke-linecap="round" transform="rotate(-90 60 60)"/>
+      </svg>
+      <div class="hud-gauge-c"><span class="hud-gauge-v" id="s5a-gaugev">0</span><span class="hud-gauge-u">% load</span></div>
+    </div>
+    <div class="hud-bar" data-h="78"><span class="hb-k">Coolant</span><span class="hb-track"><i class="hb-fill"></i></span></div>
+    <div class="hud-bar" data-h="64"><span class="hb-k">Boost</span><span class="hb-track"><i class="hb-fill"></i></span></div>
+    <div class="hud-bar" data-h="91"><span class="hb-k">Oil press</span><span class="hb-track"><i class="hb-fill"></i></span></div>
+  </div>
+
+  <!-- CENTER wireframe truck -->
+  <div class="hud-center" id="s5a-center">
+    <svg class="hud-truck" id="s5a-truck" viewBox="0 0 460 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- ground line -->
+      <line class="tw" x1="20" y1="180" x2="440" y2="180" stroke-dasharray="2 6"/>
+      <!-- trailer -->
+      <path class="tw draw" d="M40 60 H250 V160 H40 Z"/>
+      <path class="tw" d="M40 90 H250 M40 120 H250"/>
+      <!-- cab -->
+      <path class="tw draw" d="M250 80 H320 L360 120 V160 H250 Z"/>
+      <path class="tw" d="M258 92 H312 L342 120 H258 Z"/>
+      <!-- chassis -->
+      <path class="tw" d="M40 160 H360 M250 160 V160"/>
+      <!-- wheels -->
+      <circle class="tw draw" cx="90" cy="170" r="16"/><circle class="tw" cx="90" cy="170" r="6"/>
+      <circle class="tw draw" cx="150" cy="170" r="16"/><circle class="tw" cx="150" cy="170" r="6"/>
+      <circle class="tw draw" cx="320" cy="170" r="16"/><circle class="tw" cx="320" cy="170" r="6"/>
+      <!-- exhaust / DPF module (the suspect) -->
+      <g class="hud-dpf" id="s5a-dpf">
+        <rect x="232" y="150" width="34" height="18" rx="2"/>
+        <line x1="266" y1="159" x2="286" y2="159"/>
+      </g>
+      <!-- hotspots that ping during scan -->
+      <circle class="hud-spot" cx="120" cy="100" r="3"/>
+      <circle class="hud-spot" cx="300" cy="110" r="3"/>
+      <circle class="hud-spot" cx="200" cy="140" r="3"/>
+    </svg>
+    <div class="hud-scanline" id="s5a-scanline"></div>
+
+    <!-- DPF callout -->
+    <div class="hud-callout" id="s5a-callout">
+      <div class="hud-callout-line"></div>
+      <div class="hud-callout-box">
+        <div class="hud-co-k">FAULT ISOLATED</div>
+        <div class="hud-co-v">DPF · PARTIAL BLOCKAGE</div>
+        <div class="hud-co-conf">CONFIDENCE <b id="s5a-conf">0</b>%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT front view + thermal -->
+  <div class="hud-right" id="s5a-right">
+    <svg class="hud-front" viewBox="0 0 120 110" fill="none">
+      <path class="tw draw" d="M30 30 H90 V92 H30 Z"/>
+      <path class="tw" d="M30 50 H90"/>
+      <rect class="hud-lamp" x="36" y="58" width="14" height="9" rx="1.5"/>
+      <rect class="hud-lamp" x="70" y="58" width="14" height="9" rx="1.5"/>
+      <path class="tw" d="M44 92 V104 M76 92 V104"/>
+    </svg>
+    <div class="hud-thermal" id="s5a-thermal"><span class="ht-k">Exhaust temp</span><span class="ht-v" id="s5a-temp">212°</span></div>
+  </div>
+
+  <!-- bottom telemetry ticker -->
+  <div class="hud-ticker" id="s5a-ticker">
+    <span class="hud-tick-status" id="s5a-tickstatus">› scanning subsystems…</span>
+    <span class="hud-tick-codes">P2002 · P0401 · DTC scan · 11 cleared</span>
+  </div>
+
+</section>
+</div>

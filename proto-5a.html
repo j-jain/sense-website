@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sense — Prototype · Scene 5A · X-ray Scan</title>
+  <meta name="robots" content="noindex">
+</head>
+<body class="proto-5a">
+
+  <!-- preview chrome (not part of the pasteable scene) -->
+  <div id="proto-chrome">
+    <span class="proto-mark"><strong>sense</strong></span>
+    <span class="proto-tag">Prototype · Scene 5A · X-ray Scan</span>
+    <button class="proto-replay" id="proto-replay" type="button">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+      Replay
+    </button>
+  </div>
+
+  <!-- ▶-mapped running timer (driven by the scene) -->
+  <div id="running-timer">00:00</div>
+
+  <!-- scroll indicator (referenced by proto-setup) -->
+  <div id="scroll-ind"><div class="si-dot"></div><div class="si-line"></div></div>
+
+  <!-- the single Scene-5A beat (built on a horizontal stage) -->
+  <div id="proto-root">
+    <!-- include: src/proto-5a/s5a/s5a.html -->
+  </div>
+
+  <script type="module" src="/src/proto-5a/main.js"></script>
+</body>
+</html>

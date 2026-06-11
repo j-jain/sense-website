@@ -1,289 +1,368 @@
-/* ══════════════════════════════════════════════
-   S5A — REMOTE DIAGNOSTICS (Hybrid Grid + Sidebar)
-══════════════════════════════════════════════ */
-#s5a-wrapper{position:relative}
+/* ══════════════════════════════════════════════════════════════
+   S5A — "Blueprint Scan" diagnostic (panel 1 of the sideways Scene-5 stage).
+   DIAGNOSTICS top-left, status rows + AI-Analyzes, subsystem cubes, and a
+   side-elevation MECHANICAL BLUEPRINT (cab-over 6×4 flatbed) in blueprint cyan
+   as the hero on the right. The drawing is present first; then a scan bar
+   sweeps over it and the front COOLING pack ignites red (overheating) in sync
+   with its cube + status row. Initial hidden states live here (no FOUC) AND
+   are re-applied by reset() so the loop replays clean.
+══════════════════════════════════════════════════════════════ */
 
-/* Scene headline (doc: "Repair begins before the truck arrives.") —
-   centered overlay near the top, above the grid. */
-.s5a-scene-headline{
-  position:absolute;top:64px;left:50%;transform:translateX(-50%);z-index:25;
-  font-family:'Outfit',sans-serif;font-size:clamp(15px,1.7vw,22px);font-weight:500;
-  letter-spacing:.01em;color:var(--off-white);text-align:center;white-space:nowrap;
-  pointer-events:none;text-shadow:0 2px 22px rgba(0,0,0,.7);
-}
-@media(max-width:768px){
-  .s5a-scene-headline{top:54px;font-size:14px;white-space:normal;width:88%;}
-}
-#s5a{
-  position:relative;min-height:100dvh;
-  overflow:hidden;
-  background:var(--bg);
-}
+#s5a-wrapper { position: relative; }     /* the stage CSS sizes this panel */
 
-/* Layout: Grid (~78%) + Sidebar (~22%) */
-.s5a-layout{
-  position:absolute;inset:0;z-index:10;
-  display:grid;
-  grid-template-columns:1fr 240px;
-  grid-template-rows:auto 1fr auto;
-  gap:0;opacity:0;
+#s5a {
+  position: relative;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  color: var(--off-white);
+  /* blueprint-cyan ink family — themeable in one place */
+  --s5a-ink:        rgba(150,210,255,0.92);   /* visible / object lines */
+  --s5a-ink-det:    rgba(150,210,255,0.50);   /* detail lines           */
+  --s5a-ink-faint:  rgba(150,210,255,0.30);   /* hidden / center / dims  */
+  --s5a-ink-txt:    rgba(176,222,255,0.66);   /* dimension text          */
+  --s5a-glass-fill: rgba(120,180,255,0.07);
 }
 
-/* Top bar (vehicle identity) */
-.s5a-top-bar{
-  grid-column:1/-1;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:16px 24px;border-bottom:1px solid var(--border);
-}
-.s5a-vid{display:flex;gap:20px;align-items:center}
-.s5a-vid-item{display:flex;align-items:center;gap:6px}
-.s5a-vid-key{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(242,240,235,0.12);text-transform:uppercase;letter-spacing:0.08em;
-}
-.s5a-vid-val{
-  font-family:'JetBrains Mono',monospace;font-size:11px;
-  color:var(--off-white);font-weight:500;
-}
-.s5a-vid-sep{width:1px;height:16px;background:var(--border)}
-
-/* Grid area (left) */
-.s5a-grid-area{
-  position:relative;display:flex;align-items:center;justify-content:center;
-  padding:20px 24px;overflow:hidden;
-}
-.s5a-grid-container{
-  display:grid;grid-template-columns:repeat(8,1fr);gap:5px;
-  width:100%;max-width:860px;visibility:hidden;
+.s5a-panel {
+  position: relative;
+  width: 100%; height: 100%;
+  display: grid;
+  grid-template-columns: minmax(380px, 42%) 1fr;
+  grid-template-rows: 1fr;
+  align-items: center;
+  gap: clamp(20px, 3vw, 56px);
+  padding: clamp(64px, 7vh, 104px) clamp(28px, 5vw, 88px) clamp(40px, 6vh, 72px);
 }
 
-/* Right sidebar */
-.s5a-sidebar{
-  border-left:1px solid var(--border);padding:20px 18px;
-  display:flex;flex-direction:column;overflow-y:auto;
-}
-.s5a-sidebar-label{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(242,240,235,0.12);text-transform:uppercase;letter-spacing:0.12em;
-  margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);
+/* ───────────────────────── LEFT COLUMN ───────────────────────── */
+.s5a-left {
+  display: flex; flex-direction: column;
+  align-self: center;
+  min-width: 0;
 }
 
-/* Progress tracker steps */
-.s5a-pt-step{
-  display:flex;align-items:flex-start;gap:10px;padding:10px 0;
-  position:relative;opacity:0.25;transition:opacity 0.5s ease;
+.s5a-eyebrow {
+  display: flex; align-items: center; gap: 14px;
+  opacity: 0;                                /* JS reveals */
+  margin-bottom: 10px;
 }
-.s5a-pt-step.active{opacity:1}
-.s5a-pt-step.done{opacity:0.6}
-.s5a-pt-step:not(:last-of-type)::after{
-  content:'';position:absolute;left:11px;top:34px;
-  width:1px;height:calc(100% - 14px);background:var(--border);
+.s5a-eye-veh {
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: .16em; text-transform: uppercase;
+  color: var(--text-3);
 }
-.s5a-pt-step.done:not(:last-of-type)::after{background:var(--green);opacity:0.3}
-.s5a-pt-num{
-  width:22px;height:22px;border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.08);
-  display:flex;align-items:center;justify-content:center;
-  font-family:'JetBrains Mono',monospace;font-size:10px;
-  color:rgba(242,240,235,0.45);flex-shrink:0;transition:all 0.4s ease;
+.s5a-pill {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: .14em; text-transform: uppercase;
+  color: var(--amber);
+  background: rgba(245,166,35,0.08);
+  border: 1px solid rgba(245,166,35,0.28);
+  border-radius: 999px; padding: 4px 11px;
+  transition: color .3s, background .3s, border-color .3s;
 }
-.s5a-pt-step.active .s5a-pt-num{
-  border-color:var(--red);color:var(--red);
-  box-shadow:0 0 10px rgba(215,48,48,0.35);
+.s5a-pill-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--amber); box-shadow: 0 0 7px var(--amber);
+  animation: s5a-blink 1.3s ease-in-out infinite;
 }
-.s5a-pt-step.done .s5a-pt-num{
-  border-color:var(--green);background:var(--green);color:white;box-shadow:none;
-}
-.s5a-pt-info{flex:1;min-width:0}
-.s5a-pt-label{
-  font-size:12px;font-weight:500;color:rgba(242,240,235,0.45);transition:color 0.3s ease;
-}
-.s5a-pt-step.active .s5a-pt-label{color:var(--off-white)}
-.s5a-pt-desc{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(242,240,235,0.12);margin-top:2px;line-height:1.4;
-  max-height:0;overflow:hidden;transition:max-height 0.4s ease,opacity 0.3s ease;opacity:0;
-}
-.s5a-pt-step.active .s5a-pt-desc{max-height:60px;opacity:1}
-.s5a-pt-step.done .s5a-pt-desc{max-height:40px;opacity:0.6}
-.s5a-pt-status{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(242,240,235,0.12);margin-top:3px;
-}
-.s5a-pt-step.active .s5a-pt-status{color:var(--amber)}
-.s5a-pt-step.done .s5a-pt-status{color:var(--green)}
+.s5a-pill.done { color: var(--green); background: rgba(61,168,74,0.08); border-color: rgba(61,168,74,0.3); }
+.s5a-pill.done .s5a-pill-dot { background: var(--green); box-shadow: 0 0 7px var(--green); animation: none; }
+@keyframes s5a-blink { 0%,100%{opacity:1} 50%{opacity:.3} }
 
-/* Readiness section (appears in Check 4) */
-.s5a-readiness{
-  margin-top:auto;padding-top:16px;border-top:1px solid var(--border);opacity:0;
+.s5a-title {
+  font-family: var(--font-mono);
+  font-size: clamp(2.6rem, 5.4vw, 5rem);
+  font-weight: 600;
+  line-height: .92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 2px 0 22px;
+  opacity: 0;                                /* JS reveals (char wipe) */
 }
-.s5a-readiness-title{
-  font-family:'JetBrains Mono',monospace;font-size:9px;
-  color:rgba(242,240,235,0.12);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px;
-}
-.s5a-rd-item{
-  display:flex;align-items:center;gap:8px;
-  padding:7px 0;border-bottom:1px solid rgba(255,255,255,0.02);
-  opacity:0;transform:translateX(8px);
-}
-.s5a-rd-dot{
-  width:8px;height:8px;border-radius:50%;
-  border:1.5px solid rgba(255,255,255,0.08);flex-shrink:0;transition:all 0.3s ease;
-}
-.s5a-rd-item.done .s5a-rd-dot{border-color:var(--green);background:var(--green)}
-.s5a-rd-label{font-size:11px;color:rgba(242,240,235,0.45);flex:1}
-.s5a-rd-item.done .s5a-rd-label{color:var(--off-white)}
-.s5a-rd-val{
-  font-family:'JetBrains Mono',monospace;font-size:10px;
-  color:rgba(242,240,235,0.12);text-align:right;
-}
-.s5a-rd-item.done .s5a-rd-val{color:var(--off-white)}
+.s5a-title .s5a-ch { display: inline-block; will-change: transform, opacity; }
 
-/* Bottom bar */
-.s5a-bottom-bar{
-  grid-column:1/-1;display:flex;align-items:center;justify-content:center;
-  padding:14px 24px;border-top:1px solid var(--border);min-height:48px;
+/* status rows */
+.s5a-status { display: flex; flex-direction: column; gap: 9px; }
+.s5a-strow {
+  display: flex; align-items: center; gap: 12px;
+  padding: 9px 12px;
+  background: rgba(255,255,255,0.025);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--text-faint);
+  border-radius: 9px;
+  opacity: 0;                                /* JS reveals */
+  transition: border-color .4s, background .4s;
 }
-.s5a-bottom-info{
-  font-family:'JetBrains Mono',monospace;font-size:14px;
-  color:rgba(242,240,235,0.6);letter-spacing:0.04em;
+.s5a-st-pct {
+  flex: 0 0 auto; min-width: 38px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .04em;
+  color: var(--text-2);
+  display: inline-flex; align-items: center;
 }
-.s5a-bottom-info span{color:var(--off-white);font-weight:500}
-.s5a-handoff-line{
-  font-family:'JetBrains Mono',monospace;font-size:14px;
-  color:rgba(242,240,235,0.6);display:none;
+.s5a-st-done { color: var(--green); }
+.s5a-st-warn { width: 16px; height: 16px; color: var(--amber); }
+.s5a-st-name { flex: 1 1 auto; font-size: 14px; font-weight: 500; color: var(--off-white); }
+.s5a-st-state {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--text-3);
 }
-.s5a-handoff-line .hf-cursor{
-  display:inline-block;width:1px;height:14px;background:var(--red);
-  margin-left:2px;vertical-align:middle;animation:s5a-blink 1s step-end infinite;
+.s5a-chip {
+  display: none;                             /* shown when the fault is flagged */
+  align-items: center; gap: 5px;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: .14em; text-transform: uppercase;
+  color: #fff; background: var(--red);
+  border-radius: 999px; padding: 4px 9px;
+  box-shadow: 0 0 14px rgba(215,48,48,0.5);
 }
-@keyframes s5a-blink{0%,100%{opacity:1}50%{opacity:0}}
+.s5a-chip::before { content: '✦'; font-size: 9px; }
 
-/* Grid cells */
-.s5a-cell{
-  position:relative;aspect-ratio:1.35;
-  background:var(--bg-card);border:1px solid var(--border);border-radius:4px;
-  padding:6px 7px;display:flex;flex-direction:column;justify-content:space-between;
-  overflow:hidden;
-  transition:border-color 0.4s ease,background 0.4s ease,box-shadow 0.4s ease,opacity 0.5s ease,transform 0.5s ease;
+/* the cooling row turns red when isolated */
+#s5a-st-cooling.flagged {
+  border-left-color: var(--red);
+  border-color: var(--red-border);
+  background: var(--red-dim);
 }
-.s5a-cell-name{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(6.5px,0.65vw,8.5px);
-  font-weight:500;color:rgba(242,240,235,0.45);
-  letter-spacing:0.02em;line-height:1.2;transition:color 0.4s ease,font-size 0.3s ease;
-}
-.s5a-cell-bars{
-  display:flex;gap:2px;align-items:flex-end;height:12px;
-  opacity:0;transition:opacity 0.5s ease;
-}
-.s5a-cell-bar{
-  width:2.5px;border-radius:1px;background:rgba(242,240,235,0.12);
-  transition:background 0.4s ease;
-}
-.s5a-cell.has-history .s5a-cell-bars{opacity:1}
-.s5a-cell.scanned{border-color:rgba(242,240,235,0.06);background:rgba(242,240,235,0.012)}
-.s5a-cell.cluster{border-color:var(--amber);background:rgba(230,160,35,0.04)}
-.s5a-cell.cluster .s5a-cell-name{color:var(--amber)}
-.s5a-cell.cluster .s5a-cell-bar{background:rgba(230,160,35,0.5)}
-.s5a-cell.checking{border-color:var(--amber);box-shadow:0 0 14px rgba(245,166,35,0.25);animation:s5a-cpulse 0.8s ease infinite}
-.s5a-cell.eliminated{opacity:0.04!important;border-color:transparent!important;transform:scale(0.94)}
-.s5a-cell.found{
-  border-color:var(--red)!important;background:rgba(215,48,48,0.07)!important;
-  box-shadow:0 0 28px rgba(215,48,48,0.35)!important;transform:scale(1.15);z-index:20;
-}
-.s5a-cell.found .s5a-cell-name{color:var(--red);font-weight:500}
-.s5a-cell.found .s5a-cell-bar{background:var(--red)}
-@keyframes s5a-cpulse{0%,100%{box-shadow:0 0 8px rgba(245,166,35,0.25)}50%{box-shadow:0 0 20px rgba(245,166,35,0.25)}}
+#s5a-st-cooling.flagged .s5a-st-warn { color: var(--red); }
+#s5a-st-cooling.flagged .s5a-st-state { color: var(--red); }
+#s5a-st-cooling.flagged .s5a-chip { display: inline-flex; }
 
-/* Scan wave */
-.s5a-scan-wave{
-  position:absolute;top:0;bottom:0;width:100px;left:-100px;z-index:15;
-  background:linear-gradient(90deg,transparent 0%,rgba(242,240,235,0.025) 30%,rgba(242,240,235,0.05) 50%,rgba(242,240,235,0.025) 70%,transparent 100%);
-  pointer-events:none;
+/* AI Analyzes → root cause */
+.s5a-analyze {
+  display: inline-flex; align-items: center; gap: 10px; align-self: flex-start;
+  margin-top: 18px;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+  color: var(--off-white);
+  background: linear-gradient(180deg, rgba(83,120,190,0.22), rgba(83,120,190,0.10));
+  border: 1px solid rgba(120,160,230,0.35);
+  border-radius: 999px; padding: 9px 18px;
+  opacity: 0;
+}
+.s5a-an-spin {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 2px solid rgba(160,190,240,0.35);
+  border-top-color: #9fc0ff;
+  animation: s5a-spin .8s linear infinite;
+}
+@keyframes s5a-spin { to { transform: rotate(360deg); } }
+.s5a-analyze.done .s5a-an-spin {
+  border: none; width: 14px; height: 14px; animation: none;
+  background: var(--green);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13l4 4L19 7' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 13l4 4L19 7' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/contain no-repeat;
 }
 
-/* Connection lines */
-.s5a-conn-svg{position:absolute;inset:0;z-index:12;pointer-events:none;width:100%;height:100%}
+.s5a-result {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  margin-top: 14px; padding: 12px 14px;
+  background: var(--red-dim);
+  border: 1px solid var(--red-border);
+  border-radius: 11px;
+  opacity: 0;                                /* JS reveals */
+}
+.s5a-result-main { display: flex; flex-direction: column; gap: 3px; }
+.s5a-result-k { font-family: var(--font-mono); font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: var(--text-3); }
+.s5a-result-v { font-size: 15px; font-weight: 600; color: var(--off-white); }
+.s5a-result-conf { font-family: var(--font-mono); color: var(--red); white-space: nowrap; }
+.s5a-result-conf span { font-size: 22px; font-weight: 600; }
+.s5a-result-conf i { font-size: 10px; letter-spacing: .08em; font-style: normal; color: var(--text-3); margin-left: 2px; }
 
-/* Diagnosis card (overlays grid center) */
-.s5a-diag-card{
-  position:absolute;z-index:50;
-  top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);
-  background:var(--bg-card);border:1px solid var(--red);border-left:4px solid var(--red);
-  border-radius:8px;padding:22px 26px;width:380px;
-  opacity:0;pointer-events:none;
+/* ── subsystem cubes (below the status block) ── */
+.s5a-cubes {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 24px;
 }
-.s5a-dc-title{
-  font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
-  color:var(--red);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:12px;
+.s5a-cube {
+  flex: 1 1 92px; min-width: 84px;
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 11px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  opacity: 0;                                /* JS staggers in */
+  transition: border-color .4s, background .4s, box-shadow .4s;
 }
-.s5a-dc-row{
-  display:flex;justify-content:space-between;padding:6px 0;
-  border-bottom:1px solid rgba(255,255,255,0.03);
+.s5a-cube-ico {
+  width: 20px; height: 20px; border-radius: 6px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--border);
+  position: relative;
 }
-.s5a-dc-row:last-child{border-bottom:none}
-.s5a-dc-key{
-  font-family:'JetBrains Mono',monospace;font-size:10px;
-  color:rgba(242,240,235,0.45);text-transform:uppercase;letter-spacing:0.04em;
+.s5a-cube-ico::after {
+  content: ''; position: absolute; inset: 5px;
+  border-radius: 2px; border: 1.5px solid var(--text-3);
 }
-.s5a-dc-val{
-  font-family:'JetBrains Mono',monospace;font-size:11px;
-  color:var(--off-white);font-weight:500;
+.s5a-cube-label { font-size: 12px; font-weight: 500; color: var(--off-white); }
+.s5a-cube-sub {
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .04em;
+  color: var(--green);
 }
-.s5a-dc-val.red{color:var(--red)}
-.s5a-dc-val.amber{color:var(--amber)}
-.s5a-dc-val.green{color:var(--green)}
+.s5a-cube[data-sys="voltage"] .s5a-cube-sub,
+.s5a-cube[data-sys="motor"] .s5a-cube-sub { color: var(--text-2); }   /* values, not status */
 
-/* ══════════════════════════════════════════════
-   S5A MOBILE (≤768px) — single column, progress as a top strip,
-   grid fills the body, diagnosis + readiness as fitted overlay cards.
-   Autoplay timeline + pin unchanged (JS untouched).
-══════════════════════════════════════════════ */
-@media(max-width:768px){
-  .s5a-layout{
-    grid-template-columns:1fr;
-    grid-template-rows:auto auto 1fr auto;
+/* the faulty cube ignites red (image-1's "Create report" tile) */
+.s5a-cube.bad {
+  border-color: var(--red);
+  background: var(--red-dim);
+  box-shadow: 0 0 22px rgba(215,48,48,0.25);
+}
+.s5a-cube.bad .s5a-cube-ico { border-color: var(--red); background: rgba(215,48,48,0.12); }
+.s5a-cube.bad .s5a-cube-ico::after { border-color: var(--red); }
+.s5a-cube.bad .s5a-cube-label { color: #fff; }
+.s5a-cube.bad .s5a-cube-sub { color: var(--red); font-weight: 600; }
+
+/* ───────────────────────── RIGHT COLUMN · BLUEPRINT ───────────────────────── */
+.s5a-right {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: clamp(14px, 3vh, 32px);
+  min-width: 0; height: 100%;
+}
+
+/* framing headline above the truck (reveals first, before the diagnostics) */
+.s5a-repair-headline {
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: clamp(1.3rem, 2.1vw, 2.1rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  color: var(--off-white);
+  text-align: center;
+  max-width: 90%;
+  opacity: 0;                                /* JS reveals */
+}
+
+.s5a-truck-wrap {
+  position: relative;
+  width: min(100%, 1040px);                     /* enlarged so the dense detail stays legible */
+  aspect-ratio: 1000 / 460;                    /* side elevation */
+  /* faint blueprint grid behind the drawing (cheap, static) */
+  background-image:
+    repeating-linear-gradient(0deg,  rgba(120,180,255,0.045) 0 1px, transparent 1px 40px),
+    repeating-linear-gradient(90deg, rgba(120,180,255,0.045) 0 1px, transparent 1px 40px);
+  background-position: center;
+}
+.s5a-truck { width: 100%; height: 100%; overflow: visible; }
+
+/* ── CAD line-weight system (blueprint cyan; widths in viewBox units) ── */
+.s5a-vis    { fill: none; stroke: var(--s5a-ink);       stroke-width: 1.1; stroke-linejoin: round; stroke-linecap: round; }
+.s5a-det    { fill: none; stroke: var(--s5a-ink-det);   stroke-width: 0.7; stroke-linejoin: round; stroke-linecap: round; }
+.s5a-hidden { fill: none; stroke: var(--s5a-ink-faint); stroke-width: 0.7; stroke-dasharray: 5 3; }
+.s5a-center { fill: none; stroke: var(--s5a-ink-faint); stroke-width: 0.6; stroke-dasharray: 10 3 2 3; }
+.s5a-glass  { fill: var(--s5a-glass-fill); stroke: var(--s5a-ink-det); stroke-width: 0.7; }
+
+/* ── dimensions ── */
+.s5a-dim       { fill: none; stroke: var(--s5a-ink-faint); stroke-width: 0.6; }
+.s5a-dim-arrow { fill: var(--s5a-ink-faint); stroke: none; }
+.s5a-dim-txt   { fill: var(--s5a-ink-txt); font-family: var(--font-mono); font-size: 13px; letter-spacing: .04em; }
+.s5a-dim-lg    { font-size: 15px; fill: var(--s5a-ink); }
+.s5a-dim-note  { font-size: 11px; fill: var(--s5a-ink-faint); letter-spacing: .12em; }
+
+/* ── cooling pack — the suspect (lines ignite red; crisp, no glow) ── */
+.s5a-part-pipe { fill: none; stroke: var(--s5a-ink-det); stroke-width: 0.9; stroke-linecap: round; }
+.s5a-part .s5a-vis, .s5a-part .s5a-det, .s5a-part .s5a-part-pipe {
+  transition: stroke .4s ease, fill .4s ease, stroke-width .4s ease;
+}
+.s5a-part.ignited .s5a-vis  { stroke: var(--red); fill: var(--red-dim); }
+.s5a-part.ignited .s5a-det  { stroke: #ff7a6b; }
+.s5a-part.ignited .s5a-part-pipe { stroke: #ff8a3c; stroke-width: 1.1; }
+.s5a-part-ring {
+  fill: none; stroke: var(--red); stroke-width: 0.8;
+  opacity: 0;
+  transform-box: fill-box; transform-origin: center;
+}
+
+/* ── scan bar (sweeps over the present drawing; lean + GPU-safe) ── */
+.s5a-scan {
+  position: absolute; top: -4%; bottom: -4%;
+  left: -14%; width: 14%;
+  pointer-events: none;
+  opacity: 0;                                /* JS reveals */
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(120,200,255,0.04) 40%,
+    rgba(150,220,255,0.16) 85%,
+    rgba(205,240,255,0.5) 100%);
+  border-right: 1.4px solid rgba(195,236,255,0.95);
+  box-shadow: 0 0 24px rgba(120,200,255,0.4);
+}
+.s5a-scan::after {
+  content: ''; position: absolute; top: 0; bottom: 0; right: 5px; width: 1px;
+  background: rgba(170,225,255,0.45);
+}
+
+/* ── callout (technical annotation; red = fault) ── */
+.s5a-callout {
+  position: absolute; left: 7%; top: 60%;      /* below the front cooling pack */
+  transform: translateX(-8px);
+  display: flex; flex-direction: column;
+  padding: 9px 13px;
+  background: rgba(13,13,15,0.92);
+  border: 1px solid var(--red-border);
+  border-left: 2px solid var(--red);
+  border-radius: 9px;
+  opacity: 0;                                /* JS reveals (no backdrop-filter — costly + can hang the compositor) */
+  white-space: nowrap;
+}
+.s5a-callout::after {                         /* leader line UP to the cooling pack */
+  content: ''; position: absolute; left: 20px; bottom: 100%; top: auto;
+  width: 1px; height: 34px;
+  background: linear-gradient(0deg, var(--red), transparent);
+}
+.s5a-callout-dot {
+  position: absolute; left: -4px; top: -4px;
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--red); box-shadow: 0 0 10px var(--red);
+}
+.s5a-callout-txt { font-size: 12px; font-weight: 600; color: #fff; }
+.s5a-callout-sub { font-family: var(--font-mono); font-size: 10px; letter-spacing: .06em; color: var(--red); }
+
+/* floating subsystem pins */
+.s5a-pins { position: absolute; inset: 0; pointer-events: none; }
+.s5a-pin {
+  position: absolute; width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(160,210,255,0.9);
+  box-shadow: 0 0 0 4px rgba(140,200,255,0.16), 0 0 12px rgba(150,210,255,0.6);
+  opacity: 0;                                /* JS reveals */
+}
+.s5a-pin::after {
+  content: ''; position: absolute; inset: -4px; border-radius: 50%;
+  border: 1px solid rgba(170,215,255,0.4);
+  animation: s5a-ping 2.4s ease-out infinite;
+}
+@keyframes s5a-ping { 0%{transform:scale(.6);opacity:.9} 100%{transform:scale(2.2);opacity:0} }
+
+/* ── handoff line ── */
+.s5a-handoff {
+  position: absolute; left: clamp(28px, 5vw, 88px); bottom: clamp(22px, 4vh, 40px);
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: .08em;
+  color: var(--text-2);
+  opacity: 0;                                /* JS reveals */
+}
+.s5a-ho-prompt { color: var(--red); margin-right: 6px; }
+.s5a-caret {
+  display: inline-block; width: 8px; height: 14px; margin-left: 3px;
+  background: var(--red); vertical-align: middle;
+  animation: s5a-caret 1s step-end infinite;
+}
+@keyframes s5a-caret { 0%,100%{opacity:1} 50%{opacity:0} }
+
+/* ───────────────────────── MOBILE ───────────────────────── */
+@media (max-width: 768px) {
+  #s5a { height: auto; min-height: 100vh; }
+  .s5a-panel {
+    width: 100%; height: auto; min-height: 100vh;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto;
+    gap: 24px;
+    padding: 88px 20px 64px;
+    align-content: center;
   }
-
-  /* Vehicle-ID top bar: wrap, drop separators, tighten */
-  .s5a-top-bar{padding:10px 12px}
-  .s5a-vid{flex-wrap:wrap;gap:6px 12px;justify-content:center}
-  .s5a-vid-sep{display:none}
-  .s5a-vid-key{font-size:8px}
-  .s5a-vid-val{font-size:10px}
-
-  /* Sidebar → horizontal progress strip above the grid */
-  .s5a-sidebar{
-    border-left:none;border-bottom:1px solid var(--border);
-    flex-direction:row;gap:8px;overflow-x:auto;overflow-y:hidden;
-    padding:10px 12px;
-  }
-  .s5a-sidebar-label{display:none}
-  .s5a-pt-step{
-    flex-direction:column;align-items:center;gap:3px;padding:0;
-    flex:1 0 auto;min-width:62px;text-align:center;
-  }
-  .s5a-pt-step:not(:last-of-type)::after{display:none}
-  .s5a-pt-desc{display:none}
-  .s5a-pt-label{font-size:10px;line-height:1.2}
-  .s5a-pt-status{font-size:8px;margin-top:1px}
-
-  /* Grid: fewer, larger columns; fill the body row */
-  .s5a-grid-area{padding:12px}
-  .s5a-grid-container{grid-template-columns:repeat(6,1fr);max-width:none}
-
-  /* Diagnosis card: fit the screen, sit a little high */
-  .s5a-diag-card{width:min(88vw,360px);padding:16px 18px;top:42%}
-
-  /* Readiness: detach from sidebar, show as a centered overlay card low in the scene */
-  .s5a-readiness{
-    position:absolute;z-index:51;
-    left:50%;bottom:64px;transform:translateX(-50%);
-    width:min(88vw,360px);
-    margin-top:0;padding:12px 16px;border-top:none;
-    background:var(--bg-card);border:1px solid var(--border);border-radius:8px;
-  }
-
-  .s5a-bottom-info,.s5a-handoff-line{font-size:11px}
+  .s5a-right { order: -1; }                  /* truck on top, info below */
+  .s5a-truck-wrap { width: 100%; }
+  .s5a-dims { display: none; }               /* dimensions too small to read on phones */
+  .s5a-title { font-size: clamp(2.4rem, 13vw, 3.4rem); margin-bottom: 16px; }
+  .s5a-cubes { margin-top: 18px; }
+  .s5a-cube { flex: 1 1 28%; }
+  .s5a-handoff { position: static; margin-top: 26px; }
 }

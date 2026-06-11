@@ -49,16 +49,14 @@ function open(e) {
   if (e) e.preventDefault();
   overlay.classList.add('is-open');
   overlay.setAttribute('aria-hidden', 'false');
-  // Lock scroll: pair lenis.stop()/start() AND the native-scroll guard flag.
-  if (window.__lenis) window.__lenis.stop();
-  window.__scrollLocked = true;
+  // Lock scroll via the shared lock: blocks wheel/key AND scrollbar-drag behind the modal.
+  window.lockScroll();
   setTimeout(() => overlay.querySelector('#df-name')?.focus(), 60);
 }
 function close() {
   overlay.classList.remove('is-open');
   overlay.setAttribute('aria-hidden', 'true');
-  if (window.__lenis) window.__lenis.start();
-  window.__scrollLocked = false;
+  window.unlockScroll();
 }
 
 // Open from either CTA (nav link + sc8 closing button). preventDefault

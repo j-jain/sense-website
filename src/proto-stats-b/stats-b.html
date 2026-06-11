@@ -1,0 +1,100 @@
+<!-- ══════════════════════════════════════════════════════════════
+     Prototype B — "Network → Words"
+     Six data overlays (each a different viz — bars, sparkline, ring,
+     bars, progress, pulse) sit OVER the reused SC8 India map. On scroll
+     they converge to the centre and dissolve; the headline forms there,
+     its letters filled by a gradient blended from the overlay colours,
+     while the map dims behind. All copy/numbers verbatim from sc8.html.
+══════════════════════════════════════════════════════════════ -->
+<section id="psb">
+
+  <div class="psb-bg" aria-hidden="true">
+    <div class="psb-cold"></div>
+    <div class="psb-warm"></div>
+  </div>
+
+  <!-- tall scroll track; the stage inside is pinned + scrubbed -->
+  <div class="psb-scroll">
+    <div class="psb-stage" id="psb-stage">
+
+      <!-- the network -->
+      <div class="psb-map" id="psb-map">
+        <!-- include: src/proto-stats-b/india-map.html -->
+      </div>
+
+      <!-- 6 overlays (verbatim metrics, C's viz types) -->
+      <article class="psb-ov psb-ov-1" data-ov>
+        <span class="psb-ov-cat">repair history</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="12847">0</span></span>
+        <span class="psb-ov-viz psb-viz-bars">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="2"  y="14" width="14" height="12" rx="2" fill="#D73030"/>
+            <rect x="22" y="10" width="14" height="16" rx="2" fill="#D73030"/>
+            <rect x="42" y="6"  width="14" height="20" rx="2" fill="#D73030"/>
+            <rect x="62" y="9"  width="14" height="17" rx="2" fill="#D73030"/>
+            <rect x="82" y="2"  width="14" height="24" rx="2" fill="#D73030"/>
+          </svg>
+        </span>
+      </article>
+
+      <article class="psb-ov psb-ov-2" data-ov>
+        <span class="psb-ov-cat">service events</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="3291">0</span></span>
+        <span class="psb-ov-viz">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="bSpark" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#43A047"/><stop offset="100%" stop-color="#D73030"/></linearGradient></defs>
+            <polyline class="psb-spark" points="2,22 22,17 40,19 58,11 76,8 98,3" pathLength="100" fill="none" stroke="url(#bSpark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </article>
+
+      <article class="psb-ov psb-ov-3" data-ov>
+        <span class="psb-ov-cat">driver behaviour</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="87">0</span><span class="psb-ov-unit">score</span></span>
+        <span class="psb-ov-viz psb-viz-ring">
+          <svg viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="psb-ring-bg" cx="18" cy="18" r="15"/>
+            <circle class="psb-ring-fg" cx="18" cy="18" r="15" pathLength="100" data-p="87" stroke="#43A047" transform="rotate(-90 18 18)"/>
+          </svg>
+        </span>
+      </article>
+
+      <article class="psb-ov psb-ov-4" data-ov>
+        <span class="psb-ov-cat">fleet patterns</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="1847">0</span><span class="psb-ov-unit">routes</span></span>
+        <span class="psb-ov-viz psb-viz-bars">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="2"  y="8"  width="14" height="18" rx="2" fill="#F5A623"/>
+            <rect x="22" y="4"  width="14" height="22" rx="2" fill="#D73030"/>
+            <rect x="42" y="12" width="14" height="14" rx="2" fill="#F5A623"/>
+            <rect x="62" y="7"  width="14" height="19" rx="2" fill="#D73030"/>
+            <rect x="82" y="11" width="14" height="15" rx="2" fill="#F5A623"/>
+          </svg>
+        </span>
+      </article>
+
+      <article class="psb-ov psb-ov-5" data-ov>
+        <span class="psb-ov-cat">uptime analytics</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="94.2" data-decimal="1" data-suffix="%">0</span></span>
+        <span class="psb-ov-viz psb-viz-prog">
+          <svg viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="0" y="1" width="100" height="6" rx="3" fill="rgba(255,255,255,0.10)"/>
+            <rect class="psb-prog" x="0" y="1" width="94.2" height="6" rx="3" fill="#43A047"/>
+          </svg>
+        </span>
+      </article>
+
+      <article class="psb-ov psb-ov-6" data-ov>
+        <span class="psb-ov-cat">predictive models</span>
+        <span class="psb-ov-val"><span class="psb-num" data-target="156">0</span><span class="psb-ov-unit">active</span></span>
+        <span class="psb-ov-viz psb-viz-dots">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </article>
+
+      <!-- the words that form in the centre -->
+      <h2 class="psb-mega" id="psb-mega">Every journey makes the network smarter.</h2>
+
+    </div>
+  </div>
+</section>

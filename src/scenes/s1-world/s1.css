@@ -1,5 +1,5 @@
 /* ══════════════════════════════════════════════
-   S1 — THE WORLD (Cinematic Game Start)
+   S1 — THE WORLD (forma-frame hero)
 ══════════════════════════════════════════════ */
 #s1{
   position:relative;min-height:100dvh;
@@ -17,10 +17,10 @@
 }
 .s1-boot-inner{
   width:fit-content;max-width:520px;padding:0 24px;
-  text-align:left; /* lines stay terminal-left, but the block is centered on the page */
+  text-align:left;
 }
 .boot-line{
-  font-family:'JetBrains Mono',monospace;
+  font-family:var(--font-mono);
   font-size:11px;letter-spacing:.06em;
   color:rgba(255,255,255,.5);
   line-height:1.8;
@@ -38,337 +38,127 @@
 }
 @keyframes bootBlink{0%,100%{opacity:1}50%{opacity:0}}
 
-/* ── Cinematic container ───────────────────── */
+/* ── Forma stage: wide panoramic frame, centered, fixed aspect so the SVG
+   scales uniformly (corners never distort). Revealed by JS (opacity 0 → 1). ── */
 .s1-cinema{
   position:relative;
-  /* Cap by viewport HEIGHT as well as width so 13"–16" laptops (which share a
-     similar dvh) render the cinema at a consistent size instead of ballooning
-     on wider screens. The height-derived cap leaves room for headline + CTA.
-     Height is derived first (same as before), then width gets +150px laterally
-     — the frame goes wider WITHOUT getting taller. object-fit:cover on the video
-     just crops a sliver off top/bottom (a crop, not a stretch — no clarity loss). */
-  --s1h: min(calc(100dvh - 64px), 877px);   /* 877 = 1560 * 9/16: the old height cap */
-  height: var(--s1h);
-  width: min(94vw, calc(var(--s1h) * 16 / 9 + 150px));
-  aspect-ratio:auto;
-  max-width:none;
-  margin:0 auto;
-  overflow:hidden;
+  width:min(97vw, calc(96vh * 1440/675));
+  aspect-ratio:1440/675;
   opacity:0;
+  will-change:transform,opacity,filter;
+}
+#s1-frame-svg{width:100%;height:100%;display:block}
+.s1-vid{width:100%;height:100%;object-fit:cover;display:block}
+
+/* overlay UI positioned over the framed video, by % of the stage */
+.s1-ov{position:absolute;inset:0;pointer-events:none}
+.s1-ov > *{pointer-events:auto}
+.s1-scrim{
+  position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(50% 78% at 1% 58%, rgba(5,6,8,.62), transparent 56%);
 }
 
-#s1-video{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:cover;
-  pointer-events:none;
+/* logo in the TOP tab — brand wordmark lockup */
+.s1-logo{
+  position:absolute;top:4%;left:50%;transform:translateX(-50%);z-index:10;
+  display:flex;align-items:center;gap:11px;
+  font-family:var(--font-display);font-weight:600;letter-spacing:.34em;
+  font-size:clamp(22px,2vw,30px);color:var(--off-white);
+  padding-left:.34em; /* balance the trailing tracking so the lockup stays optically centered */
+}
+.s1-logo .mk{color:var(--red);font-weight:400;font-size:.46em;line-height:1;transform:translateY(-2px)}
+
+/* scroll arrow in the BOTTOM tab */
+.s1-arrow{
+  position:absolute;bottom:3.5%;left:50%;transform:translateX(-50%);z-index:10;
+  color:var(--text-2);font-size:16px;
+  animation:s1ArrowBob 2s ease-in-out infinite;
+}
+@keyframes s1ArrowBob{0%,100%{transform:translateX(-50%) translateY(0);opacity:.5}50%{transform:translateX(-50%) translateY(4px);opacity:.9}}
+@media(prefers-reduced-motion:reduce){.s1-arrow{animation:none}}
+
+/* demo CTA top-right */
+.s1-demopill{
+  position:absolute;top:6%;right:3%;z-index:10;
+  height:40px;padding:0 20px;border-radius:99px;
+  background:var(--off-white);color:#0d0d0f;
+  display:flex;align-items:center;
+  font-family:var(--font-ui);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  text-decoration:none;cursor:pointer;transition:background .2s;
+}
+.s1-demopill:hover{background:#fff}
+
+/* social bottom-left */
+.s1-social{position:absolute;bottom:9%;left:4%;z-index:10;display:flex;gap:10px}
+.s1-social div{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--border);
+  display:grid;place-items:center;font-size:12px;color:var(--text-2);
 }
 
-.s1-overlay{
-  position:absolute;inset:0;z-index:2;pointer-events:none;
-  background:linear-gradient(to bottom,rgba(5,6,8,.1) 0%,rgba(5,6,8,.35) 100%);
-}
-
-/* ── Film grain — dithers smooth gradients so the blue-hour sky stops
-   banding, and reads as cinematic texture. Pure SVG noise, no asset. ── */
-.s1-grain{
-  position:absolute;inset:0;z-index:4;pointer-events:none;
-  opacity:.07;
-  mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:160px 160px;
-}
-@media(prefers-reduced-motion:reduce){ .s1-grain{opacity:.05} }
-
-/* ── Camera viewfinder frame — thin border + red corner brackets.
-   Turns the surrounding black into intentional matte instead of empty space. ── */
-.s1-frame{
-  position:absolute;inset:0;z-index:5;pointer-events:none;
-  border:1px solid var(--border);
-}
-.s1-corner{position:absolute;width:34px;height:34px}
-.s1-corner::before,.s1-corner::after{content:'';position:absolute;background:rgba(215,48,48,.6)}
-.s1-corner::before{width:34px;height:2px}   /* horizontal arm */
-.s1-corner::after {width:2px;height:34px}    /* vertical arm */
-.s1-corner.tl{top:0;left:0}
-.s1-corner.tl::before,.s1-corner.tl::after{top:0;left:0}
-.s1-corner.tr{top:0;right:0}
-.s1-corner.tr::before,.s1-corner.tr::after{top:0;right:0}
-.s1-corner.bl{bottom:0;left:0}
-.s1-corner.bl::before,.s1-corner.bl::after{bottom:0;left:0}
-.s1-corner.br{bottom:0;right:0}
-.s1-corner.br::before,.s1-corner.br::after{bottom:0;right:0}
-
-/* REC indicator (top-left) */
-.s1-rec{
-  position:absolute;top:16px;left:16px;
-  display:flex;align-items:center;gap:7px;
-  font-family:'JetBrains Mono',monospace;font-size:10px;
-  letter-spacing:.2em;color:var(--red);
-}
-.s1-rec-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--red);
-  box-shadow:0 0 8px rgba(215,48,48,.7);
-  animation:recBlink 1s steps(1,end) infinite;
-}
-@keyframes recBlink{0%,49%{opacity:1}50%,100%{opacity:.15}}
-
-/* Running timecode (bottom-right) — also sits where the old watermark was */
-.s1-tc{
-  position:absolute;bottom:16px;right:16px;
-  font-family:'JetBrains Mono',monospace;font-size:10px;
-  letter-spacing:.12em;color:rgba(255,255,255,.55);
-}
-
-/* Center focus reticle — subtle crosshair */
-.s1-reticle{
-  position:absolute;top:50%;left:50%;width:22px;height:22px;
-  transform:translate(-50%,-50%);opacity:.3;
-}
-.s1-reticle::before,.s1-reticle::after{content:'';position:absolute;background:rgba(255,255,255,.9)}
-.s1-reticle::before{left:50%;top:0;width:1px;height:22px;transform:translateX(-.5px)}
-.s1-reticle::after{top:50%;left:0;height:1px;width:22px;transform:translateY(-.5px)}
-
-/* Viewfinder edge ticks (safe-area marks) */
-.s1-tick{position:absolute;background:rgba(255,255,255,.25)}
-.s1-tick.top{top:0;left:50%;width:1px;height:12px;transform:translateX(-.5px)}
-.s1-tick.bottom{bottom:0;left:50%;width:1px;height:12px;transform:translateX(-.5px)}
-.s1-tick.left{left:0;top:50%;height:1px;width:12px;transform:translateY(-.5px)}
-.s1-tick.right{right:0;top:50%;height:1px;width:12px;transform:translateY(-.5px)}
-
-@media(prefers-reduced-motion:reduce){ .s1-rec-dot{animation:none;opacity:1} }
-
-/* Side vignettes — soft fade into dark background. Trimmed (11%→5%) so the
-   frame edge reads as the boundary instead of a wide blur. */
-.s1-vignette-l,.s1-vignette-r{
-  position:absolute;top:0;bottom:0;width:5%;
-  z-index:3;pointer-events:none;
-}
-.s1-vignette-l{left:0;background:linear-gradient(to right,rgba(5,6,8,.85) 0%,rgba(5,6,8,.45) 35%,transparent 100%)}
-.s1-vignette-r{right:0;background:linear-gradient(to left,rgba(5,6,8,.85) 0%,rgba(5,6,8,.45) 35%,transparent 100%)}
-/* Top/bottom vignettes for full edge fade */
-.s1-vignette-t,.s1-vignette-b{
-  position:absolute;left:0;right:0;height:9%;
-  z-index:3;pointer-events:none;
-}
-.s1-vignette-t{top:0;background:linear-gradient(to bottom,rgba(5,6,8,.5),transparent)}
-.s1-vignette-b{bottom:0;background:linear-gradient(to top,rgba(5,6,8,.5),transparent)}
-
-/* ── Scene bleed — extends video colors into side zones ── */
-.s1-bleed{
-  position:absolute;inset:0;z-index:1;
-  pointer-events:none;
-  opacity:0;
-}
-.s1-bleed-l{
-  position:absolute;top:0;bottom:0;left:0;width:22%;
-  background:linear-gradient(135deg,
-    rgba(43,91,138,.14) 0%,
-    rgba(14,23,40,.10) 35%,
-    transparent 100%);
-}
-.s1-bleed-l-warm{
-  position:absolute;top:30%;left:0;width:16%;height:40%;
-  background:radial-gradient(ellipse at left center,rgba(43,91,138,.08),transparent 80%);
-}
-.s1-bleed-r{
-  position:absolute;top:0;bottom:0;right:0;width:22%;
-  background:linear-gradient(225deg,
-    rgba(92,74,110,.10) 0%,
-    rgba(245,166,35,.04) 30%,
-    transparent 100%);
-}
-.s1-bleed-r-warm{
-  position:absolute;top:25%;right:0;width:16%;height:45%;
-  background:radial-gradient(ellipse at right center,rgba(245,166,35,.06),transparent 80%);
-}
-/* Thin vertical divider lines at bleed boundary */
-.s1-bleed-line{
-  position:absolute;top:10%;bottom:10%;width:1px;
-  background:linear-gradient(to bottom,transparent,rgba(255,255,255,.06),transparent);
-}
-.s1-bleed-line.left{left:17%}
-.s1-bleed-line.right{right:17%}
-
-/* ── Side data panels — sparse JetBrains Mono readouts ── */
-.s1-side-data{
-  position:absolute;top:0;bottom:0;z-index:10;
-  pointer-events:none;
-  display:flex;flex-direction:column;justify-content:center;
-  padding:0 3%;
-  opacity:0;
-}
-.s1-side-data.left{left:0;align-items:flex-start}
-.s1-side-data.right{right:0;align-items:flex-end;text-align:right}
-.sd-group{margin-bottom:20px}
-.sd-label{
-  font-family:'JetBrains Mono',monospace;
-  font-size:8px;letter-spacing:.12em;
-  color:rgba(255,255,255,.12);
-  margin-bottom:3px;
-}
-.sd-value{
-  font-family:'JetBrains Mono',monospace;
-  font-size:10px;letter-spacing:.08em;
-  color:rgba(255,255,255,.25);
-  line-height:1.6;
-}
-.sd-value .red{color:rgba(215,48,48,.4)}
-.sd-value .green{color:rgba(61,168,74,.35)}
-.sd-value .dim{color:rgba(255,255,255,.10)}
-
-/* ── Headline — left, upper third ─────────── */
+/* headline + CTA, left over the open area (truck is right) */
 .s1-headline-wrap{
-  position:absolute;
-  top:30%;left:clamp(48px,6vw,120px);
-  z-index:15;
-  text-align:left;
+  position:absolute;left:5%;top:30%;z-index:10;
+  max-width:42%;text-align:left;
+}
+.s1-eyebrow{
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--text-2);margin-bottom:16px;
 }
 #s1-headline{
-  font-family:'Outfit',sans-serif;
-  font-size:clamp(28px,3.2vw,46px);
-  line-height:.95;letter-spacing:.02em;
-  color:var(--off-white);
+  font-family:var(--font-display);
+  font-size:clamp(36px,4.6vw,72px);
+  font-weight:300;line-height:1.04;letter-spacing:-0.03em;
+  color:var(--text-1);text-wrap:balance;
   opacity:0;transform:translateY(24px);
-  text-shadow:0 4px 40px rgba(0,0,0,.8);
 }
+.s1-cta-wrap{margin-top:26px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
 
-/* ── CTA — centered bottom ────────────────── */
-.s1-cta-wrap{
-  position:absolute;
-  top:62%;left:0;right:0;
-  transform:translateY(60px);
-  z-index:15;
-  text-align:center;
-  display:flex;flex-direction:column;align-items:center;gap:14px;
-}
-#start-btn{
+/* clean white CTA pill with a red action dot */
+#start-btn.s1-btn{
+  display:inline-flex;align-items:center;gap:12px;
+  background:var(--off-white);color:#0d0d0f;border:none;border-radius:99px;
+  font-family:var(--font-ui);font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:0 8px 0 26px;height:54px;cursor:pointer;text-decoration:none;
   opacity:0;transform:translateY(12px);
-  /* ── Video-game cinematic overrides ── */
-  border:1px solid rgba(215,48,48,.55);
-  border-radius:999px;
-  padding:14px 44px;
-  background:rgba(215,48,48,.14);
-  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-  font-family:'Outfit',sans-serif;
-  font-size:11px;font-weight:600;
-  letter-spacing:.20em;text-transform:uppercase;
-  color:#fff;
-  box-shadow:
-    0 0 24px rgba(215,48,48,.25),
-    0 0 60px rgba(215,48,48,.10),
-    inset 0 0 24px rgba(215,48,48,.08);
-  transition:
-    background .35s ease,
-    box-shadow .35s ease,
-    border-color .35s ease,
-    transform .2s ease;
-  animation:btnGlow 3s ease-in-out infinite;
+  transition:transform .3s var(--ease-signature);
 }
-#start-btn:hover{
-  background:rgba(215,48,48,.25);
-  border-color:rgba(215,48,48,.75);
-  box-shadow:
-    0 0 36px rgba(215,48,48,.4),
-    0 0 90px rgba(215,48,48,.15),
-    inset 0 0 36px rgba(215,48,48,.12);
-  transform:translateY(-2px) scale(1.03);
+#start-btn.s1-btn .c{
+  width:38px;height:38px;border-radius:50%;background:var(--red);color:#fff;
+  display:grid;place-items:center;font-size:16px;transition:transform .3s var(--ease-signature);
 }
-#start-btn:active{
-  transform:scale(.97);
-  background:rgba(215,48,48,.32);
-}
-@keyframes btnGlow{
-  0%,100%{box-shadow:0 0 24px rgba(215,48,48,.20),0 0 60px rgba(215,48,48,.08),inset 0 0 24px rgba(215,48,48,.06)}
-  50%{box-shadow:0 0 32px rgba(215,48,48,.35),0 0 90px rgba(215,48,48,.14),inset 0 0 32px rgba(215,48,48,.10)}
-}
+#start-btn.s1-btn:hover .c{transform:translateX(4px)}
 
-/* ── "TAP" press indicator on Start Journey ──
-   Mirrors Scene 2's .s2-press-indicator (pulsing halo + floating TAP label),
-   tuned to S1's red palette. Overrides btnGlow while present so the click
-   affordance reads clearly. */
-#start-btn.s1-press-indicator{
-  animation:s1PressPulse 1.4s ease-out infinite;
-}
-#start-btn.s1-press-indicator::after{
-  content:'TAP';
-  position:absolute;
-  top:-22px;left:50%;transform:translateX(-50%);
-  font-family:'JetBrains Mono',monospace;
-  font-size:9px;font-weight:600;
-  letter-spacing:.25em;
-  color:#F2F0EB;
-  opacity:.85;
-  text-shadow:0 0 6px rgba(0,0,0,.6);
-  pointer-events:none;
-  animation:s1PressLabel 1.4s ease-out infinite;
-}
+/* "TAP" press affordance on Start Journey (subtle pulse ring) */
+#start-btn.s1-press-indicator{animation:s1PressPulse 1.6s ease-out infinite}
 @keyframes s1PressPulse{
-  0%   {box-shadow:0 0 0 0 rgba(255,255,255,.5), 0 0 0 0 rgba(215,48,48,.5)}
-  70%  {box-shadow:0 0 0 12px rgba(255,255,255,0), 0 0 0 22px rgba(215,48,48,0)}
-  100% {box-shadow:0 0 0 0 rgba(255,255,255,0),   0 0 0 0 rgba(215,48,48,0)}
+  0%{box-shadow:0 0 0 0 rgba(242,240,235,.45)}
+  70%{box-shadow:0 0 0 14px rgba(242,240,235,0)}
+  100%{box-shadow:0 0 0 0 rgba(242,240,235,0)}
 }
-@keyframes s1PressLabel{
-  0%,100%{opacity:.4;transform:translateX(-50%) translateY(0)}
-  50%    {opacity:1; transform:translateX(-50%) translateY(-3px)}
-}
-/* Pulsing prompt under button */
-.s1-key-hint{
-  font-family:'JetBrains Mono',monospace;
-  font-size:9px;letter-spacing:.18em;
-  color:rgba(255,255,255,.2);
-  opacity:0;
-  animation:hintPulse 2.5s ease-in-out infinite;
-}
-@keyframes hintPulse{0%,100%{opacity:.15}50%{opacity:.4}}
+@media(prefers-reduced-motion:reduce){#start-btn.s1-press-indicator{animation:none}}
 
-/* ── S1→S2 cinematic zoom-blur transition ── */
+/* ── S1→S2 cinematic transition overlay ── */
 .s1-transition{
   position:fixed;inset:0;z-index:900;
   background:#050608;
-  opacity:0;
-  pointer-events:none;
+  opacity:0;pointer-events:none;
 }
-/* Soft, blurred handoff into S2 — no hard seam */
-.s1-transition.active{
-  pointer-events:all;
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-}
+.s1-transition.active{pointer-events:all}
 
-/* Hint text: desktop default, mobile swap handled in media block below */
 .hint-mobile{display:none}
 
 /* ══════════════════════════════════════════════
-   MOBILE (≤768px) — full-bleed hero, no side HUD, tap-to-begin
-   CSS-only. No JS path touched. Desktop unaffected.
+   MOBILE (≤768px) — the panoramic frame is narrow on a phone; give it more
+   height and stack the copy lower-left. Desktop JS path is unaffected.
 ══════════════════════════════════════════════ */
 @media(max-width:768px){
-  /* Video fills the portrait viewport instead of a centered 16:9 letterbox */
-  .s1-cinema{
-    position:absolute;inset:0;
-    width:100%;height:100dvh;max-width:none;
-    margin:0;aspect-ratio:auto;
-  }
-
-  /* Drop the sparse side-data HUD — no room on a phone */
-  .s1-side-data{display:none}
-
-  /* Full-bleed hero on mobile — drop the viewfinder brackets */
-  .s1-frame{display:none}
-
-  /* Boot terminal: full-width, tighter type so lines don't overflow 375px */
-  .s1-boot-inner{max-width:none;padding:0 var(--m-pad)}
-  .boot-line{font-size:9px;letter-spacing:.04em}
-
-  /* Headline: top-left, larger readable clamp, full-width gutters */
-  .s1-headline-wrap{top:16%;left:var(--m-pad);right:var(--m-pad)}
-  #s1-headline{font-size:var(--m-h1);line-height:1.05}
-
-  /* CTA anchored near the bottom (clear the headline); reset desktop offset */
-  .s1-cta-wrap{top:auto;bottom:11%;transform:none}
-
-  /* Swap the keyboard hint for a tap hint */
+  .s1-cinema{width:94vw;aspect-ratio:3/4}   /* taller card on portrait */
+  #s1-frame-svg{object-fit:cover}
+  .s1-headline-wrap{left:var(--m-pad);right:var(--m-pad);top:auto;bottom:20%;max-width:none}
+  #s1-headline{font-size:var(--m-h1);line-height:1.08}
+  .s1-sub{display:none}
+  .s1-demopill{display:none}
+  .s1-social{display:none}
   .hint-desktop{display:none}
   .hint-mobile{display:inline}
 }

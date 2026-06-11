@@ -1,0 +1,126 @@
+<!-- ══════════════════════════════════════════
+     PROTO A · 5C — DRIVER + FLEET HANDOFF (Fleet Console)
+     Split stage with a glowing divider. LEFT = the driver's phone.
+     RIGHT = the full fleet console "home" (the Image-1 dashboard:
+     greeting, vehicle card, fleet-health bars, live event, event log,
+     support chat). The two update in parallel as the platform responds.
+══════════════════════════════════════════ -->
+<div id="s5c-wrapper">
+<section id="s5c">
+
+  <div class="pa5c-split">
+
+    <!-- glowing divider -->
+    <div class="pa5c-divider" id="s5c-divider"></div>
+
+    <!-- ── LEFT — Driver's screen ── -->
+    <div class="pa5c-driver-col">
+      <div class="pa5c-vp" id="s5c-label-driver">Driver's screen</div>
+      <div class="pa5c-phone" id="s5c-phone">
+        <div class="pa5c-phone-screen">
+          <div class="pa5c-statusbar"><span>11:22</span><span class="pa5c-sb-r">●●●● · 87%</span></div>
+          <div class="pa5c-app-head">
+            <div class="pa5c-brand"><span class="pa5c-brand-i">S</span> sense</div>
+            <div class="pa5c-bell">⚠<span class="pa5c-bell-dot"></span></div>
+          </div>
+
+          <div class="pa5c-alert" id="s5c-alert">
+            <div class="pa5c-alert-i">⚠</div>
+            <div class="pa5c-alert-t"><strong>Preventive service scheduled</strong>DPF regeneration · Ahmedabad CDC</div>
+          </div>
+
+          <div class="pa5c-seclabel" id="s5c-svc-label">Service details</div>
+          <div class="pa5c-cards">
+            <div class="pa5c-card" id="s5c-card-0"><div class="pa5c-card-k">Service status</div><div class="pa5c-card-v" id="s5c-val-0">--</div><div class="pa5c-card-s" id="s5c-sub-0"><span class="pa5c-sdot"></span>Scanning</div></div>
+            <div class="pa5c-card" id="s5c-card-1"><div class="pa5c-card-k">ETA to service</div><div class="pa5c-card-v" id="s5c-val-1">--</div><div class="pa5c-card-s" id="s5c-sub-1"><span class="pa5c-sdot"></span>Scanning</div></div>
+            <div class="pa5c-card" id="s5c-card-2"><div class="pa5c-card-k">Repair estimate</div><div class="pa5c-card-v" id="s5c-val-2">--</div><div class="pa5c-card-s" id="s5c-sub-2"><span class="pa5c-sdot"></span>Scanning</div></div>
+            <div class="pa5c-card" id="s5c-card-3"><div class="pa5c-card-k">Back on road</div><div class="pa5c-card-v" id="s5c-val-3">--</div><div class="pa5c-card-s" id="s5c-sub-3"><span class="pa5c-sdot"></span>Scanning</div></div>
+          </div>
+
+          <div class="pa5c-seclabel" id="s5c-guid-label">What's being done</div>
+          <div class="pa5c-guidance" id="s5c-guidance">Forced DPF regeneration + inspection. No parts required. Your route resumes automatically after service.</div>
+
+          <div class="pa5c-comm" id="s5c-comm">
+            <div class="pa5c-comm-btn"><span class="pa5c-comm-i">☎</span><span>Call centre</span></div>
+            <div class="pa5c-comm-btn"><span class="pa5c-comm-i">💬</span><span>Chat support</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIGHT — Fleet console (the "home") ── -->
+    <div class="pa5c-console-col">
+      <div class="pa5c-vp" id="s5c-label-fleet">Fleet operations</div>
+      <div class="pa5c-console" id="s5c-console">
+
+        <!-- header -->
+        <div class="pa5c-con-head">
+          <div class="pa5c-greet"><div class="pa5c-greet-t" id="s5c-greet">Good morning, Operations</div><div class="pa5c-greet-sub">Mon · 09 Jun · Northern Corridor</div></div>
+          <div class="pa5c-monitor" id="s5c-badge"><span class="pa5c-mon-dot"></span>Live · Monitoring</div>
+        </div>
+
+        <!-- top row: vehicle + fleet health -->
+        <div class="pa5c-con-top">
+          <div class="pa5c-vehicle" id="s5c-vehicle">
+            <div class="pa5c-veh-art">
+              <svg viewBox="0 0 120 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="16" width="70" height="28" rx="3" stroke="currentColor" stroke-width="1.6"/>
+                <path d="M76 22 h18 l10 10 v12 h-28 z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+                <circle cx="26" cy="47" r="6" stroke="currentColor" stroke-width="1.6"/><circle cx="44" cy="47" r="6" stroke="currentColor" stroke-width="1.6"/><circle cx="90" cy="47" r="6" stroke="currentColor" stroke-width="1.6"/>
+              </svg>
+            </div>
+            <div class="pa5c-veh-info">
+              <div class="pa5c-veh-reg">GJ-01-AB-1234</div>
+              <div class="pa5c-veh-model">Tata Prima 5530.S</div>
+              <div class="pa5c-veh-status" id="s5c-veh-status"><span class="pa5c-vs-dot"></span>Service scheduled</div>
+            </div>
+          </div>
+
+          <div class="pa5c-health" id="s5c-health">
+            <div class="pa5c-health-title">Fleet Health</div>
+            <div class="pa5c-hrow" data-h="94"><span class="pa5c-hk">Fleet uptime</span><span class="pa5c-htrack"><i class="pa5c-hfill"></i></span><span class="pa5c-hv">94.2%</span></div>
+            <div class="pa5c-hrow" data-h="89"><span class="pa5c-hk">Routes on-time</span><span class="pa5c-htrack"><i class="pa5c-hfill"></i></span><span class="pa5c-hv">88.6%</span></div>
+            <div class="pa5c-hrow" data-h="96"><span class="pa5c-hk">Incidents resolved</span><span class="pa5c-htrack"><i class="pa5c-hfill"></i></span><span class="pa5c-hv">96.0%</span></div>
+          </div>
+        </div>
+
+        <!-- live event strip (dark) -->
+        <div class="pa5c-live" id="s5c-live">
+          <div class="pa5c-live-l"><span class="pa5c-live-k">Live event</span><span class="pa5c-live-route">NH-44 → Ahmedabad CDC</span></div>
+          <div class="pa5c-live-r"><span class="pa5c-live-eta">ETA 2h 14m</span><span class="pa5c-live-km">127 km</span></div>
+        </div>
+
+        <!-- event log + timeline -->
+        <div class="pa5c-log" id="s5c-log">
+          <div class="pa5c-log-title">Event log</div>
+          <div class="pa5c-logrow" data-i="0"><span class="pa5c-lt">02:41</span><span class="pa5c-le">Fault detected · DPF</span><span class="pa5c-lp red">DTC</span></div>
+          <div class="pa5c-logrow" data-i="1"><span class="pa5c-lt">02:58</span><span class="pa5c-le">Diagnosed · 94% confidence</span><span class="pa5c-lp amber">Preventive</span></div>
+          <div class="pa5c-logrow" data-i="2"><span class="pa5c-lt">03:24</span><span class="pa5c-le">Matched · Ahmedabad CDC</span><span class="pa5c-lp green">SLA Gold</span></div>
+          <div class="pa5c-logrow" data-i="3"><span class="pa5c-lt">04:12</span><span class="pa5c-le">Rerouted · driver notified</span><span class="pa5c-lp green">On route</span></div>
+          <div class="pa5c-tl" id="s5c-tl">
+            <div class="pa5c-tlnode" data-i="0"><span class="pa5c-tldot"></span><span class="pa5c-tltext">Detected</span></div>
+            <span class="pa5c-tlline" data-i="0"></span>
+            <div class="pa5c-tlnode" data-i="1"><span class="pa5c-tldot"></span><span class="pa5c-tltext">Diagnosed</span></div>
+            <span class="pa5c-tlline" data-i="1"></span>
+            <div class="pa5c-tlnode" data-i="2"><span class="pa5c-tldot"></span><span class="pa5c-tltext">Matched</span></div>
+            <span class="pa5c-tlline" data-i="2"></span>
+            <div class="pa5c-tlnode" data-i="3"><span class="pa5c-tldot"></span><span class="pa5c-tltext">Rerouted</span></div>
+            <span class="pa5c-tlline" data-i="3"></span>
+            <div class="pa5c-tlnode" data-i="4"><span class="pa5c-tldot"></span><span class="pa5c-tltext">Serviced</span></div>
+          </div>
+        </div>
+
+        <!-- support chat -->
+        <div class="pa5c-chat" id="s5c-chat">
+          <div class="pa5c-msg driver" data-i="0"><span class="pa5c-msg-who">Driver</span>Got the alert — heading to Ahmedabad CDC.</div>
+          <div class="pa5c-msg ops" data-i="1"><span class="pa5c-msg-who">Ops · Amrita</span>Bay reserved, parts confirmed. You're all set 👍</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="pa5-headline" id="s5c-headline">No driver left alone.</div>
+
+</section>
+</div>

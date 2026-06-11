@@ -1,0 +1,96 @@
+<!-- ══════════════════════════════════════════
+     PROTO A · 5B — SERVICE NETWORK (Fleet Console)
+     The dark "Tracking Delivery" card expands to fill the stage and
+     becomes the live route map: the corridor, the reroute to Ahmedabad
+     CDC, and a light detail card. Dark navy card = the brand contrast
+     surface against 5A/5C's light consoles.
+══════════════════════════════════════════ -->
+<div id="s5b-wrapper">
+<section id="s5b">
+
+  <div class="pa5-headline" id="s5b-headline">An intelligent network behind every route.</div>
+
+  <div class="pa5b-card" id="s5b-card">
+
+    <!-- top strip: route + status -->
+    <div class="pa5b-top">
+      <div class="pa5b-route-chips">
+        <span class="pa5b-chip">Current · NH-44</span>
+        <span class="pa5b-arrow" id="s5b-arrow">→</span>
+        <span class="pa5b-chip dest" id="s5b-dest-chip">Locating…</span>
+      </div>
+      <div class="pa5b-status" id="s5b-topstatus"><span class="pa5b-status-dot"></span><span class="pa5b-status-txt">Rerouting</span></div>
+    </div>
+
+    <!-- map -->
+    <div class="pa5b-map-area">
+      <svg class="pa5b-map" id="s5b-map" viewBox="0 0 520 560" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <filter id="pa5bGlow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+          <radialGradient id="pa5bRadar" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#D73030" stop-opacity="0.16"/>
+            <stop offset="100%" stop-color="#D73030" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- faint coordinate grid -->
+        <g class="pa5b-grid" id="s5b-grid" stroke="rgba(242,240,235,0.05)" stroke-width="1">
+          <line x1="0" y1="140" x2="520" y2="140"/><line x1="0" y1="280" x2="520" y2="280"/><line x1="0" y1="420" x2="520" y2="420"/>
+          <line x1="130" y1="0" x2="130" y2="560"/><line x1="260" y1="0" x2="260" y2="560"/><line x1="390" y1="0" x2="390" y2="560"/>
+        </g>
+
+        <!-- stylized India landmass (faint context) -->
+        <path class="pa5b-land" id="s5b-land" d="M185,70 Q260,45 340,75 Q380,90 395,160 Q415,250 380,330 Q350,400 315,470 Q300,515 285,500 Q250,440 215,380 Q175,320 165,250 Q155,180 175,120 Q180,90 185,70 Z"
+              stroke="rgba(242,240,235,0.16)" stroke-width="1.4" fill="rgba(242,240,235,0.015)"/>
+
+        <!-- radar pulse origin (truck) -->
+        <circle class="pa5b-radar" id="s5b-radar" cx="262" cy="200" r="0" fill="url(#pa5bRadar)"/>
+
+        <!-- routes -->
+        <path class="pa5b-route-orig" id="s5b-rOrig" d="M262,200 Q300,250 278,312" stroke="rgba(242,240,235,0.32)" stroke-width="2" stroke-dasharray="4 6"/>
+        <path class="pa5b-route-det"  id="s5b-rDet"  d="M262,200 Q210,225 184,280" stroke="#D73030" stroke-width="2.6"/>
+        <path class="pa5b-route-aft"  id="s5b-rAft"  d="M184,280 Q170,330 178,366" stroke="rgba(215,48,48,0.45)" stroke-width="2" stroke-dasharray="6 5"/>
+
+        <!-- service nodes: data-c candidate, data-s selected, data-rej reason -->
+        <g class="pa5b-node" data-x="245" data-y="150"><circle class="pa5b-dot" cx="245" cy="150" r="3"/><text class="pa5b-nl" x="245" y="138">Delhi</text></g>
+        <g class="pa5b-node" data-c="1" data-rej="No DPF bay" data-x="208" data-y="184"><circle class="pa5b-dot" cx="208" cy="184" r="3"/><text class="pa5b-nl" x="208" y="172">Jaipur</text><text class="pa5b-rl" x="208" y="201">No DPF bay</text></g>
+        <g class="pa5b-node" data-c="1" data-rej="Parts ETA 9h" data-x="252" data-y="262"><circle class="pa5b-dot" cx="252" cy="262" r="3"/><text class="pa5b-nl" x="252" y="250">Bhopal</text><text class="pa5b-rl" x="252" y="279">Parts ETA 9h</text></g>
+        <g class="pa5b-node" data-c="1" data-s="1" data-x="184" data-y="280"><circle class="pa5b-dot" cx="184" cy="280" r="3"/><text class="pa5b-nl sel" x="184" y="267">Ahmedabad CDC</text></g>
+        <g class="pa5b-node" data-c="1" data-rej="Bay full" data-x="188" data-y="322"><circle class="pa5b-dot" cx="188" cy="322" r="3"/><text class="pa5b-nl" x="188" y="338">Surat</text><text class="pa5b-rl" x="188" y="310">Bay full</text></g>
+        <g class="pa5b-node" data-x="178" data-y="366"><circle class="pa5b-dot" cx="178" cy="366" r="3"/><text class="pa5b-nl" x="178" y="382">Mumbai</text></g>
+        <g class="pa5b-node" data-x="284" data-y="318"><circle class="pa5b-dot" cx="284" cy="318" r="3"/><text class="pa5b-nl" x="284" y="334">Nagpur</text></g>
+
+        <!-- truck marker -->
+        <g class="pa5b-truck" id="s5b-truck">
+          <circle class="pa5b-truck-ring" cx="262" cy="200" r="6"/>
+          <circle class="pa5b-truck-core" cx="262" cy="200" r="4"/>
+        </g>
+      </svg>
+
+      <!-- detail card (light, floats over the dark map) -->
+      <div class="pa5b-detail" id="s5b-detail">
+        <div class="pa5b-detail-head">
+          <span class="pa5b-detail-name">Ahmedabad CDC</span>
+          <span class="pa5b-sla">SLA Gold</span>
+        </div>
+        <div class="pa5b-detail-rows">
+          <div class="pa5b-drow"><span class="pa5b-dk">Distance</span><span class="pa5b-dv">127 km</span></div>
+          <div class="pa5b-drow"><span class="pa5b-dk">Diversion ETA</span><span class="pa5b-dv">2h 14m</span></div>
+          <div class="pa5b-drow"><span class="pa5b-dk">DPF service</span><span class="pa5b-dv ok">✓ Available</span></div>
+          <div class="pa5b-drow"><span class="pa5b-dk">Parts</span><span class="pa5b-dv ok">✓ In stock</span></div>
+          <div class="pa5b-drow"><span class="pa5b-dk">Bay</span><span class="pa5b-dv ok">✓ Reserved</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- footer: lock button -->
+    <div class="pa5b-foot">
+      <div class="pa5b-foot-meta" id="s5b-footmeta">Evaluating 4 capable service points…</div>
+      <div class="pa5b-lock" id="s5b-lock"><span class="pa5b-lock-ico">▸</span><span class="pa5b-lock-txt">Locking route</span></div>
+    </div>
+
+  </div>
+</section>
+</div>

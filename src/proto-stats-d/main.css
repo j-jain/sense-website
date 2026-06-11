@@ -1,0 +1,31 @@
+/* main.css — Prototype D · Innovation Report preview entry.
+   Shared brand foundation → section → responsive, then preview chrome. */
+@import '../styles/fonts.css';
+@import '../styles/tokens.css';
+@import '../styles/base.css';
+
+@import './stats-d.css';
+
+@import '../styles/responsive.css';
+
+html, body { background: var(--bg); }
+body.proto-stats { overflow-x: hidden; }
+#proto-root { position: relative; }
+
+#proto-chrome {
+  position: fixed; top: 18px; left: 22px; z-index: 900;
+  display: flex; align-items: center; gap: 14px;
+  font-family: var(--font-ui);
+}
+.proto-mark { font-size: 16px; letter-spacing: .16em; color: var(--off-white); opacity: .9; }
+.proto-mark strong { color: var(--red); font-weight: 600; }
+.proto-tag {
+  font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: .2em; text-transform: uppercase;
+  color: var(--text-3);
+  border-left: 1px solid var(--border); padding-left: 14px;
+}
+@media (max-width: 768px) {
+  #proto-chrome { top: 12px; left: 14px; gap: 9px; }
+  .proto-tag { display: none; }
+}

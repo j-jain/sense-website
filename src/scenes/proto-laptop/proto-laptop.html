@@ -4,6 +4,15 @@
 <div id="proto-wrapper">
   <section id="proto-stage">
 
+    <!-- Background carried over from S12 (the same blurred blue-hour video). The JS
+         render(p) fades this out to the flat-black stage as the phone morphs into the
+         big screen, so the hand-off no longer snaps to black. Sits behind everything. -->
+    <div class="proto-bg" id="lp-bg-carry">
+      <video muted playsinline loop preload="auto">
+        <source src="https://densosensemedia.blob.core.windows.net/media/Truck_yard_blue_hour_highway_202605201710.mp4" type="video/mp4">
+      </video>
+    </div>
+
     <!-- Intro caption (morph phase only) -->
     <div class="proto-caption proto-cap-top" id="capTop">It begins in your hand.</div>
 

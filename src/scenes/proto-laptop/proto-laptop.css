@@ -26,9 +26,11 @@ html,body{background:#070809;color:var(--off-white);font-family:'Outfit',sans-se
 #proto-stage{
   position:relative;height:100vh;width:100%;overflow:hidden;
   perspective:1800px;
-  /* Flat black — must match the pure black Scene 2 fades to at the hand-off, else
-     the shade behind the phone visibly jumps when S2 swaps to this stage. A radial
-     gradient also drifted shade behind the device as it slides right on settle. */
+  /* Flat black is the stage's FINAL background. S12 doesn't fade to pure black —
+     it ends on its blurred blue-hour video (#proto-bg over #050608) — so #lp-bg-carry
+     (a copy of that video, in proto-laptop.html/.js) fades out over the morph to reach
+     this black, avoiding a hard-black snap at the hand-off. A radial gradient was
+     avoided here as it drifted shade behind the device as it slides right on settle. */
   background:#000;
 }
 

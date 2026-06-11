@@ -1,7 +1,6 @@
 // main.js — entry. Imports shared setup, then each scene in scroll order.
 import './shared/setup.js';
-import './scenes/s1-world/s1.js';
-import './scenes/s2-pretrip/s2.js';
+import './scenes/s12-morph/s12.js';   // forma→phone morph opening (replaces old s1 + s2)
 import './scenes/proto-laptop/proto-laptop.js';
 import './scenes/s5a-diagnostic/s5a.js';
 import './scenes/s5b-route/s5b.js';

@@ -1,0 +1,152 @@
+<!-- ══════════════════════════════════════════════════════════════
+     Prototype D — "Innovation Report"  (inspired by Bidwells'
+     "Driving Innovation at Speed" scrollytelling report: big animated
+     count-ups, a three-card feature row, a donut, and bar charts).
+     Applied to the SC8 stats stretch — all copy/numbers verbatim.
+══════════════════════════════════════════════════════════════ -->
+<section id="psd">
+
+  <div class="psd-bg" aria-hidden="true">
+    <div class="psd-cold"></div>
+    <div class="psd-warm"></div>
+  </div>
+
+  <div class="psd-wrap">
+
+    <!-- ── Opening ── -->
+    <header class="psd-head">
+      <span class="psd-tag">Uptime center</span>
+      <h1 class="psd-h1">Turning fleet operations into intelligence.</h1>
+      <p class="psd-lede">One truck became thousands. Now you see everything.</p>
+    </header>
+
+    <!-- ── Thesis ── -->
+    <p class="psd-thesis" data-thesis>The completed journey generates operational intelligence.</p>
+
+    <!-- ── Three feature cards ── -->
+    <div class="psd-cards">
+      <article class="psd-card" data-card>
+        <span class="psd-card-bar" aria-hidden="true"></span>
+        <span class="psd-card-num"><span class="psd-num" data-target="12847">0</span></span>
+        <span class="psd-card-cat">repair history</span>
+      </article>
+      <article class="psd-card" data-card>
+        <span class="psd-card-bar" aria-hidden="true"></span>
+        <span class="psd-card-num"><span class="psd-num" data-target="3291">0</span></span>
+        <span class="psd-card-cat">service events</span>
+      </article>
+      <article class="psd-card" data-card>
+        <span class="psd-card-bar" aria-hidden="true"></span>
+        <span class="psd-card-num"><span class="psd-num" data-target="1847">0</span> <span class="psd-card-unit">routes</span></span>
+        <span class="psd-card-cat">fleet patterns</span>
+      </article>
+    </div>
+
+    <!-- ── Donut feature + side stats ── -->
+    <div class="psd-feature" data-feature>
+      <div class="psd-donut">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <defs>
+            <linearGradient id="psdArc" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#F5A623"/>
+              <stop offset="100%" stop-color="#D73030"/>
+            </linearGradient>
+          </defs>
+          <circle class="psd-donut-bg" cx="60" cy="60" r="52"/>
+          <circle class="psd-donut-fg" cx="60" cy="60" r="52" pathLength="100" transform="rotate(-90 60 60)"/>
+        </svg>
+        <div class="psd-donut-center">
+          <span class="psd-num psd-donut-num" data-target="94.2" data-decimal="1" data-suffix="%">0</span>
+          <span class="psd-donut-cat">uptime analytics</span>
+        </div>
+      </div>
+      <div class="psd-feature-side">
+        <div class="psd-side-stat">
+          <span class="psd-num psd-side-num" data-target="87">0</span><span class="psd-card-unit">score</span>
+          <span class="psd-side-cat">driver behaviour</span>
+        </div>
+        <div class="psd-side-stat">
+          <span class="psd-num psd-side-num" data-target="156">0</span><span class="psd-card-unit">active</span>
+          <span class="psd-side-cat">predictive models</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Fault signatures bar chart ── -->
+    <div class="psd-section" data-bars-section>
+      <div class="psd-section-head">
+        <span class="psd-section-title">Fault signatures</span>
+        <span class="psd-live">Live</span>
+      </div>
+      <div class="psd-bars">
+        <div class="psd-bar" data-bar>
+          <span class="psd-bar-val"><span class="psd-num" data-target="47">0</span></span>
+          <span class="psd-bar-track"><span class="psd-bar-fill" style="--h:100%"></span></span>
+          <span class="psd-bar-name">DPF regen cluster</span>
+          <span class="psd-bar-unit">vehicles</span>
+        </div>
+        <div class="psd-bar" data-bar>
+          <span class="psd-bar-val"><span class="psd-num" data-target="23">0</span></span>
+          <span class="psd-bar-track"><span class="psd-bar-fill" style="--h:49%"></span></span>
+          <span class="psd-bar-name">Coolant spike</span>
+          <span class="psd-bar-unit">vehicles</span>
+        </div>
+        <div class="psd-bar" data-bar>
+          <span class="psd-bar-val"><span class="psd-num" data-target="18">0</span></span>
+          <span class="psd-bar-track"><span class="psd-bar-fill" style="--h:38%"></span></span>
+          <span class="psd-bar-name">Battery drain</span>
+          <span class="psd-bar-unit">vehicles</span>
+        </div>
+        <div class="psd-bar" data-bar>
+          <span class="psd-bar-val"><span class="psd-num" data-target="9">0</span></span>
+          <span class="psd-bar-track"><span class="psd-bar-fill" style="--h:19%"></span></span>
+          <span class="psd-bar-name">Turbo lag</span>
+          <span class="psd-bar-unit">vehicles</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Fleet command ── -->
+    <div class="psd-section" data-fleet>
+      <div class="psd-section-head">
+        <span class="psd-section-title">Fleet command</span>
+      </div>
+      <div class="psd-fleet">
+        <div class="psd-fleet-hero">
+          <span class="psd-num psd-fleet-num" data-target="2847">0</span>
+          <span class="psd-fleet-unit">vehicles</span>
+        </div>
+        <div class="psd-fleet-right">
+          <div class="psd-fleet-stats">
+            <div class="psd-fstat"><span class="psd-fnum" style="color:#43A047">94%</span><span class="psd-flbl">Uptime</span></div>
+            <div class="psd-fstat"><span class="psd-fnum" style="color:#F5A623">23</span><span class="psd-flbl">Alerts</span></div>
+            <div class="psd-fstat"><span class="psd-fnum" style="color:#43A047">156</span><span class="psd-flbl">Services</span></div>
+            <div class="psd-fstat"><span class="psd-fnum" style="color:#D73030">8</span><span class="psd-flbl">Patterns</span></div>
+          </div>
+          <div class="psd-routes">
+            <div class="psd-route"><span class="psd-route-name">NH-44</span><span class="psd-route-track"><span class="psd-route-fill" style="--w:88%;--c:#43A047"></span></span><span class="psd-route-pct">88%</span></div>
+            <div class="psd-route"><span class="psd-route-name">NH-48</span><span class="psd-route-track"><span class="psd-route-fill" style="--w:72%;--c:#43A047"></span></span><span class="psd-route-pct">72%</span></div>
+            <div class="psd-route"><span class="psd-route-name">NH-8</span><span class="psd-route-track"><span class="psd-route-fill" style="--w:55%;--c:#F5A623"></span></span><span class="psd-route-pct">55%</span></div>
+            <div class="psd-route"><span class="psd-route-name">NH-2</span><span class="psd-route-track"><span class="psd-route-fill" style="--w:43%;--c:#F5A623"></span></span><span class="psd-route-pct">43%</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Synthesis ── -->
+    <div class="psd-synth" data-synth>
+      <p class="psd-synth-sub">The platform continuously learns through:</p>
+      <div class="psd-stats">
+        <div class="psd-stat"><span class="psd-num psd-stat-num" data-target="1847">0</span><span class="psd-stat-lbl">data points</span></div>
+        <div class="psd-stat"><span class="psd-num psd-stat-num" data-target="3">0</span><span class="psd-stat-lbl">new fault signatures</span></div>
+        <div class="psd-stat"><span class="psd-num psd-stat-num" data-target="94" data-suffix="%">0</span><span class="psd-stat-lbl">prediction accuracy</span></div>
+      </div>
+    </div>
+
+    <!-- ── Finale ── -->
+    <div class="psd-finale" data-finale>
+      <h2 class="psd-mega">Every journey makes the network smarter.</h2>
+    </div>
+
+  </div>
+</section>

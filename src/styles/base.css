@@ -9,16 +9,8 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* Grain — fixed, GPU-isolated */
-body::before{
-  content:'';
-  position:fixed;inset:0;
-  z-index:9000;
-  pointer-events:none;
-  opacity:.04;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-size:256px 256px;
-}
+/* Film grain removed — feTurbulence paper-grain reads as noise/slop and fights
+   the "crispy, clean" direction (impeccable). Surfaces stay flat and crisp. */
 
 /* ── TYPE ───────────────────────────────────── */
 .f-display{font-family:'Inter',sans-serif;font-weight:600;text-transform:none;letter-spacing:-0.02em;line-height:1.15}

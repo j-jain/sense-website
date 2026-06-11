@@ -1,4 +1,5 @@
 import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
+import { prepText, revealText } from '../../shared/text-reveal.js';
 
 /* ════════════════════════════════════════════
    S2 — BEFORE THE FIRST KILOMETER
@@ -23,6 +24,7 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
   var glow         = document.getElementById('s2-glow');
   var screens      = document.getElementById('s2-screens');
   var headline     = document.querySelector('.s2-headline');
+  prepText(headline);  /* pre-split so the headline rises in letter-by-letter on enter */
   var featureList  = document.getElementById('s2-feature-list');
   var featItems    = document.querySelectorAll('.s2-feat');
   var sceneHeading = document.getElementById('s2-scene-heading');
@@ -86,24 +88,20 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     // Headline is revealed independently via its own ScrollTrigger below
 
     // Fade in dark overlay on image (heavier)
-    gsap.to(darkOverlay, {opacity:1, duration:.8, ease:'power2.inOut'});
+    gsap.to(darkOverlay, {opacity:1, duration:.6, ease:'power3.out'});
 
     // Show scene heading
     setTimeout(function(){ sceneHeading.classList.add('visible'); }, 800);
 
     // Timeline: phone slides in from left, image squeezes to 75%
-    var tl = gsap.timeline({defaults:{ease:'power3.inOut',duration:1}});
+    var tl = gsap.timeline({defaults:{ease:'power4.out',duration:0.85}});
 
-    tl.to(phonePanel, {x:'0%', duration:1}, 0);
-    /* Desktop squeezes the cab to the right 75% to make room for the side panel.
-       Mobile keeps the cab full-bleed (blurred backdrop via CSS) with the phone
-       centered on top — so skip the squeeze. */
-    if(!isMobile()){
-      tl.to(imgPanel, {left:'25%', width:'75%', duration:1}, 0);
-    }
+    /* Phone slides in from the left to CENTRE (panel is full-width now). The cab
+       stays full-bleed as a dim backdrop on every viewport — no squeeze. */
+    tl.to(phonePanel, {x:'0%', duration:0.85}, 0);
 
     // Phone frame fades in — 3D entrance
-    tl.to(phoneFrame, {opacity:1, x:0, rotateY:0, duration:.8, ease:'power2.out'}, .4);
+    tl.to(phoneFrame, {opacity:1, x:0, rotateY:0, duration:.65, ease:'expo.out'}, .35);
 
     // Status bar color — starts on-dark (welcome splash is red)
     statusBar.classList.add('on-dark');
@@ -127,7 +125,7 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     start: 'top 90%',
     once: true,
     onEnter: function(){
-      gsap.to(headline, {opacity:1, duration:1.2, ease:'power2.out'});
+      revealText(headline, {duration:1.0});
     }
   });
 
@@ -173,10 +171,10 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
       var loader = el.querySelector('.s2a-loader');
       var loaderBar = document.getElementById('s2a-loader-bar');
 
-      gsap.to(logo, {opacity:1, scale:1, duration:.6, delay:.1, ease:'back.out(1.7)'});
-      gsap.to(greeting, {opacity:1, y:0, duration:.5, delay:.4, ease:'power2.out'});
-      gsap.to(tagline, {opacity:.7, y:0, duration:.5, delay:.6, ease:'power2.out'});
-      gsap.to(loader, {opacity:1, duration:.3, delay:.8});
+      gsap.to(logo, {opacity:1, scale:1, duration:.5, delay:.08, ease:'expo.out'});
+      gsap.to(greeting, {opacity:1, y:0, duration:.38, delay:.28, ease:'expo.out'});
+      gsap.to(tagline, {opacity:.7, y:0, duration:.38, delay:.44, ease:'expo.out'});
+      gsap.to(loader, {opacity:1, duration:.25, delay:.62});
 
       // Loader bar fills then auto-advance to Trip screen
       setTimeout(function(){ loaderBar.style.width = '100%'; }, 900);
@@ -194,15 +192,15 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
       var btn = el.querySelector('.s2b-startbtn');
       var badge = el.querySelector('.s2b-time-badge');
 
-      gsap.to(vText, {opacity:1, y:0, duration:.4, delay:.1, ease:'power2.out'});
-      gsap.fromTo(badge, {opacity:0, scale:.8}, {opacity:1, scale:1, duration:.4, delay:.2, ease:'back.out(1.5)'});
+      gsap.to(vText, {opacity:1, y:0, duration:.32, delay:.08, ease:'expo.out'});
+      gsap.fromTo(badge, {opacity:0, scale:.9}, {opacity:1, scale:1, duration:.32, delay:.16, ease:'expo.out'});
       rLabels.forEach(function(l, i){
-        gsap.to(l, {opacity:1, y:0, duration:.4, delay:.4 + i * .2, ease:'power2.out'});
+        gsap.to(l, {opacity:1, y:0, duration:.32, delay:.30 + i * .09, ease:'expo.out'});
       });
       stats.forEach(function(s, i){
-        gsap.fromTo(s, {opacity:0, scale:.9}, {opacity:1, scale:1, duration:.4, delay:.7 + i * .15, ease:'back.out(1.5)'});
+        gsap.fromTo(s, {opacity:0, scale:.92}, {opacity:1, scale:1, duration:.32, delay:.54 + i * .06, ease:'expo.out'});
       });
-      gsap.to(btn, {opacity:1, scale:1, duration:.5, delay:1, ease:'back.out(1.7)',
+      gsap.to(btn, {opacity:1, scale:1, duration:.42, delay:.80, ease:'expo.out',
         onComplete:function(){
           gsap.to(btn, {scale:1.03, duration:.8, yoyo:true, repeat:-1, ease:'sine.inOut'});
           /* Show "TAP" press indicator on Start Trip button */
@@ -221,16 +219,16 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
       // All 6 pass — full green donut (dashoffset 0 = full circle)
       gsap.fromTo(donutFill,
         {strokeDashoffset:251},
-        {strokeDashoffset:0, duration:1.5, delay:.2, ease:'power2.inOut'}
+        {strokeDashoffset:0, duration:1.4, delay:.2, ease:'power3.inOut'}
       );
       var counter = {val:0};
-      gsap.to(counter, {val:6, duration:1.5, delay:.2, ease:'power2.inOut',
+      gsap.to(counter, {val:6, duration:1.4, delay:.2, ease:'power3.inOut',
         onUpdate:function(){ donutNum.textContent = Math.round(counter.val) + '/6'; }
       });
       items.forEach(function(item, i){
-        gsap.fromTo(item, {opacity:0, y:8}, {opacity:1, y:0, duration:.35, delay:.5 + i * .1, ease:'power2.out'});
+        gsap.fromTo(item, {opacity:0, y:6}, {opacity:1, y:0, duration:.28, delay:.44 + i * .07, ease:'expo.out'});
       });
-      gsap.to(btn, {opacity:1, scale:1, duration:.5, delay:1.4, ease:'back.out(1.5)',
+      gsap.to(btn, {opacity:1, scale:1, duration:.4, delay:1.1, ease:'expo.out',
         onComplete:function(){
           /* Show "TAP" press indicator on Submit DVIR button */
           btn.classList.add('s2-press-indicator');
@@ -243,11 +241,11 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
       statusBar.classList.add('on-dark');
       var dItems = document.querySelectorAll('#s2-screenD .s2d-anim-item');
       dItems.forEach(function(item, i){
-        gsap.to(item, {opacity:1, y:0, duration:.35, delay:.1 + i * .12, ease:'power2.out'});
+        gsap.to(item, {opacity:1, y:0, duration:.28, delay:.07 + i * .07, ease:'expo.out'});
       });
       var tripBadge = document.getElementById('s2d-trip-badge');
       if(tripBadge){
-        gsap.fromTo(tripBadge, {opacity:0, scale:.7}, {opacity:1, scale:1, duration:.5, delay:.6, ease:'back.out(1.7)'});
+        gsap.fromTo(tripBadge, {opacity:0, scale:.85}, {opacity:1, scale:1, duration:.4, delay:.48, ease:'expo.out'});
       }
       // Signal that Screen D is complete — unlocks scroll animation
       setTimeout(function(){
@@ -264,7 +262,7 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     }
     featureList.classList.add('active');
     featItems.forEach(function(f, i){
-      gsap.to(f, {opacity:1, x:0, duration:.4, delay:.1 + i * .08, ease:'power2.out'});
+      gsap.to(f, {opacity:1, x:0, duration:.32, delay:.07 + i * .05, ease:'expo.out'});
     });
   }
 
@@ -348,9 +346,9 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
     parallaxActive = true;
     if(s2Section){ s2Section.style.background = ''; s2Section.style.pointerEvents = ''; }
     if(imgPanel) imgPanel.style.opacity = '';
-    if(headline) headline.style.opacity = '';
-    if(featureList) featureList.style.opacity = '';
-    if(sceneHeading) sceneHeading.style.opacity = '';
+    if(headline){ headline.style.opacity = ''; headline.style.transform = ''; }
+    if(featureList){ featureList.style.opacity = ''; featureList.style.transform = ''; }
+    if(sceneHeading){ sceneHeading.style.opacity = ''; sceneHeading.style.transform = ''; }
     if(mapBgEl) mapBgEl.style.opacity = '';
     if(phoneBody){
       phoneBody.style.borderRadius = '';
@@ -472,15 +470,33 @@ import { lenis, showSI, hideSI, isMobile } from '../../shared/setup.js';
         phoneFrame.style.transition = 'none';
         phoneFrame.style.transform = 'translateX(' + distance + 'px)';
 
-        /* Fade the cab / headline / features out quickly and bring up a solid
-           black stage to hand off on. */
-        var ft = Math.min(1, ep / 0.30);
-        if(imgPanel)     imgPanel.style.opacity = String(1 - ft);
-        if(headline)     headline.style.opacity = String(1 - ft);
-        if(featureList)  featureList.style.opacity = String((1 - ft) * (featureList.classList.contains('active') ? 1 : 0));
-        if(sceneHeading) sceneHeading.style.opacity = String(1 - ft);
-        s2Section.style.background = 'rgba(0,0,0,' + ft + ')';
-        if(ft > 0.5) s2Section.style.pointerEvents = 'none';
+        /* As the phone holds at centre and begins to "convert" into the
+           dashboard, push the text UP as it fades, dissolve the cab backdrop
+           slowly, then settle to solid black for the seamless hand-off. */
+        var tp   = Math.min(1, ep / 0.35);      /* text leave progress */
+        var lift = -56 * (tp * tp);             /* ease-in rise (accelerates up), px */
+        if(headline){
+          headline.style.opacity   = String(1 - tp);
+          headline.style.transform = 'translateY(-50%) translateY(' + lift + 'px)';
+        }
+        if(sceneHeading){
+          sceneHeading.style.opacity   = String(1 - tp);
+          sceneHeading.style.transform = 'translateX(-50%) translateY(' + lift + 'px)';
+        }
+        if(featureList){
+          var flOn = featureList.classList.contains('active') ? 1 : 0;
+          featureList.style.opacity   = String((1 - tp) * flOn);
+          featureList.style.transform = 'translateY(-50%) translateY(' + lift + 'px)';
+        }
+
+        /* Cab backdrop dissolves slowly across most of the post-slide window. */
+        var bg = 1 - Math.pow(1 - Math.min(1, ep / 0.70), 2);   /* ease-out */
+        if(imgPanel) imgPanel.style.opacity = String(1 - bg);
+
+        /* Black stage completes before the section unpins (proto morph starts on black). */
+        var k = Math.min(1, ep / 0.65);
+        s2Section.style.background = 'rgba(0,0,0,' + k + ')';
+        if(k > 0.5) s2Section.style.pointerEvents = 'none';
 
         /* The phone does NOT fade and does NOT hide — it stays fully visible at
            centre. The proto wrapper is pulled up 100vh so its pin begins exactly

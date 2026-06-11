@@ -5,13 +5,18 @@
 @import './styles/fonts.css';
 @import './styles/tokens.css';
 @import './styles/base.css';
-@import './scenes/s1-world/s1.css';
+@import './styles/text-reveal.css';
+/* s1.css dropped — old S1 hero replaced by s12-morph. s2.css + s23.css KEPT:
+   proto-laptop reuses their s2 phone, screen and dashboard classes. */
 @import './scenes/s2-pretrip/s2.css';
 @import './scenes/s23-dashboard/s23.css';
 @import './shared/transitions.css';
+/* s12-morph opening — after s2.css so its #proto-screens override + .s2a-wash win. */
+@import './scenes/s12-morph/s12.css';
 /* proto-laptop owns the phone→iPad morph + dashboard-in-iPad; its overrides must
    cascade AFTER s23.css/transitions (its own @imports dedupe against the above). */
 @import './scenes/proto-laptop/proto-laptop.css';
+@import './shared/scene5-stage.css';
 @import './scenes/s5a-diagnostic/s5a.css';
 @import './scenes/s5b-route/s5b.css';
 @import './scenes/s5c-handoff/s5c.css';

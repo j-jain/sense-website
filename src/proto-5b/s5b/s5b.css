@@ -1,0 +1,86 @@
+/* ══════════════════════════════════════════════
+   PROTO · 5B — SERVICE NETWORK  (copied from the live scene so the
+   prototype is self-styled; the live source remains src/scenes/s5b-route)
+══════════════════════════════════════════════ */
+#s5b-wrapper{position:relative}
+#s5b{
+  position:relative;min-height:100dvh;
+  overflow:hidden;background:var(--bg);
+}
+
+/* Scene headline — right side, lower; the detail card sits opposite on the left. */
+#s5b .s5b-scene-headline{
+  position:absolute;top:54%;right:5%;left:auto;transform:none;z-index:25;
+  font-family:var(--font-display);font-size:clamp(22px,2.6vw,38px);font-weight:300;
+  letter-spacing:-0.02em;color:var(--text-1);text-align:right;max-width:380px;white-space:normal;
+  line-height:1.15;pointer-events:none;
+}
+@media(max-width:768px){
+  #s5b .s5b-scene-headline{top:24px;right:auto;left:50%;transform:translateX(-50%);text-align:center;font-size:13px;max-width:none;width:90%;}
+}
+#s5b .map-wrap{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
+/* States — bold borders */
+#s5b .st{fill:rgba(255,255,255,0.025);stroke:rgba(255,255,255,0.35);stroke-width:0.7;opacity:0}
+
+/* Highways */
+#s5b .hw{fill:none;stroke:rgba(255,255,255,0.12);stroke-width:1.2;stroke-linecap:round;opacity:0}
+
+/* Routes */
+#s5b .route-trav{fill:none;stroke:rgba(255,255,255,0.18);stroke-width:2;stroke-linecap:round;stroke-dasharray:4 6;opacity:0}
+#s5b .route-orig{fill:none;stroke:rgba(255,255,255,0.35);stroke-width:2;stroke-linecap:round;opacity:0}
+#s5b .route-det{fill:none;stroke:#D73030;stroke-width:2.5;stroke-linecap:round;opacity:0}
+#s5b .route-aft{fill:none;stroke:rgba(215,48,48,0.3);stroke-width:1.5;stroke-linecap:round;stroke-dasharray:6 4;opacity:0}
+
+/* Truck */
+#s5b .truck{opacity:0}
+#s5b .truck-ring{fill:none;stroke:#D73030;stroke-width:1;opacity:0.4}
+
+/* Radar */
+#s5b .rr{fill:none;stroke:#D73030;stroke-width:0.6;opacity:0}
+
+/* Nodes — all start grey */
+#s5b .sn{opacity:0}
+#s5b .nd{fill:#444;stroke:none;transition:fill 0.3s}
+
+/* Labels — hidden by default */
+#s5b .nl{font-family:'JetBrains Mono',monospace;font-size:13px;fill:#e0972a;opacity:0;pointer-events:none;font-weight:500}
+#s5b .rl{font-family:'JetBrains Mono',monospace;font-size:13px;fill:#ff5555;opacity:0;pointer-events:none;font-weight:700}
+
+/* City markers */
+#s5b .cl{font-family:'JetBrains Mono',monospace;font-size:10px;fill:rgba(255,255,255,0.4);opacity:0}
+#s5b .cdot{fill:rgba(255,255,255,0.3);opacity:0}
+
+/* Detail card — left side (slides in from the left) */
+#s5b .s5b-card{position:absolute;left:5%;top:50%;transform:translateY(-50%) translateX(-40px);
+  background:rgba(8,8,9,0.95);border:1px solid rgba(255,255,255,0.08);
+  padding:28px 32px;width:340px;opacity:0}
+#s5b .s5b-card h3{font-weight:600;font-size:17px;color:#fff;margin-bottom:6px}
+#s5b .s5b-card .tier{font-family:'JetBrains Mono',monospace;font-size:11px;color:#D73030;margin-bottom:20px;letter-spacing:0.5px}
+#s5b .s5b-card .li{display:flex;justify-content:space-between;align-items:center;
+  padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;color:#666;opacity:0}
+#s5b .s5b-card .li:last-child{border-bottom:none}
+#s5b .s5b-card .chk{color:#2ecc71;font-family:'JetBrains Mono',monospace;font-size:12px}
+#s5b .s5b-card .val{color:#aaa;font-family:'JetBrains Mono',monospace;font-size:12px}
+
+/* Route status */
+#s5b .s5b-rs{position:absolute;bottom:10%;left:50%;transform:translateX(-50%);
+  font-family:'JetBrains Mono',monospace;font-size:13px;color:#D73030;
+  opacity:0;white-space:nowrap;letter-spacing:0.3px}
+#s5b .s5b-rs::before{content:'> ';opacity:0.4}
+
+@media(max-width:768px){
+  #s5b .map-wrap{top:3%;left:50%;transform:translateX(-50%)}
+  #s5b .map-wrap svg,
+  #s5b .map-wrap .map{width:96vw;height:auto}
+  #s5b .nl,#s5b .rl{font-size:18px}
+  #s5b .cl{font-size:15px}
+  #s5b .s5b-rs{bottom:auto;top:56%;font-size:11px;white-space:normal;text-align:center;max-width:90vw}
+  #s5b .s5b-card{
+    left:0;right:0;top:auto;bottom:0;
+    transform:none;width:auto;
+    border-left:none;border-top:4px solid #D73030;
+    border-radius:16px 16px 0 0;
+    padding:18px 20px;
+  }
+  #s5b .s5b-card h3{font-size:16px}
+}

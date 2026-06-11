@@ -1,40 +1,79 @@
 /* ============================================================
-   fonts.css — self-hosted web fonts (no Google Fonts CDN).
-   Same font files Google served, shipped via @fontsource (npm),
-   bundled by Vite. font-display: swap is the @fontsource default,
-   matching the previous "&display=swap" — rendering is unchanged.
-   Weights mirror the old Google Fonts request exactly.
+   fonts.css — THE DENSO FONT FILE (single source of truth).
+
+   The whole site now renders in DENSO-provided typefaces only:
+     • Headlines  → DENSO            (geometric brand face, Light)
+     • Body / UI  → Proxima Nova     (brand body face: Thin / Light / Bold)
+     • Labels     → Noto Sans Display(Light / SemiBold)
+     • Data/code  → JetBrains Mono   (functional, kept)
+
+   To switch the whole site WITHOUT editing every scene's CSS, the legacy
+   family NAMES already used across the codebase are RE-MAPPED here to the
+   DENSO files:
+       'Inter'      → DENSO
+       'Outfit'     → Proxima Nova   (thin/light/bold split by weight range)
+       'Barlow'     → Noto Sans Display
+       'Bebas Neue' → Noto Sans Display
+   So "change the fonts" = edit THIS file only. Real DENSO family names are
+   also declared so new code can use the --font-* tokens in tokens.css.
+
+   Weight ranges on each @font-face mean any requested font-weight maps to a
+   real file (no faux-bold synthesis). Self-hosted, no CDN. font-display:swap.
    ============================================================ */
 
-/* Outfit — 300,400,500,600,700,800,900 */
-@import '@fontsource/outfit/300.css';
-@import '@fontsource/outfit/400.css';
-@import '@fontsource/outfit/500.css';
-@import '@fontsource/outfit/600.css';
-@import '@fontsource/outfit/700.css';
-@import '@fontsource/outfit/800.css';
-@import '@fontsource/outfit/900.css';
-
-/* Inter — 300,400,500,600,700,800,900 */
-@import '@fontsource/inter/300.css';
-@import '@fontsource/inter/400.css';
-@import '@fontsource/inter/500.css';
-@import '@fontsource/inter/600.css';
-@import '@fontsource/inter/700.css';
-@import '@fontsource/inter/800.css';
-@import '@fontsource/inter/900.css';
-
-/* Barlow — 300,400,500,600,700 */
-@import '@fontsource/barlow/300.css';
-@import '@fontsource/barlow/400.css';
-@import '@fontsource/barlow/500.css';
-@import '@fontsource/barlow/600.css';
-@import '@fontsource/barlow/700.css';
-
-/* JetBrains Mono — 400,500,600 */
+/* JetBrains Mono — data/code readouts only (400,500,600). Real face, kept. */
 @import '@fontsource/jetbrains-mono/400.css';
 @import '@fontsource/jetbrains-mono/500.css';
 @import '@fontsource/jetbrains-mono/600.css';
 
-/* Bebas Neue — 400 (only weight) */
-@import '@fontsource/bebas-neue/400.css';
+/* ── Headlines: DENSO (Light) ───────────────────────────────── */
+@font-face{
+  font-family:'DENSO';
+  src:url('../fonts/denso/DENSO-Light.otf') format('opentype');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+/* legacy display name → DENSO */
+@font-face{
+  font-family:'Inter';
+  src:url('../fonts/denso/DENSO-Light.otf') format('opentype');
+  font-weight:100 900; font-style:normal; font-display:swap;
+}
+
+/* ── Body / UI: Proxima Nova (Thin / Light / Bold) ──────────── */
+@font-face{ font-family:'Proxima Nova';
+  src:url('../fonts/denso/ProximaNova-Thin.otf')  format('opentype');
+  font-weight:100;     font-style:normal; font-display:swap; }
+@font-face{ font-family:'Proxima Nova';
+  src:url('../fonts/denso/ProximaNova-Light.otf') format('opentype');
+  font-weight:200 500; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Proxima Nova';
+  src:url('../fonts/denso/ProximaNova-Bold.otf')  format('opentype');
+  font-weight:600 900; font-style:normal; font-display:swap; }
+/* legacy body name → Proxima Nova */
+@font-face{ font-family:'Outfit';
+  src:url('../fonts/denso/ProximaNova-Thin.otf')  format('opentype');
+  font-weight:100;     font-style:normal; font-display:swap; }
+@font-face{ font-family:'Outfit';
+  src:url('../fonts/denso/ProximaNova-Light.otf') format('opentype');
+  font-weight:200 500; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Outfit';
+  src:url('../fonts/denso/ProximaNova-Bold.otf')  format('opentype');
+  font-weight:600 900; font-style:normal; font-display:swap; }
+
+/* ── Labels: Noto Sans Display (Light / SemiBold) ───────────── */
+@font-face{ font-family:'Noto Sans Display';
+  src:url('../fonts/denso/NotoSansDisplay-Light.ttf')    format('truetype');
+  font-weight:100 450; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Noto Sans Display';
+  src:url('../fonts/denso/NotoSansDisplay-SemiBold.ttf') format('truetype');
+  font-weight:451 900; font-style:normal; font-display:swap; }
+/* legacy label names → Noto Sans Display */
+@font-face{ font-family:'Barlow';
+  src:url('../fonts/denso/NotoSansDisplay-Light.ttf')    format('truetype');
+  font-weight:100 450; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Barlow';
+  src:url('../fonts/denso/NotoSansDisplay-SemiBold.ttf') format('truetype');
+  font-weight:451 900; font-style:normal; font-display:swap; }
+@font-face{ font-family:'Bebas Neue';
+  src:url('../fonts/denso/NotoSansDisplay-SemiBold.ttf') format('truetype');
+  font-weight:100 900; font-style:normal; font-display:swap; }

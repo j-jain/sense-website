@@ -1,0 +1,11 @@
+/* ══════════════════════════════════════════════
+   text-reveal.css — layout primitives for the per-letter
+   "rise from the bottom, left→right" heading reveal.
+   The JS utility (src/shared/text-reveal.js) wraps each glyph in
+   .tr-mask > .tr-ch inside a per-word .tr-word; these rules let the
+   glyph rise from below a clipped baseline without breaking words.
+   (Mirrors the proto's proto-core.css so reveals look identical site-wide.)
+══════════════════════════════════════════════ */
+.tr-word{display:inline-block;white-space:nowrap}
+.tr-mask{display:inline-block;overflow:hidden;vertical-align:top}
+.tr-ch{display:inline-block;will-change:transform}

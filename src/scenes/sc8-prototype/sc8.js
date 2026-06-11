@@ -1,6 +1,8 @@
 // ==================================================
 // SCENE 8-9-10 INTEGRATED PROTOTYPE
 // ==================================================
+import { prepText, revealChars } from '../../shared/text-reveal.js';
+
 (function() {
   var sc8 = document.getElementById('sc8-root');
   if (!sc8) return;
@@ -58,7 +60,10 @@
     clearAll();
     var t = pill.dataset.target;
     pill.classList.add('active');
-    if(devices[t]) { devices[t].classList.add('visible'); gsap.set(devices[t], {opacity:1, y:0, scale:1}); }
+    if(devices[t]) {
+      devices[t].classList.add('visible');
+      gsap.fromTo(devices[t], {opacity:0, y:16, scale:0.96}, {opacity:1, y:0, scale:1, duration:0.28, ease:'expo.out'});
+    }
     if(labels[t]) labels[t].classList.add('visible');
     if(conns[t]) conns[t].classList.add('visible');
     if (t === 'chat') resetChat();
@@ -119,8 +124,24 @@
   var cards = sc8.querySelectorAll('.intel-card');
   var statsRow = document.getElementById('statsRow');
   var megaHeadline = document.getElementById('megaHeadline');
+  prepText(megaHeadline);  /* pre-split; wrapper opacity stays scrub-driven */
+  var sc8MegaFired = false;
   var closingSection = document.getElementById('closingSection');
   var barHeights = [18, 26, 14, 22, 10];
+
+  // ── NETWORK → WORDS overlays (over the map; converge → headline) ──
+  var ucOverlays = sc8.querySelectorAll('.uc-ov');
+  var ucNums = sc8.querySelectorAll('.uc-num');
+  var ucRing = sc8.querySelector('.uc-ring-fg');
+  var ucRingP = ucRing ? parseFloat(ucRing.dataset.p) : 87;
+  gsap.set(ucOverlays, { opacity: 0, scale: 0.92, y: 16 });
+  gsap.set('#sc8-root .uc-viz-bars rect', { scaleY: 0 });
+  gsap.set('#sc8-root .uc-prog', { scaleX: 0 });
+  if (ucRing) gsap.set(ucRing, { strokeDasharray: ucRingP + ' 100', strokeDashoffset: ucRingP });
+  gsap.set('#sc8-root .uc-spark', { strokeDasharray: 100, strokeDashoffset: 100 });
+  gsap.set('#sc8-root .uc-viz-dots span', { opacity: 0, scale: 0.4, transformOrigin: 'center' });
+  function ucDX(el){ var s = scene.getBoundingClientRect(), r = el.getBoundingClientRect(); return (s.left + s.width / 2) - (r.left + r.width / 2); }
+  function ucDY(el){ var s = scene.getBoundingClientRect(), r = el.getBoundingClientRect(); return (s.top + s.height / 2) - (r.top + r.height / 2); }
 
   // ==================================================
   // ANIMATED TRUCKS ON HIGHWAYS
@@ -244,6 +265,7 @@
       end: 'bottom bottom',
       scrub: 1,
       pin: '#scene',
+      invalidateOnRefresh: true,
     }
   });
 
@@ -278,81 +300,40 @@
     .to(cityLabels, { fill: '#F2F0EB', duration: 0.18 }, 0.27);
   tl.to(filmGrain, { opacity: 0.03, duration: 0.12 }, 0.33);
 
-  // PHASE C (45-62%): Intro Text + Intelligence Cards
-  tl.to(indiaMap, { scale: 0.85, duration: 0.05 }, 0.45);
-  tl.to(introText, { opacity: 1, duration: 0.05 }, 0.46);
-  cards.forEach(function(card, i) {
-    tl.to(card, { opacity: 1, scale: 1, duration: 0.03, ease: 'back.out(1.4)' }, 0.50 + i * 0.015);
-  });
-
-  var bars = sc8.querySelectorAll('.mc-bar');
-  bars.forEach(function(bar, i) {
-    tl.to(bar, { attr: { y: 28 - barHeights[i], height: barHeights[i] }, duration: 0.05, ease: 'power2.out' }, 0.54 + i * 0.008);
-  });
-  var sparkline = sc8.querySelector('.mc-sparkline');
-  if (sparkline) tl.to(sparkline, { strokeDashoffset: 0, duration: 0.08 }, 0.54);
-  var ring = sc8.querySelector('.mc-ring');
-  if (ring) tl.to(ring, { strokeDashoffset: 75.4 * (1 - 0.87), duration: 0.08 }, 0.54);
-  var heatDots = sc8.querySelectorAll('.mc-heatdots circle');
-  heatDots.forEach(function(dot, i) {
-    tl.to(dot, { opacity: 0.85, duration: 0.02 }, 0.54 + i * 0.005);
-  });
-  var hbar = sc8.querySelector('.mc-hbar');
-  if (hbar) tl.to(hbar, { attr: { width: 94.2 }, duration: 0.08 }, 0.54);
-  var pulseCore = sc8.querySelector('.mc-pulse-core');
-  var pulseRing = sc8.querySelector('.mc-pulse-ring');
-  if (pulseCore) tl.to(pulseCore, { opacity: 1, duration: 0.04 }, 0.54);
-  if (pulseRing) tl.to(pulseRing, { opacity: 0.6, duration: 0.04 }, 0.56);
-
-  sc8.querySelectorAll('.card-value [data-target], .card-value[data-target]').forEach(function(el) {
-    var target = parseFloat(el.dataset.target);
-    var isDecimal = el.dataset.decimal;
-    var obj = { val: 0 };
+  // PHASE C (40-58%): intro text + the six viz overlays reveal over the map
+  tl.to(indiaMap, { scale: 0.88, duration: 0.05 }, 0.40);
+  tl.to(introText, { opacity: 1, duration: 0.05 }, 0.40);
+  tl.to('#sc8-root .uc-ov', { opacity: 1, scale: 1, y: 0, duration: 0.05, stagger: 0.012, ease: 'expo.out' }, 0.42);
+  tl.to('#sc8-root .uc-viz-bars rect', { scaleY: 1, duration: 0.05, stagger: 0.004, ease: 'power3.out' }, 0.45);
+  tl.to('#sc8-root .uc-prog', { scaleX: 1, duration: 0.06, ease: 'power3.out' }, 0.45);
+  if (ucRing) tl.to(ucRing, { strokeDashoffset: 0, duration: 0.07, ease: 'power2.out' }, 0.45);
+  tl.to('#sc8-root .uc-spark', { strokeDashoffset: 0, duration: 0.07, ease: 'power2.out' }, 0.45);
+  tl.to('#sc8-root .uc-viz-dots span', { opacity: 1, scale: 1, duration: 0.04, stagger: 0.008, ease: 'power3.out' }, 0.46);
+  ucNums.forEach(function(el, i) {
+    var dec = el.dataset.decimal ? parseInt(el.dataset.decimal, 10) : 0;
+    var sfx = el.dataset.suffix || '';
+    var obj = { v: 0 };
     tl.to(obj, {
-      val: target, duration: 0.10, ease: 'power1.out',
-      onUpdate: function() {
-        el.textContent = isDecimal ? obj.val.toFixed(1) : Math.round(obj.val).toLocaleString();
-      }
-    }, 0.52);
+      v: parseFloat(el.dataset.target), duration: 0.07, ease: 'power1.out',
+      onUpdate: function() { el.textContent = (dec ? obj.v.toFixed(dec) : Math.round(obj.v).toLocaleString('en-US')) + sfx; }
+    }, 0.43 + i * 0.006);
   });
 
-  // PHASE D (62-75%): Staggered Stats + Headline
-  tl.to(introText, { opacity: 0, y: -20, duration: 0.04 }, 0.62);
-  tl.to(cards, { opacity: 0.4, duration: 0.04 }, 0.62);
-  tl.to(statsRow, { opacity: 1, duration: 0.01 }, 0.64);
-  tl.to('#st1', { opacity: 1, duration: 0.04 }, 0.65);
-  tl.to('#st2', { opacity: 1, duration: 0.04 }, 0.68);
-  tl.to('#st3', { opacity: 1, duration: 0.04 }, 0.71);
-  tl.to(megaHeadline, { opacity: 1, duration: 0.05 }, 0.73);
+  // PHASE D (60-80%): intro out · overlays converge to centre · map dims
+  tl.to(introText, { opacity: 0, y: -20, duration: 0.04 }, 0.60);
+  ucOverlays.forEach(function(ov) {
+    tl.to(ov, { x: function(){ return ucDX(ov); }, y: function(){ return ucDY(ov); }, scale: 0.3, opacity: 0, duration: 0.16, ease: 'power2.in' }, 0.62);
+  });
+  tl.to(indiaMap, { opacity: 0.16, scale: 0.84, duration: 0.18, ease: 'power2.inOut' }, 0.62);
 
-  // SCENE 10 (75-100%): Closing over map
-  tl.to(cards, { opacity: 0, scale: 0.9, duration: 0.03, stagger: 0.003 }, 0.76)
-    .to(statsRow, { opacity: 0, y: -10, duration: 0.03 }, 0.76)
-    .to(megaHeadline, { opacity: 0, duration: 0.02 }, 0.76);
-  tl.to(indiaMap, { opacity: 0.15, duration: 0.04 }, 0.77);
-  tl.to(truckGroups, { opacity: 0.3, duration: 0.04 }, 0.77);
-  tl.to(scene, { backgroundColor: '#0D0F1A', duration: 0.05 }, 0.78);
-  tl.call(function(){ closingSection.classList.remove('cs-active'); }, null, 0.79);
-  tl.to(closingSection, { opacity: 1, duration: 0.01 }, 0.80);
-  tl.call(function(){ closingSection.classList.add('cs-active'); }, null, 0.80);
-  tl.to('#cw1', { opacity: 1, y: 0, duration: 0.03 }, 0.82);
-  tl.to('#cw2', { opacity: 1, y: 0, duration: 0.03 }, 0.86);
-  tl.to('#cw3', { opacity: 1, y: 0, duration: 0.03 }, 0.90);
-  tl.to('#sc8-root .closing-word', { opacity: 0, y: -10, duration: 0.02 }, 0.93);
-  tl.to('#closingBrand', { opacity: 0.5, y: 0, duration: 0.02 }, 0.95);
-  tl.to('#closingTagline', { opacity: 1, y: 0, duration: 0.02 }, 0.97);
-  tl.to('#closingCta', { opacity: 1, y: 0, duration: 0.02 }, 0.99);
-
-  // Continuous pulse animation
-  function animatePulse() {
-    if (pulseRing && parseFloat(getComputedStyle(pulseRing).opacity) > 0) {
-      gsap.fromTo(pulseRing,
-        { attr: { r: 4 }, opacity: 0.6 },
-        { attr: { r: 12 }, opacity: 0, duration: 1.2, ease: 'power1.out', onComplete: animatePulse }
-      );
-    } else {
-      requestAnimationFrame(animatePulse);
-    }
-  }
-  setTimeout(animatePulse, 3000);
+  // PHASE E (78-96%): the words form in the centre (solid white)
+  tl.to(megaHeadline, { opacity: 1, duration: 0.04 }, 0.78);
+  /* Letter reveal fires once on the way DOWN; re-arms on the way UP so a
+     second scroll-down replays it. */
+  tl.call(function(){
+    var dir = tl.scrollTrigger ? tl.scrollTrigger.direction : 1;
+    if(dir === 1){ if(!sc8MegaFired){ sc8MegaFired = true; revealChars(megaHeadline); } }
+    else { sc8MegaFired = false; prepText(megaHeadline); }
+  }, null, 0.79);
+  tl.to({}, { duration: 0.04 }, 0.96);
 })();

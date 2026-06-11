@@ -271,6 +271,73 @@
       <div class="intro-sub">The platform continuously learns through:</div>
     </div>
 
+    <!-- Network→Words overlays (over the map; converge to form the headline) -->
+    <div class="uc-overlays" id="ucOverlays">
+      <article class="uc-ov uc-ov-1">
+        <span class="uc-ov-cat">repair history</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="12847">0</span></span>
+        <span class="uc-ov-viz uc-viz-bars">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="2" y="14" width="14" height="12" rx="2" fill="#D73030"/>
+            <rect x="22" y="10" width="14" height="16" rx="2" fill="#D73030"/>
+            <rect x="42" y="6" width="14" height="20" rx="2" fill="#D73030"/>
+            <rect x="62" y="9" width="14" height="17" rx="2" fill="#D73030"/>
+            <rect x="82" y="2" width="14" height="24" rx="2" fill="#D73030"/>
+          </svg>
+        </span>
+      </article>
+      <article class="uc-ov uc-ov-2">
+        <span class="uc-ov-cat">service events</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="3291">0</span></span>
+        <span class="uc-ov-viz">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <defs><linearGradient id="ucSpark" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#43A047"/><stop offset="100%" stop-color="#D73030"/></linearGradient></defs>
+            <polyline class="uc-spark" points="2,22 22,17 40,19 58,11 76,8 98,3" pathLength="100" fill="none" stroke="url(#ucSpark)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </article>
+      <article class="uc-ov uc-ov-3">
+        <span class="uc-ov-cat">driver behaviour</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="87">0</span><span class="uc-ov-unit">score</span></span>
+        <span class="uc-ov-viz uc-viz-ring">
+          <svg viewBox="0 0 36 36" aria-hidden="true">
+            <circle class="uc-ring-bg" cx="18" cy="18" r="15"/>
+            <circle class="uc-ring-fg" cx="18" cy="18" r="15" pathLength="100" data-p="87" stroke="#43A047" transform="rotate(-90 18 18)"/>
+          </svg>
+        </span>
+      </article>
+      <article class="uc-ov uc-ov-4">
+        <span class="uc-ov-cat">fleet patterns</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="1847">0</span><span class="uc-ov-unit">routes</span></span>
+        <span class="uc-ov-viz uc-viz-bars">
+          <svg viewBox="0 0 100 26" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="2" y="8" width="14" height="18" rx="2" fill="#F5A623"/>
+            <rect x="22" y="4" width="14" height="22" rx="2" fill="#D73030"/>
+            <rect x="42" y="12" width="14" height="14" rx="2" fill="#F5A623"/>
+            <rect x="62" y="7" width="14" height="19" rx="2" fill="#D73030"/>
+            <rect x="82" y="11" width="14" height="15" rx="2" fill="#F5A623"/>
+          </svg>
+        </span>
+      </article>
+      <article class="uc-ov uc-ov-5">
+        <span class="uc-ov-cat">uptime analytics</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="94.2" data-decimal="1" data-suffix="%">0</span></span>
+        <span class="uc-ov-viz uc-viz-prog">
+          <svg viewBox="0 0 100 8" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="0" y="1" width="100" height="6" rx="3" fill="rgba(255,255,255,0.10)"/>
+            <rect class="uc-prog" x="0" y="1" width="94.2" height="6" rx="3" fill="#43A047"/>
+          </svg>
+        </span>
+      </article>
+      <article class="uc-ov uc-ov-6">
+        <span class="uc-ov-cat">predictive models</span>
+        <span class="uc-ov-val"><span class="uc-num" data-target="156">0</span><span class="uc-ov-unit">active</span></span>
+        <span class="uc-ov-viz uc-viz-dots">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+      </article>
+    </div>
+
     <div class="stats-row" id="statsRow">
       <div class="stat-item" id="st1"><span class="num">1,847</span>data points</div>
       <div class="stat-item" id="st2"><span class="num">3</span>new fault signatures</div>
@@ -279,9 +346,11 @@
     <div class="mega-headline" id="megaHeadline">Every journey makes the network smarter.</div>
 
     <div class="closing-section" id="closingSection">
-      <div class="closing-word" id="cw1">Connected.</div>
-      <div class="closing-word" id="cw2">Verified.</div>
-      <div class="closing-word" id="cw3">Resolved.</div>
+      <div class="closing-words" id="closingWords">
+        <div class="closing-word" id="cw1">Connected.</div>
+        <div class="closing-word" id="cw2">Verified.</div>
+        <div class="closing-word" id="cw3">Resolved.</div>
+      </div>
       <div class="closing-brand" id="closingBrand">sense</div>
       <div class="closing-tagline" id="closingTagline">Sense the Future. Inspire the Now.</div>
       <button class="btn-solid" id="closingCta">Request a Demo</button>

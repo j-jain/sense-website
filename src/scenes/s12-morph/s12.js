@@ -135,8 +135,10 @@ import { lenis, isMobile } from '../../shared/setup.js';
   }
 
   /* ── scroll lock via the shared Lenis (mirrors the old s1.js handoff) ── */
-  function lockScroll() { window.__scrollLocked = true; try { lenis.stop(); } catch (e) {} }
-  function unlockScroll() { window.__scrollLocked = false; try { lenis.start(); } catch (e) {} }
+  /* Delegate to the shared lock: arms the anchor so the opening hero hold can't be
+     scrollbar-dragged; unlock disarms it so the first-gesture scrub runs normally. */
+  function lockScroll() { window.lockScroll(); }
+  function unlockScroll() { window.unlockScroll(); }
 
   /* ── reveal the hero copy (eyebrow + headline). instant=true skips the drop-in. ── */
   function revealHeroText(instant) {

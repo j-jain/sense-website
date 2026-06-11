@@ -606,7 +606,7 @@ function runCountdownSequence(){
   /* ── Phase 2: Countdown 3→2→1 with circle drawing in (3s) ── */
   /* Show numeral "3" */
   tl.set(cdNumeral, {textContent:'3', opacity:0, scale:1.3}, 0.5);
-  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'back.out(1.7)'}, 0.5);
+  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'power3.out'}, 0.5);
 
   /* Circle draws from 0→33% over first second */
   tl.to(cdProgress, {strokeDashoffset: circumference * 0.667, duration:0.85, ease:'power1.inOut'}, 0.5);
@@ -614,7 +614,7 @@ function runCountdownSequence(){
   /* Numeral "2" */
   tl.to(cdNumeral, {opacity:0, scale:0.8, duration:0.15}, 1.35);
   tl.set(cdNumeral, {textContent:'2', scale:1.3}, 1.5);
-  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'back.out(1.7)'}, 1.5);
+  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'power3.out'}, 1.5);
 
   /* Circle draws from 33→67% */
   tl.to(cdProgress, {strokeDashoffset: circumference * 0.333, duration:0.85, ease:'power1.inOut'}, 1.5);
@@ -622,7 +622,7 @@ function runCountdownSequence(){
   /* Numeral "1" */
   tl.to(cdNumeral, {opacity:0, scale:0.8, duration:0.15}, 2.35);
   tl.set(cdNumeral, {textContent:'1', scale:1.3}, 2.5);
-  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'back.out(1.7)'}, 2.5);
+  tl.to(cdNumeral, {opacity:1, scale:1, duration:0.25, ease:'power3.out'}, 2.5);
 
   /* Circle draws from 67→100% */
   tl.to(cdProgress, {strokeDashoffset: 0, duration:0.85, ease:'power1.inOut'}, 2.5);

@@ -12,7 +12,7 @@
 /* Integrated into the main site: reuse the ONE Lenis + GSAP/ScrollTrigger that
    shared/setup.js already created and registered — never build a second scroll
    system (it would fight the rest of the page). */
-import { lenis, isMobile } from '../../shared/setup.js';
+import { lenis, isMobile, lockScroll, unlockScroll, disarmAnchor } from '../../shared/setup.js';
 import { prepText, revealText } from '../../shared/text-reveal.js';
 
 /* ── Device / morph elements ── */
@@ -35,6 +35,10 @@ const lpHinge     = document.getElementById('lpHinge');
 const lpWebcam    = document.getElementById('lpWebcam');
 const lpShadow    = document.getElementById('lpShadow');
 const lpGlare     = document.getElementById('lpGlare');
+/* Background carried over from S12 (same blurred blue-hour video). render() fades it
+   out so the phone→screen hand-off no longer snaps to flat black. */
+const bgCarry     = document.getElementById('lp-bg-carry');
+if(bgCarry){ const _v = bgCarry.querySelector('video'); if(_v) _v.play().catch(()=>{}); }
 
 /* The phone arrived from Scene 2 already — the "It begins in your hand" intro
    caption is redundant inside the main site. */
@@ -186,6 +190,10 @@ function render(p){
   }
 
   capTop.style.opacity = String(band(p, 0.00, 0.08));
+
+  /* Background carried from S12 fades out to the flat-black stage as the phone
+     becomes the big screen — smooths the hand-off. (Morph math above is untouched.) */
+  if(bgCarry) bgCarry.style.opacity = String(1 - clamp((p - 0.04) / (0.34 - 0.04), 0, 1));
 }
 
 /* ── Settle: reveal explorer + Scene-3 overlays (hold band only) ── */
@@ -369,8 +377,7 @@ function runCountdown(){
   const ring       = document.getElementById('countdown-ring');
   const circumference = 2 * Math.PI * 72;
 
-  lenis.stop();
-  window.__scrollLocked = true;
+  lockScroll();   /* locks + arms anchor at the pinned proto-stage — countdown is immovable */
   if(cdLog) cdLog.textContent = '> Initiating platform response...';
 
   const tl = gsap.timeline({
@@ -380,14 +387,16 @@ function runCountdown(){
          refresh, then let the Scene-5 autoplay sequencer own scroll + the
          sideways camera pans. */
       const s5stage = document.getElementById('s5-stage');
+      /* The jump to #s5-stage is a sanctioned scroll while locked — disarm the
+         anchor so it isn't snapped back; startScene5Autoplay re-arms it there. */
+      disarmAnchor();
       if(s5stage) lenis.scrollTo(s5stage, { immediate: true, force: true });
       ScrollTrigger.refresh();
       if(typeof window.startScene5Autoplay === 'function'){
         window.startScene5Autoplay();
       } else {
         /* Fallback so the user isn't trapped if the sequencer didn't load */
-        window.__scrollLocked = false;
-        try{ lenis.start(); }catch(e){}
+        unlockScroll();
       }
       /* Reset the expand so scrolling back into the proto isn't left zoomed. */
       gsap.set(stage, { scale: 1, clearProps: 'transform' });
@@ -439,6 +448,9 @@ ScrollTrigger.create({
     if(self.isActive){
       const sh = document.getElementById('s23-dash');
       if(sh) sh.style.opacity = '';
+      /* (re)start the carried-over S12 background video once the stage is on
+         screen — browsers won't autoplay it while the stage is visibility:hidden. */
+      if(bgCarry){ const _bv = bgCarry.querySelector('video'); if(_bv) _bv.play().catch(()=>{}); }
     }
   },
   onUpdate: self => {
@@ -474,11 +486,8 @@ window.addEventListener('resize', () => {
   render(st ? st.progress : 0);
 });
 
-/* ── Global scroll-lock blocker (countdown can't be scrolled through) ── */
-const SCROLL_KEYS = {' ':1,'Spacebar':1,'ArrowUp':1,'ArrowDown':1,'ArrowLeft':1,'ArrowRight':1,'PageUp':1,'PageDown':1,'Home':1,'End':1};
-window.addEventListener('wheel',     e => { if(window.__scrollLocked) e.preventDefault(); }, { passive:false });
-window.addEventListener('touchmove', e => { if(window.__scrollLocked) e.preventDefault(); }, { passive:false });
-window.addEventListener('keydown',   e => { if(window.__scrollLocked && SCROLL_KEYS[e.key]) e.preventDefault(); }, { passive:false });
+/* ── Global scroll-lock blocker now lives in src/shared/setup.js (single source
+   of truth: wheel/touch/key guards + scrollbar-drag anchor). ── */
 
 /* ════════════════════════════════════════════════════════════
    EXPLORER — click a feature to open its detail screen
