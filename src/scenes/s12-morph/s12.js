@@ -138,22 +138,16 @@ import { lenis, isMobile } from '../../shared/setup.js';
   function lockScroll() { window.__scrollLocked = true; try { lenis.stop(); } catch (e) {} }
   function unlockScroll() { window.__scrollLocked = false; try { lenis.start(); } catch (e) {} }
 
-  /* ── intro — show the visible hero, then release scroll so the pin scrubs ── */
-  function showHero(animated) {
-    if (boot) boot.style.display = 'none';
-    if (bgVideo) bgVideo.play().catch(function () {});
-    if (frameVideo) frameVideo.play().catch(function () {});
-    gsap.set(morph, { opacity: 1 });
+  /* ── reveal the hero copy (eyebrow + headline). instant=true skips the drop-in. ── */
+  function revealHeroText(instant) {
     eyebrow.style.opacity = '1';
     headline.style.opacity = '1';
-    if (animated) {
-      revealText(eyebrow, { stagger: 0.022, duration: 0.7 });
-      revealText(headline, { stagger: 0.03, duration: 0.95, delay: 0.15 });
-      /* unlock is scheduled unconditionally in the kickoff (below) */
-    } else {
+    if (instant) {
       var ec = splitText(eyebrow), hc = splitText(headline);
       gsap.set(ec.concat(hc), { yPercent: 0, opacity: 1 });
-      enableScroll();
+    } else {
+      revealText(eyebrow, { stagger: 0.022, duration: 0.7 });
+      revealText(headline, { stagger: 0.03, duration: 0.95, delay: 0.15 });
     }
   }
   function enableScroll() {
@@ -169,7 +163,8 @@ import { lenis, isMobile } from '../../shared/setup.js';
     if (cuboid) { cuboid.style.setProperty('--pw', s.PW + 'px'); cuboid.style.setProperty('--ph', s.PH + 'px'); }
   }
   morph.style.aspectRatio = 'auto';
-  gsap.set(morph, { rotateY: 0 });
+  /* start collapsed to a center sliver so the frame opens & expands sideways (scaleX 0→1) */
+  gsap.set(morph, { rotateY: 0, scaleX: 0, transformOrigin: '50% 50%' });
   applyFrameSize();
   applyMorph(0);                                   /* forma shape at rest */
   gsap.set('#proto-bg', { opacity: 0 });
@@ -257,15 +252,66 @@ import { lenis, isMobile } from '../../shared/setup.js';
     window.addEventListener('load', function () { applyFrameSize(); applyMorph(lastMorphP); ScrollTrigger.refresh(); });
   }
 
-  /* kick off: desktop locks scroll for the hero reveal, then releases to scrub.
-     The unlock is scheduled (timer-based, rAF-independent) BEFORE showHero and the
-     intro is wrapped in try/catch, so the page can NEVER stay scroll-locked even if
-     the intro errors or the rAF ticker is throttled. Also unlock on first visibility. */
+  /* ════ INTRO — terminal boot → frame opens & expands sideways → hero text ════
+     A separate autoplay timeline that runs while scroll is locked, then hands off to
+     the scrubbed master from the exact state master expects at t=0 (morph opacity 1,
+     scaleX 1, forma full size, videos playing, hero text shown). master is untouched. */
+  var bootLines  = ['#bl-1', '#bl-2', '#bl-3', '#bl-4', '#bl-5', '#bl-6'];
+  var lineDelays = [0.30, 0.35, 0.40, 0.30, 0.25, 0.45];   /* original s1 boot cadence */
+  var EXPAND = 1.0;                                          /* frame open/expand duration */
+
+  function playVideos() {
+    if (frameVideo) frameVideo.play().catch(function () {});
+    if (bgVideo) bgVideo.play().catch(function () {});
+  }
+
+  /* reduced-motion / hidden-tab fast path: jump straight to master's t=0 state */
+  function showHeroInstant() {
+    if (boot) boot.style.display = 'none';
+    playVideos();
+    gsap.set(morph, { opacity: 1, scaleX: 1 });
+    revealHeroText(true);
+  }
+
+  function buildIntro() {
+    var tl = gsap.timeline({ paused: true, onComplete: enableScroll });
+    /* Phase A — terminal boot, line by line */
+    if (boot) gsap.set(boot, { display: 'flex', opacity: 1 });
+    gsap.set(bootLines, { opacity: 0 });
+    bootLines.forEach(function (sel, i) {
+      tl.to(sel, { opacity: 1, duration: 0, delay: lineDelays[i] });
+    });
+    tl.to({}, { duration: 0.6 });                            /* hold on SYSTEM READY */
+    /* Phase B — boot fades out while the frame opens from a center sliver and
+       expands sideways (scaleX 0→1); both begin together for a crossfade */
+    var openAt = tl.duration();
+    if (boot) tl.to(boot, { opacity: 0, duration: 0.5, ease: 'power2.in',
+      onComplete: function () { boot.style.display = 'none'; } }, openAt);
+    tl.set(morph, { opacity: 1 }, openAt);
+    /* video kicks in once the frame is ~30% expanded (by width, not by time) */
+    var videoFired = false;
+    tl.to(morph, { scaleX: 1, duration: EXPAND, ease: 'power3.out',
+      onUpdate: function () {
+        if (!videoFired && gsap.getProperty(morph, 'scaleX') >= 0.30) { videoFired = true; playVideos(); }
+      } }, openAt);
+    /* Phase C — hero text drops in after full expansion */
+    tl.add(function () { revealHeroText(false); }, openAt + EXPAND);
+    tl.to({}, { duration: 1.0 }, openAt + EXPAND);           /* let the reveal breathe before unlock */
+    return tl;
+  }
+
+  /* kick off: desktop locks scroll through the intro, then releases to scrub.
+     A timer-based (rAF-independent) fallback longer than the whole intro guarantees the
+     page can NEVER stay scroll-locked — and can't unlock mid-intro and fight the scrub. */
   if (!isMobile()) lockScroll();
   var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  setTimeout(enableScroll, 1700);
-  document.addEventListener('visibilitychange', function onVis() {
-    if (!document.hidden) { enableScroll(); document.removeEventListener('visibilitychange', onVis); }
-  });
-  try { showHero(!(document.hidden || REDUCED)); } catch (e) { enableScroll(); }
+  setTimeout(enableScroll, 7000);
+  if (document.hidden || REDUCED) {
+    /* GSAP timelines stall on a hidden tab — skip the intro, show the hero immediately */
+    try { showHeroInstant(); } catch (e) {}
+    enableScroll();
+  } else {
+    try { buildIntro().play(); }
+    catch (e) { try { showHeroInstant(); } catch (e2) {} enableScroll(); }
+  }
 })();
