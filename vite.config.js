@@ -46,19 +46,11 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     rollupOptions: {
-      // Multi-page: the live site plus the standalone Scene-5 prototypes.
-      // proto-a = Fleet Console, proto-b = Holographic HUD (each a complete
-      // 5a/5b/5c flow under src/proto-a|b/). proto-5a/5b/5c are the newer
-      // per-scene prototypes built sideways (cinematic horizontal auto-pan);
-      // 5a is the detailed X-ray-scan build, 5b/5c are placeholders for now.
-      // The old Scene 1→2 morph prototype (proto-morph.html) has been removed.
+      // Single-page: only the live site. The standalone Scene-5 and stats
+      // prototypes (proto-a/b, proto-5a/b/c, proto-stats-a/b/c/d) were removed
+      // in the 2026-06-29 cleanup.
       input: {
         main: path.resolve(root, 'index.html'),
-        protoA: path.resolve(root, 'proto-a.html'),
-        protoB: path.resolve(root, 'proto-b.html'),
-        proto5a: path.resolve(root, 'proto-5a.html'),
-        proto5b: path.resolve(root, 'proto-5b.html'),
-        proto5c: path.resolve(root, 'proto-5c.html'),
       },
     },
   },
